@@ -1,0 +1,4 @@
+home: https://www.svgrepo.com/svg/22031/home-icon-silhouette
+navi: https://www.svgrepo.com/svg/448536/navigation
+weather: https://www.svgrepo.com/svg/479345/weather-symbol-4
+settings: https://www.svgrepo.com/svg/529867/settings

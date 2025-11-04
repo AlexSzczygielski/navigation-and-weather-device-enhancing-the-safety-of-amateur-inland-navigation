@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <!-- QML Views -->
+        <file>main.qml</file>
+        <file>views/home.qml</file>
+        <file>views/cv_panel.qml</file>
+
+        <!-- QML Components -->
+        <file>components/IconButton.qml</file>
+        
+
+        <!-- Assets Icons -->
+        <file>assets/home.svg</file>
+        <file>assets/navi.svg</file>
+        <file>assets/settings.svg</file>
+        <file>assets/camera100.svg</file>
+
+        <!-- Assets Pictures -->
+        <file>assets/model.png</file>
+    </qresource>
+</RCC>
