@@ -12,29 +12,26 @@ class Backend(QObject):
     def __init__(self,model_path):
         super().__init__()
         try:
+            #Create CV class
             self.model_path = model_path
             self.cv_proc = CvService(model_path)
         except Exception as e:
             print(f"Failed to initialize CV module: {e}")
             self.cv_proc = None
         
-
     img_ready = pyqtSignal(str)
     imageUpdated = pyqtSignal(str)
 
     @pyqtSlot()
     def run_cv(self):
-        self.process = QProcess(self)
-        self.process.finished.connect(self.on_process_finished)
-        #self.process.setProcessChannelMode(QProcess.ForwardedChannels) #console output
-        self.process.start("python3", ["cv_exporter.py"])
-        self.process.start("python3", ["mask_painter.py"])
-        
-    
-    def on_process_finished(self):
-        print("finished")
-        img_path = os.path.abspath('output_mask.jpg')
-        self.imageUpdated.emit(img_path)
+        #Run Create ROI pipe
+        mask_coords = self.cv_proc.mask_exporter()
+        self.cv_proc.mask_painter()
+        try:
+            img_path = os.path.abspath('output_mask.jpg')
+            self.imageUpdated.emit(img_path)
+        except Exception as e:
+            print(f"Failed to load painted mask image: {e}")        
 
 
 if __name__ == "__main__":
