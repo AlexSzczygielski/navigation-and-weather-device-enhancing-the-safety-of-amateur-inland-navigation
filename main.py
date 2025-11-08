@@ -43,7 +43,7 @@ if __name__ == "__main__":
     view = QQmlApplicationEngine()
     view.addImportPath(sys.path[0])
     
-    model_path = '/Users/olek_szczygielski/Desktop/AGH/praca_inzynierska/repos/ROI-polygon-exporter/first_model_omega_boat_deck_weights.pt'
+    model_path = 'cv/first_model_omega_boat_deck_weights.pt'
     backend = Backend(model_path)
     view.rootContext().setContextProperty("backend",backend)
 

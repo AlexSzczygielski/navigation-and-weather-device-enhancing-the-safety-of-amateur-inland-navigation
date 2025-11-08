@@ -12,7 +12,7 @@ class CvService():
         self.mask_coords = None
 
     def fetch_image(self):
-        self.image_path = '/Users/olek_szczygielski/Desktop/AGH/praca_inzynierska/Training_Data_Photos/boat_deck_test_photos_jpg/IMG_6003.jpg'
+        self.image_path = 'cv/demonstration_assets/IMG_6003.jpg'
 
     def mask_exporter(self):
         #method responsible for exporting the ROI mask coordinates
