@@ -40,9 +40,9 @@ classDiagram
         # _model_path: str
         # _image_path: str
         + << create >> CvService(model_path: str)
-        + fetch_image(): void
-        + mask_exporter(): ndarray
-        + mask_painter(): void
+        # _fetch_image(): void
+        # _mask_exporter(): ndarray
+        # _mask_painter(): void
     }
 
     Backend *-- CvWorker

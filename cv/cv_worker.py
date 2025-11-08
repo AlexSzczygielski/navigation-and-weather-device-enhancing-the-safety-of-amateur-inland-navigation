@@ -10,16 +10,16 @@ from cv.cv_service import CvService
 class CvWorker(QThread):
     def __init__(self, model_path):
         super().__init__()
-        self.model_path = model_path
+        self._model_path = model_path
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
     
     def run(self):
         try:
-            cv = CvService(self.model_path)
-            cv.mask_exporter()
-            img = cv.mask_painter()
+            cv = CvService(self._model_path)
+            cv._mask_exporter()
+            img = cv._mask_painter()
             #img_path = os.path.abspath("output_mask.jpg")
             #self.finished.emit(img_path)
 
