@@ -2,6 +2,8 @@
 #Class responsible for managing QThreading for cv_service.py logic
 from PyQt5.QtCore import QThread, pyqtSignal
 import os
+import cv2
+import base64
 from cv.cv_service import CvService
 
 
@@ -17,8 +19,13 @@ class CvWorker(QThread):
         try:
             cv = CvService(self.model_path)
             cv.mask_exporter()
-            cv.mask_painter()
-            img_path = os.path.abspath("output_mask.jpg")
-            self.finished.emit(img_path)
+            img = cv.mask_painter()
+            #img_path = os.path.abspath("output_mask.jpg")
+            #self.finished.emit(img_path)
+
+            #Encoding image to base_64
+            _, buffer = cv2.imencode('.jpg', img)
+            img_base64 = base64.b64encode(buffer).decode('utf-8')
+            self.finished.emit(img_base64)
         except Exception as e:
             print(f"run_mask_exporter failed: {e}")

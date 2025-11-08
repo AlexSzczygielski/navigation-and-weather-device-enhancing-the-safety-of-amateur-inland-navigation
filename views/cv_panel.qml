@@ -33,20 +33,23 @@ RowLayout{
 
         Image {
             id: cv_roi_photo
-            Layout.topMargin: 40
+            Layout.topMargin: 30
             //source: "qrc:/assets/model.png"
             source: ""
             fillMode: Image.PreserveAspectFit
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: 700
-            Layout.preferredHeight: 450
+            Layout.preferredHeight: 400
         }
     }
 
     Connections {
         target: backend
-        function onImageUpdated(path) {
-            cv_roi_photo.source = "file://" + path
+        //function onImageUpdated(path) {
+            //cv_roi_photo.source = "file://" + path
+        //}
+        function onImageUpdated(base_64_str){
+            cv_roi_photo.source = "data:image/jpg;base64," + base_64_str
         }
     }
 }
