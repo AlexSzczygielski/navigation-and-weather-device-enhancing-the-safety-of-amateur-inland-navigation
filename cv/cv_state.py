@@ -16,5 +16,13 @@ class CvState(ABC):
         self._context = context
 
     @abstractmethod
+    def setup_source(self) -> None:
+        pass
+    
+    @abstractmethod
     def fetch_image(self) -> None:
+        pass
+        
+    @abstractmethod
+    def fetch_frame(self) -> None:
         pass

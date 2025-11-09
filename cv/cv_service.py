@@ -21,6 +21,7 @@ class CvService():
         self._state = state
         self._state.context = self
 
+    ### ROI CREATION ###
     def fetch_image(self):
         self._state.fetch_image()
 
@@ -67,3 +68,16 @@ class CvService():
         #cv2.imwrite("output_mask.jpg", img)
 
         return img
+    
+    ### ROI CV COUNT PIPELINE ###
+    def fetch_frame(self, cap):
+        return self._state.fetch_frame(cap)
+    
+    def setup_source(self):
+        return self._state.setup_source()
+
+    def run_video_inference(self):
+        cap = self.setup_source()
+        frame = self.fetch_frame(cap)
+        print("success")
+        cap.release()

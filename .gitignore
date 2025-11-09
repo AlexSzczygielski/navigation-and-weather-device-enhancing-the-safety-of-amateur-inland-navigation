@@ -216,3 +216,9 @@ __marimo__/
 #Ignore auto generated files/directories
 qml_rc.py
 .vscode/
+
+#Ignore movie clips
+*.MOV
+*.mov
+*.mp4
+*.mpeg4
