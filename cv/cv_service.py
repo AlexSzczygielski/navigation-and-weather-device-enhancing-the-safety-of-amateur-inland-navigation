@@ -1,23 +1,33 @@
 #CvService.py
 #This is a class file responsible for handling operations connected with
 #Computer Vision modules
+#This is also a context class in state pattern
 from ultralytics import YOLO
 import numpy as np
 import cv2
+from abc import ABC,abstractmethod
+from cv.cv_state import CvState
 
 class CvService():
-    def __init__(self, model_path):
+    _state = None
+    def __init__(self, model_path, state: CvState) -> None:
         self._model_path = model_path
         self._image_path = None
         self._mask_coords = None
+        self.transition_to(state)
+    
+    def transition_to(self, state: CvState):
+        print(f"Context: Transition to {type(state).__name__}")
+        self._state = state
+        self._state.context = self
 
-    def _fetch_image(self):
-        self._image_path = 'cv/demonstration_assets/IMG_6003.jpg'
+    def fetch_image(self):
+        self._state.fetch_image()
 
     def _mask_exporter(self):
         #method responsible for exporting the ROI mask coordinates
         #Fetch image
-        self._fetch_image()
+        self.fetch_image()
 
         #Load model
         model = YOLO(self._model_path)

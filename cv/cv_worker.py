@@ -8,16 +8,17 @@ from cv.cv_service import CvService
 
 
 class CvWorker(QThread):
-    def __init__(self, model_path):
+    def __init__(self, model_path, service_state):
         super().__init__()
         self._model_path = model_path
+        self._service_state = service_state #State for Service class started from this thread
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
     
     def run(self):
         try:
-            cv = CvService(self._model_path)
+            cv = CvService(self._model_path, self._service_state)
             cv._mask_exporter()
             img = cv._mask_painter()
             #img_path = os.path.abspath("output_mask.jpg")

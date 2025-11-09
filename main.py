@@ -7,6 +7,8 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
 
 import qml_rc
 from cv.cv_worker import CvWorker
+from cv.cv_state import CvState
+from cv.cv_demo_state_service import CvDemoStateService
 
 class Backend(QObject):
     def __init__(self,model_path):
@@ -25,7 +27,8 @@ class Backend(QObject):
         if self._worker and self._worker.isRunning():
             print("Previous worker still running")
             return
-        self._worker = CvWorker(self._model_path)
+
+        self._worker = CvWorker(self._model_path,CvDemoStateService()) #worker with context
         self._worker.finished.connect(self._on_run_cv_finished)
         self._worker.error.connect(self._on_run_cv_error)
         self._worker.start()

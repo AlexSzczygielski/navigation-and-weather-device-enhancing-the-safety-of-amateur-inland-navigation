@@ -19,36 +19,46 @@ classDiagram
         + on_run_cv_error(): void
     }
 
-    note for IWorker "IWorker classes wrap the QThread - 
-    they are responsible for threaded processing"
-
-    class IWorker {
-        + finished: pyqtSignal(str)
-        + error: pyqtSignal(str)
-        + run(): void
-    }
-
-    note "Worker classes are responsible 
-    for logic implementation"
+    note for CvWorker "Worker classes are 
+    responsible for QThread management"
 
     class CvWorker {
         # _model_path: str
-        + << create >> CvWorker(model_path: str)
+        + finished: pyqtSignal
+        + error: pyqtSignal
+        + << create >> CvWorker(model_path: str, service_state: CvState)
+        + run(): void
     }
+
+    note for CvService "Service classes are responsible 
+    for logic implementation. This is a context class."
 
     class CvService {
         # _model_path: str
         # _image_path: str
-        + << create >> CvService(model_path: str)
+        # _mask_coords: ndarray
+        # _state: CvState
+        + << create >> CvService(model_path: str, state: CvState)
+        + transition_to(state: CvState): void
         # _fetch_image(): void
         # _mask_exporter(): ndarray
         # _mask_painter(): void
     }
 
+    class CvState {
+        + context: CvService
+        + << abstract >> fetch_image(): void
+    }
+
+    class CvDemoStateService {
+        + fetch_image(): void
+    }
+
     Backend *-- CvWorker
     CvWorker --|> QThread
-    CvWorker --|> IWorker
     CvWorker *-- CvService
+    CvService o-- CvState
     CvService o-- "1" ultralytics.YOLO
     CvService o-- "1" cv2
     CvService o-- "1" numpy
+    CvDemoStateService --|> CvState
