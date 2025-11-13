@@ -1,7 +1,10 @@
+//main.qml
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
+
+import "qrc:/components"
 
 ApplicationWindow {
     visible: true
@@ -34,39 +37,29 @@ ApplicationWindow {
             //Left Icons Bar
 
             //Loading icons from IconButton.qml
-            Loader{
+            IconButton{
                 id: loaderHome
-                source: "qrc:/components/IconButton.qml"
-                onLoaded: {
-                    loaderHome.item.iconSource = "qrc:/assets/home.svg"
-                    loaderHome.item.selected = true
-                    //add to allButtons
-                    allButtons.push(loaderHome.item)
+                iconSource: "qrc:/assets/home.svg"
+                selected: true
+                Component.onCompleted: allButtons.push(loaderHome)
 
-                    loaderHome.item.clicked.connect(() => {
-                        resetSelection()
-                        loaderHome.item.selected = true
-                        mainLoader.source = "qrc:/views/home.qml"
-                    } )
+                onIconClicked: {
+                    resetSelection()
+                    loaderHome.selected = true
+                    mainLoader.source = "qrc:/views/home.qml"
                 }
             }
 
-            Loader{
+            IconButton{
                 id: loaderNavi
-                source: "qrc:/components/IconButton.qml"
-                onLoaded: {
-                    loaderNavi.item.iconSource = "qrc:/assets/navi.svg"
-                    allButtons.push(loaderNavi.item)
-                }
+                iconSource: "qrc:/assets/navi.svg"
+                Component.onCompleted: allButtons.push(loaderNavi)
             }
 
-            Loader{
+            IconButton{
                 id: loaderSett
-                source: "qrc:/components/IconButton.qml"
-                onLoaded: {
-                    loaderSett.item.iconSource = "qrc:/assets/settings.svg"
-                    allButtons.push(loaderSett.item)
-                }
+                iconSource: "qrc:/assets/settings.svg"
+                Component.onCompleted: allButtons.push(loaderSett.item)
             }
         }
         
@@ -88,49 +81,34 @@ ApplicationWindow {
             //Left Icons Bar
 
             //Loading icons from IconButton.qml
-            Loader{
+            IconButton{
                 id: loaderCvRoi
-                source: "qrc:/components/IconButton.qml"
-                onLoaded: {
-                    loaderCvRoi.item.iconSource = "qrc:/assets/camera100.svg"
-                    allButtons.push(loaderCvRoi.item)
+                iconSource: "qrc:/assets/camera100.svg"
+                Component.onCompleted: allButtons.push(loaderCvRoi)
 
-                    Qt.callLater(() => {
-                        loaderCvRoi.item.clicked.connect(() => {
-                            resetSelection()
-                            loaderCvRoi.item.selected = true
-                            mainLoader.source = "qrc:/views/cv_create_roi_panel.qml"
-                        } )
-                    })
+                onIconClicked: {
+                    resetSelection()
+                    loaderCvRoi.selected = true
+                    mainLoader.source = "qrc:/views/cv_create_roi_panel.qml"
                 }
             }
 
-            Loader{
+            IconButton{
                 id: loaderCvDetection
-                source: "qrc:/components/IconButton.qml"
+                iconSource: "qrc:/assets/camera100.svg"
+                Component.onCompleted: allButtons.push(loaderCvDetection)
 
-                onLoaded: {
-                    loaderCvDetection.item.iconSource = "qrc:/assets/camera100.svg"
-                    allButtons.push(loaderCvDetection.item)
-                    
-                    Qt.callLater(() => {
-                        loaderCvDetection.item.clicked.connect(() => {
-                            resetSelection()
-                            loaderCvDetection.item.selected = true
-                            mainLoader.source = "qrc:/views/cv_detect_pipe_panel.qml"
-                        } )
-                    })
+                onIconClicked: {
+                    resetSelection()
+                    loaderCvDetection.selected = true
+                    mainLoader.source = "qrc:/views/cv_detect_pipe_panel.qml"
                 }
             }
 
-            Loader{
+            IconButton{
                 id: loaderSett2
-                source: "qrc:/components/IconButton.qml"
-
-                onLoaded: {
-                    loaderSett2.item.iconSource = "qrc:/assets/settings.svg"
-                    allButtons.push(loaderSett2.item)
-                }
+                iconSource: "qrc:/assets/settings.svg"
+                onIconClicked: allButtons.push(loaderSett2)
             }
         }        
     }

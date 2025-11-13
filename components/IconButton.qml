@@ -1,26 +1,30 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
-ToolButton {
+Rectangle {
     id: root
-    //properties
-    property string iconSource: ""
-    property int iconSize: 50 
+    width: 80
+    height: 80
+    radius: 10
+    color: root.selected ? "#2980b9" : "#2c3e50"
 
+    property string iconSource: "../assets/camera100.svg"
+    property int iconSize: 50
     property bool selected: false
 
     signal iconClicked()
 
-    //Icon setup
-    icon.source: iconSource
-    icon.width: iconSize
-    icon.height: iconSize
-
-    //Background setup
-    background: Rectangle {
-      color: root.selected ? "#2980b9" : "#2c3e50"
-      radius: 10
+    Image {
+        id: iconImage
+        source: root.iconSource
+        width: root.iconSize
+        height: root.iconSize
+        anchors.centerIn: parent
+        fillMode: Image.PreserveAspectFit
     }
-    
-    onClicked: iconClicked()
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: root.iconClicked()
+    }
 }

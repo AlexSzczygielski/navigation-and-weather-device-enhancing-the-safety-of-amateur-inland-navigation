@@ -2,15 +2,13 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
+
+import "qrc:/components"
+
 //Left Data
 RowLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
-
-    function updateMaskStatusTxt() {
-        maskStatus.text = "✅ Mask loaded"
-        maskStatus.color = "green"
-    }
 
     //Middle Section
     ColumnLayout{
@@ -33,13 +31,11 @@ RowLayout{
                 }
             }
 
-            Text {
+            StatusIndicator {
                 id: maskStatus
-                text: "Mask not loaded"
-                color: "grey"
-                font.pixelSize: 14
-                visible: true
-                Layout.alignment: Qt.AlignHCenter
+                readyText: "Mask loaded"
+                notReadyText: "Mask not loaded"
+                notReadyIcon: ""
             }
         }
 
@@ -60,7 +56,7 @@ RowLayout{
         target: backend
         function onImageUpdated(base_64_str){
             cv_roi_photo.source = "data:image/jpg;base64," + base_64_str
-            updateMaskStatusTxt()
+            maskStatus.isReady = true
         }
     }
 
@@ -68,7 +64,7 @@ RowLayout{
         var img = backend.get_roi_img()
         if (img) {
             cv_roi_photo.source = "data:image/jpg;base64," + img
-            updateMaskStatusTxt()
+            maskStatus.isReady = true
         }
     }
 }
