@@ -19,8 +19,9 @@ class CvWorker(QThread):
     def run(self):
         try:
             cv = CvService(self._model_path, self._service_state)
-            cv._mask_exporter()
-            img = cv._mask_painter()
+            #cv._mask_exporter()
+            #img = cv._mask_painter()
+            img = cv.run_roi_creation_pipeline()
             #img_path = os.path.abspath("output_mask.jpg")
             #self.finished.emit(img_path)
 
@@ -29,6 +30,6 @@ class CvWorker(QThread):
             img_base64 = base64.b64encode(buffer).decode('utf-8')
             self.finished.emit(img_base64)
 
-            cv.run_video_inference()
+            #cv.run_video_inference()
         except Exception as e:
             print(f"run_cv_worker failed: {e}")

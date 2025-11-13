@@ -11,6 +11,7 @@ class CvDemoStateService(CvState):
 
     def fetch_image(self):
         self.context._image_path = 'cv/demonstration_assets/IMG_6003.jpg'
+        return self.context._image_path
 
     def fetch_frame(self, cap):
         ret, frame = cap.read()
