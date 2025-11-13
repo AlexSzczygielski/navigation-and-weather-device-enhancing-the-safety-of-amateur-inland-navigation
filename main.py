@@ -42,7 +42,7 @@ class Backend(QObject):
 
     @pyqtSlot(result=str)
     def get_roi_img(self):
-        #This can be used when loading/reloading the cv_panel view
+        #This can be used when loading/reloading the cv_create_roi_panel view
         if self._roi_img_base_64 is None:
             return None
         return self._roi_img_base_64        

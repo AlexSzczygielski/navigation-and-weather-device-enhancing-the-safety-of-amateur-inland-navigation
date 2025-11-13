@@ -7,7 +7,10 @@ RowLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-
+    function updateMaskStatusTxt() {
+        maskStatus.text = "✅ Mask loaded"
+        maskStatus.color = "green"
+    }
 
     //Middle Section
     ColumnLayout{
@@ -28,6 +31,15 @@ RowLayout{
                 onClicked: {
                     backend.run_cv()
                 }
+            }
+
+            Text {
+                id: maskStatus
+                text: "Mask not loaded"
+                color: "grey"
+                font.pixelSize: 14
+                visible: true
+                Layout.alignment: Qt.AlignHCenter
             }
         }
 

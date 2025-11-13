@@ -89,29 +89,37 @@ ApplicationWindow {
 
             //Loading icons from IconButton.qml
             Loader{
-                id: loaderCV
+                id: loaderCvRoi
                 source: "qrc:/components/IconButton.qml"
                 onLoaded: {
-                    loaderCV.item.iconSource = "qrc:/assets/camera100.svg"
-                    allButtons.push(loaderCV.item)
+                    loaderCvRoi.item.iconSource = "qrc:/assets/camera100.svg"
+                    allButtons.push(loaderCvRoi.item)
 
                     Qt.callLater(() => {
-                        loaderCV.item.clicked.connect(() => {
+                        loaderCvRoi.item.clicked.connect(() => {
                             resetSelection()
-                            loaderCV.item.selected = true
-                            mainLoader.source = "qrc:/views/cv_panel.qml"
+                            loaderCvRoi.item.selected = true
+                            mainLoader.source = "qrc:/views/cv_create_roi_panel.qml"
                         } )
                     })
                 }
             }
 
             Loader{
-                id: loaderNavi2
+                id: loaderCvDetection
                 source: "qrc:/components/IconButton.qml"
 
                 onLoaded: {
-                    loaderNavi2.item.iconSource = "qrc:/assets/navi.svg"
-                    allButtons.push(loaderNavi2.item)
+                    loaderCvDetection.item.iconSource = "qrc:/assets/camera100.svg"
+                    allButtons.push(loaderCvDetection.item)
+                    
+                    Qt.callLater(() => {
+                        loaderCvDetection.item.clicked.connect(() => {
+                            resetSelection()
+                            loaderCvDetection.item.selected = true
+                            mainLoader.source = "qrc:/views/cv_detect_pipe_panel.qml"
+                        } )
+                    })
                 }
             }
 

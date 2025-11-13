@@ -3,7 +3,8 @@
         <!-- QML Views -->
         <file>main.qml</file>
         <file>views/home.qml</file>
-        <file>views/cv_panel.qml</file>
+        <file>views/cv_create_roi_panel.qml</file>
+        <file>views/cv_detect_pipe_panel.qml</file>
 
         <!-- QML Components -->
         <file>components/IconButton.qml</file>
