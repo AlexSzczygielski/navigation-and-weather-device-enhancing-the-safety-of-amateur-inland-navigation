@@ -43,13 +43,18 @@ RowLayout{
         }
     }
 
+    // ROI Creation update
     Connections {
         target: backend
-        //function onImageUpdated(path) {
-            //cv_roi_photo.source = "file://" + path
-        //}
         function onImageUpdated(base_64_str){
             cv_roi_photo.source = "data:image/jpg;base64," + base_64_str
+        }
+    }
+
+    Component.onCompleted: {
+        var img = backend.get_roi_img()
+        if (img) {
+            cv_roi_photo.source = "data:image/jpg;base64," + img
         }
     }
 }

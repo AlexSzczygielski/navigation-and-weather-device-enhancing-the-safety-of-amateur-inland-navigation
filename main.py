@@ -13,9 +13,9 @@ from cv.cv_demo_state_service import CvDemoStateService
 class Backend(QObject):
     def __init__(self,model_path):
         super().__init__()
-        #Create CV class
         self._model_path = model_path
         self._worker = None
+        self._roi_img_base_64 = None
         
     img_ready = pyqtSignal(str)
     imageUpdated = pyqtSignal(str)
@@ -33,12 +33,19 @@ class Backend(QObject):
         self._worker.error.connect(self._on_run_cv_error)
         self._worker.start()
         
-    def _on_run_cv_finished(self, img_path):
-        print("finished")
-        self.imageUpdated.emit(img_path)
+    def _on_run_cv_finished(self, img_64):
+        self._roi_img_base_64 = img_64
+        self.imageUpdated.emit(self._roi_img_base_64)
 
     def _on_run_cv_error(self):
-        print("error")        
+        print("error")
+
+    @pyqtSlot(result=str)
+    def get_roi_img(self):
+        #This can be used when loading/reloading the cv_panel view
+        if self._roi_img_base_64 is None:
+            return None
+        return self._roi_img_base_64        
 
 
 if __name__ == "__main__":

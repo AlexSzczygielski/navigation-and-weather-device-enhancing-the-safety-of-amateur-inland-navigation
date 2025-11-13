@@ -17,12 +17,12 @@ class VideoProcessor():
             raise TypeError("_model is None!")
 
         # Get video properties
-        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        fps    = cap.get(cv2.CAP_PROP_FPS)
+        #width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        #height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        #fps    = cap.get(cv2.CAP_PROP_FPS)
 
         # Define output video writer
-        out = cv2.VideoWriter("motor1Out.mp4", cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+        #out = cv2.VideoWriter("motor1Out.mp4", cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
         ret, frame = self.fetch_frame(cap)
         if frame is None:
@@ -40,6 +40,6 @@ class VideoProcessor():
             annotated_frame = results[0].plot()
 
             # Write to output
-            out.write(annotated_frame)
+            #out.write(annotated_frame)
         cap.release()
-        out.release()
+        #out.release()

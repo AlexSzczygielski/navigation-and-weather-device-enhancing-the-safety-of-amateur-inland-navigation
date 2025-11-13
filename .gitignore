@@ -222,3 +222,6 @@ qml_rc.py
 *.mov
 *.mp4
 *.mpeg4
+
+#Ignore temp files
+cv/temp/

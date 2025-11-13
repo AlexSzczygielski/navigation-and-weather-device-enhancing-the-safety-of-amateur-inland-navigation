@@ -27,7 +27,6 @@ class CvWorker(QThread):
             _, buffer = cv2.imencode('.jpg', img)
             img_base64 = base64.b64encode(buffer).decode('utf-8')
             self.finished.emit(img_base64)
-
-            cv.run_video_inference()
+            
         except Exception as e:
             print(f"run_cv_worker failed: {e}")
