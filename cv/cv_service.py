@@ -8,6 +8,7 @@ import cv2
 from abc import ABC,abstractmethod
 from cv.cv_state import CvState
 from cv.roi_processor import RoiProcessor
+from cv.video_processor import VideoProcessor
 
 class CvService():
     _state = None
@@ -16,6 +17,7 @@ class CvService():
         self._image_path = None
         self._mask_coords = None
         self._roi_processor = RoiProcessor(model_path)
+        self._video_processor = VideoProcessor(model_path)
         self.transition_to(state)
     
     def transition_to(self, state: CvState):
@@ -39,36 +41,6 @@ class CvService():
     def setup_vid_stream(self):
         return self._state.setup_vid_stream()
 
-    def run_video_inference(self):
-        model = YOLO(self._model_path)
+    def run_video_detection_pipeline(self):
         cap = self.setup_vid_stream()
-
-        # Get video properties
-        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        fps    = cap.get(cv2.CAP_PROP_FPS)
-
-        # Define output video writer
-        out = cv2.VideoWriter("motor1Out.mp4", cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
-
-        ret, frame = self.fetch_frame(cap)
-        if(frame is not None):
-            print("success")
-            
-            while(True):
-                ret, frame = self.fetch_frame(cap)
-                if not ret: #End of the clip
-                    break
-                
-                #Perform inference
-                results = model(frame)
-
-                # Visualize
-                annotated_frame = results[0].plot()
-
-                # Write to output
-                out.write(annotated_frame)
-            cap.release()
-            out.release()
-        else:
-            print("Cannot access the frame")
+        self._video_processor.run_video_inference(cap)

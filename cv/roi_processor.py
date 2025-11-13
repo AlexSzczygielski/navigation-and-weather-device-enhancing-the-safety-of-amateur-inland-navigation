@@ -43,8 +43,6 @@ class RoiProcessor():
             #Draw the mask on the image
             cv2.polylines(img, [mask_coords_poly], isClosed=True, color=(0, 255, 0), thickness=40)
 
-            #Save the image
-            #cv2.imwrite("output_mask.jpg", img)
             return img
 
         except Exception as e:
