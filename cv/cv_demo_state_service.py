@@ -5,7 +5,7 @@ from cv.cv_service import CvService
 import cv2
 
 class CvDemoStateService(CvState):
-    def setup_source(self):
+    def setup_vid_stream(self):
         cap = cv2.VideoCapture("cv/demonstration_assets/motor1.MOV")
         return cap
 
@@ -20,4 +20,4 @@ class CvDemoStateService(CvState):
             return None
         else:
             print("returning frame")
-            return frame
+            return ret, frame

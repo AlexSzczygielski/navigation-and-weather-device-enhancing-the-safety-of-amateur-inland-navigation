@@ -16,7 +16,7 @@ class CvState(ABC):
         self._context = context
 
     @abstractmethod
-    def setup_source(self) -> None:
+    def setup_vid_stream(self) -> None:
         pass
     
     @abstractmethod

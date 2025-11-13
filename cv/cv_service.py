@@ -73,11 +73,39 @@ class CvService():
     def fetch_frame(self, cap):
         return self._state.fetch_frame(cap)
     
-    def setup_source(self):
-        return self._state.setup_source()
+    def setup_vid_stream(self):
+        return self._state.setup_vid_stream()
 
     def run_video_inference(self):
-        cap = self.setup_source()
-        frame = self.fetch_frame(cap)
-        print("success")
-        cap.release()
+        model = YOLO(self._model_path)
+        cap = self.setup_vid_stream()
+
+        # Get video properties
+        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps    = cap.get(cv2.CAP_PROP_FPS)
+
+        # Define output video writer
+        out = cv2.VideoWriter("motor1Out.mp4", cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+
+        ret, frame = self.fetch_frame(cap)
+        if(frame is not None):
+            print("success")
+            
+            while(True):
+                ret, frame = self.fetch_frame(cap)
+                if not ret: #End of the clip
+                    break
+                
+                #Perform inference
+                results = model(frame)
+
+                # Visualize
+                annotated_frame = results[0].plot()
+
+                # Write to output
+                out.write(annotated_frame)
+            cap.release()
+            out.release()
+        else:
+            print("Cannot access the frame")
