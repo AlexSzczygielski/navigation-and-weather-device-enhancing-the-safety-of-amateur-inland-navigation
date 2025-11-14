@@ -28,7 +28,7 @@ RowLayout{
                 text: "Create ROI"
 
                 onClicked: {
-                    backend.run_cv()
+                    backend.run_cv_roi_pipe()
                 }
             }
 

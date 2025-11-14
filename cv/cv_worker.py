@@ -29,4 +29,4 @@ class CvWorker(QThread):
             self.finished.emit(img_base64)
             
         except Exception as e:
-            print(f"run_cv_worker failed: {e}")
+            print(f"run_cv_roi_pipe_worker failed: {e}")

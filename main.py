@@ -17,27 +17,32 @@ class Backend(QObject):
         self._worker = None
         self._roi_img_base_64 = None
         
-    img_ready = pyqtSignal(str)
+    ### ROI CREATION PIPE ###
     imageUpdated = pyqtSignal(str)
 
     @pyqtSlot()
-    def run_cv(self):
+    def run_cv_roi_pipe(self):
         #Run Create ROI pipe
-        #Ensure old worker is cleaned up
-        if self._worker and self._worker.isRunning():
-            print("Previous worker still running")
-            return
+        try:
+            #Ensure old worker is cleaned up
+            if self._worker and self._worker.isRunning():
+                print("Previous worker still running")
+                return
 
-        self._worker = CvWorker(self._model_path,CvDemoStateService()) #worker with context
-        self._worker.finished.connect(self._on_run_cv_finished)
-        self._worker.error.connect(self._on_run_cv_error)
-        self._worker.start()
-        
-    def _on_run_cv_finished(self, img_64):
+            self._worker = CvWorker(self._model_path,CvDemoStateService()) #worker with context
+            self._worker.finished.connect(self._on_run_cv_roi_pipe_finished)
+            self._worker.error.connect(self._on_run_cv_roi_pipe_error)
+            self._worker.finished.connect(self._worker.deleteLater)
+            self._worker.start()
+        except Exception as e:
+            print(f"{self.__class__.__name__}.run_cv_roi_pipe error: {e}")
+
+    def _on_run_cv_roi_pipe_finished(self, img_64):
         self._roi_img_base_64 = img_64
         self.imageUpdated.emit(self._roi_img_base_64)
+        self._worker = None #Release the reference
 
-    def _on_run_cv_error(self):
+    def _on_run_cv_roi_pipe_error(self):
         print("error")
 
     @pyqtSlot(result=str)
@@ -45,8 +50,34 @@ class Backend(QObject):
         #This can be used when loading/reloading the cv_create_roi_panel view
         if self._roi_img_base_64 is None:
             return None
-        return self._roi_img_base_64        
+        return self._roi_img_base_64
 
+    ### MOB CV DETECTION PIPE ###
+
+    frameUpdated = pyqtSignal(str)        
+
+    @pyqtSlot()
+    def run_cv_mob_detect_pipe(self):
+        #Runs mob detection system
+        try:
+            if self._worker and self._worker.isRunning():
+                print("Previous worker still running")
+                return
+            
+            self._worker = CvWorker(self._model_path,CvDemoStateService()) #worker with context
+            self._worker.finished.connect(self._on_run_cv_mob_detect_pipe_finished)
+            self._worker.error.connect(self._on_run_cv_mob_detect_pipe_error)
+            self._worker.finished.connect(self._worker.deleteLater)
+            self._worker.start()
+        except Exception as e:
+            print(f"{self.__class__.__name__}.run_cv_mob_detect_pipe error: {e}")
+
+    def _on_run_cv_mob_detect_pipe_finished(self, img64):
+        self._worker = None
+
+    def _on_run_cv_mob_detect_pipe_error(self):
+        pass
+        
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)

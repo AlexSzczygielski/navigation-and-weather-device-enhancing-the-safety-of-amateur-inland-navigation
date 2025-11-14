@@ -17,9 +17,9 @@ classDiagram
         + img_ready: pyqtSignal
         + imageUpdated: pyqtSignal
         + << create >> Backend(model_path: str)
-        + << slot >> run_cv(): void
-        + on_run_cv_finished(img_64: str): void
-        + on_run_cv_error(): void
+        + << slot >> run_cv_roi_pipe(): void
+        + on_run_cv_roi_pipe_finished(img_64: str): void
+        + on_run_cv_roi_pipe_error(): void
         + get_roi_img(): str
     }
 

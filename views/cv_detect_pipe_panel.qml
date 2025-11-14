@@ -73,7 +73,7 @@ RowLayout{
                         text: "Start CV"
 
                         onClicked: {
-                            backend.run_cv()
+                            backend.run_cv_mob_detect_pipe()
                         }
                     }
 
