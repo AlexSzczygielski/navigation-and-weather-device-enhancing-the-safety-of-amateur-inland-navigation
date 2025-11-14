@@ -15,6 +15,7 @@ Row {
     property color notReadyColor: "grey"
     property string readyIcon: "✅"
     property string notReadyIcon: "❌"
+    property int fontSize: 14
 
     Text {
         id: statusText
@@ -22,6 +23,6 @@ Row {
                            : (root.notReadyIcon + " " + root.notReadyText)
 
         color: root.isReady ? root.readyColor : root.notReadyColor
-        font.pixelSize: 14
+        font.pixelSize: root.fontSize
     }
 }

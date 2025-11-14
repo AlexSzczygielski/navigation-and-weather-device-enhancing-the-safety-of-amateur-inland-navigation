@@ -76,7 +76,7 @@ ApplicationWindow {
         //Right Panel
         ColumnLayout{
             Layout.fillHeight: true
-            Layout.preferredWidth: 100
+            Layout.preferredWidth: 80
             spacing: 16
             //Left Icons Bar
 

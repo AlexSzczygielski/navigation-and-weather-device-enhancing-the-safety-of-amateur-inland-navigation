@@ -14,40 +14,86 @@ RowLayout{
     ColumnLayout{
         Layout.fillWidth: true
         Layout.fillHeight: true
-        spacing: 20
+        spacing: 1
         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
-        //Time and Date
         ColumnLayout {
             spacing: 2
             Layout.alignment: Qt.AlignHCenter
 
-            Button {
-                id: cv_roi
-                text: "Create ROI"
+            Rectangle { 
+                color: "transparent"
+                border.color: "#00bfa5"
+                implicitWidth: 170
+                border.width: 3
+                Layout.fillHeight: true 
 
-                onClicked: {
-                    backend.run_cv()
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 6
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+                    Item {Layout.preferredHeight: 40}
+                    StatusIndicator {
+                        id: maskStatus
+                        readyText: "Mask loaded"
+                        notReadyText: "Mask not loaded"
+                        notReadyIcon: ""
+                    }
+
+                    Item {Layout.preferredHeight: 20}
+                    StatusIndicator {
+                        id: cvSysStatus
+                        readyText: "CV system ready"
+                        notReadyText: "CV system not ready"
+                        notReadyIcon: "🚫"
+                    }
+
+                    Item {Layout.preferredHeight: 20}
+                    StatusIndicator {
+                        id: detectedPeopleStatus
+                        readyText: "Detected People: "
+                        notReadyText: "Detected People: 0"
+                        notReadyIcon: ""
+                        readyIcon: ""
+                    }
+
+                    Item {Layout.preferredHeight: 20}
+                    StatusIndicator {
+                        id: mobAlert
+                        readyText: "Man Overboard!"
+                        notReadyText: "No MOB Alert"
+                        notReadyIcon: "💤"
+                        readyIcon: "🚨"
+                    }
+                    Item {Layout.fillHeight: true}
                 }
             }
+        }
+    }
 
-            StatusIndicator {
-                id: maskStatus
-                readyText: "Mask loaded"
-                notReadyText: "Mask not loaded"
-                notReadyIcon: ""
-            }
+    ColumnLayout {
+        spacing: 2
+        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+        StatusIndicator {
+            id: cvInputIndicator
+            readyText: "CV Input: "
+            notReadyText: "No CV Input"
+            notReadyIcon: "💤"
+            readyIcon: ""
+            fontSize: 40
         }
 
         Image {
-            id: cv_roi_photo
+            id: cv_frame
             Layout.topMargin: 30
             //source: "qrc:/assets/model.png"
             source: ""
             fillMode: Image.PreserveAspectFit
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 700
-            Layout.preferredHeight: 400
+            Layout.alignment: Qt.AlignHCenter 
+            Layout.maximumWidth: 550
+            Layout.maximumHeight: 400
         }
     }
 
@@ -55,7 +101,7 @@ RowLayout{
     Connections {
         target: backend
         function onImageUpdated(base_64_str){
-            cv_roi_photo.source = "data:image/jpg;base64," + base_64_str
+            cv_frame.source = "data:image/jpg;base64," + base_64_str
             maskStatus.isReady = true
         }
     }
@@ -63,8 +109,9 @@ RowLayout{
     Component.onCompleted: {
         var img = backend.get_roi_img()
         if (img) {
-            cv_roi_photo.source = "data:image/jpg;base64," + img
+            cv_frame.source = "data:image/jpg;base64," + img
             maskStatus.isReady = true
+            cvInputIndicator.isReady = true
         }
     }
 }
