@@ -66,6 +66,26 @@ RowLayout{
                         notReadyIcon: "💤"
                         readyIcon: "🚨"
                     }
+
+                    Item {Layout.preferredHeight: 20}
+                    Button {
+                        id: cvPipeStart
+                        text: "Start CV"
+
+                        onClicked: {
+                            backend.run_cv()
+                        }
+                    }
+
+                    Item {Layout.preferredHeight: 20}
+                    Button {
+                        id: cvPipeStop
+                        text: "Stop CV"
+
+                        onClicked: {
+                            backend.run_cv()
+                        }
+                    }
                     Item {Layout.fillHeight: true}
                 }
             }
