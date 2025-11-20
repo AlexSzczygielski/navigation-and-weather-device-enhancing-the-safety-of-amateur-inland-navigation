@@ -15,10 +15,10 @@ class Backend(QObject):
         super().__init__()
         self._model_path = model_path
         self._worker = None
-        self._roi_img_base_64 = None
+        self._roi_img_base_64 = None #required for showing loaded mask
         
     ### ROI CREATION PIPE ###
-    imageUpdated = pyqtSignal(str)
+    roiImageUpdated = pyqtSignal(str)
 
     @pyqtSlot()
     def run_cv_roi_pipe(self):
@@ -40,7 +40,7 @@ class Backend(QObject):
 
     def _on_run_cv_roi_pipe_finished(self, img_64):
         self._roi_img_base_64 = img_64
-        self.imageUpdated.emit(self._roi_img_base_64)
+        self.roiImageUpdated.emit(self._roi_img_base_64)
         self._worker = None #Release the reference
 
     def _on_run_cv_roi_pipe_error(self):
@@ -55,7 +55,7 @@ class Backend(QObject):
 
 
     ### MOB CV DETECTION PIPE ###
-    frameUpdated = pyqtSignal(str)        
+    mobFrameUpdated = pyqtSignal(str)    
 
     @pyqtSlot()
     def run_cv_mob_detect_pipe(self):
@@ -69,17 +69,21 @@ class Backend(QObject):
             self._worker = CvWorker(self._model_path,CvDemoStateService(),task) #worker with context
             self._worker.finished.connect(self._on_run_cv_mob_detect_pipe_finished)
             self._worker.error.connect(self._on_run_cv_mob_detect_pipe_error)
-            self._worker.finished.connect(self._worker.deleteLater)
+            #self._worker.finished.connect(self._worker.deleteLater)
             self._worker.start()
         except Exception as e:
             print(f"{self.__class__.__name__}.run_cv_mob_detect_pipe error: {e}")
 
-    def _on_run_cv_mob_detect_pipe_finished(self, img64):
+    def _on_run_cv_mob_detect_pipe_finished(self, img_64):
+        self.mobFrameUpdated.emit(img_64)
         self._worker = None
 
     def _on_run_cv_mob_detect_pipe_error(self):
         pass
-        
+    
+    @pyqtSlot(str)
+    def onMobFrameUpdated(self,frame_64):
+        self.mobFrameUpdated(frame_64)
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)

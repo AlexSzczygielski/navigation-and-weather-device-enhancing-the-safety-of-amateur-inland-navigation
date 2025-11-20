@@ -12,6 +12,8 @@ class VideoProcessor():
     ### ROI CV COUNT PIPELINE ###
 
     def run_video_inference(self):
+        #This method uses yield
+        #This is then a generator method
         cap = cv2.VideoCapture(self._video_path)
 
         #Perform checks
@@ -32,6 +34,8 @@ class VideoProcessor():
 
             # Visualize
             annotated_frame = results[0].plot()
+
+            yield annotated_frame #return each frame without ending the method
 
         cap.release()
         #out.release()

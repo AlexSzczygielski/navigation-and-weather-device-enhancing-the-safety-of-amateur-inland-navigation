@@ -39,11 +39,15 @@ class CvWorker(QThread):
                 
 
                 case "mob_detection_pipe":
-                    frame = cv.run_mob_detect_pipe_process()
+                    generator = cv.run_mob_detect_pipe_process()
 
-                    #Encoding image to base_64
-                    img_base64 = ImageEncoder.to_base64(frame)
-                    self.finished.emit(img_base64)
+                    while True:
+                        try:
+                            frame = next(generator)
+                            frame_base64 = ImageEncoder.to_base64(frame)
+                            self.finished.emit(frame_base64)
+                        except StopIteration:
+                            break
                 
                 case _:
                     raise ValueError(f"Unknown task: {self._task}")

@@ -41,4 +41,4 @@ class CvService():
         vid_source = self.get_vid_source()
         v_processor = VideoProcessor(self._model_path, vid_source)
 
-        v_processor.run_video_inference()
+        return v_processor.run_video_inference()

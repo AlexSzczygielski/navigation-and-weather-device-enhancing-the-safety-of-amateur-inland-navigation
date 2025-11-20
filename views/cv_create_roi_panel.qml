@@ -55,7 +55,7 @@ RowLayout{
     // ROI Creation update
     Connections {
         target: backend
-        function onImageUpdated(base_64_str){
+        function onRoiImageUpdated(base_64_str){
             cv_roi_photo.source = "data:image/jpg;base64," + base_64_str
             maskStatus.isReady = true
         }

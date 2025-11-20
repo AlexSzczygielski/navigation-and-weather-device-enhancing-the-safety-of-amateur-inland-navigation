@@ -120,18 +120,9 @@ RowLayout{
     // ROI Creation update
     Connections {
         target: backend
-        function onImageUpdated(base_64_str){
+        function onMobFrameUpdated(base_64_str){
             cv_frame.source = "data:image/jpg;base64," + base_64_str
             maskStatus.isReady = true
-        }
-    }
-
-    Component.onCompleted: {
-        var img = backend.get_roi_img()
-        if (img) {
-            cv_frame.source = "data:image/jpg;base64," + img
-            maskStatus.isReady = true
-            cvInputIndicator.isReady = true
         }
     }
 }
