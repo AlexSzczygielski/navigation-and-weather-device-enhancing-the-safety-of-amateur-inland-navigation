@@ -67,23 +67,23 @@ class Backend(QObject):
             
             task = "mob_detection_pipe"
             self._worker = CvWorker(self._model_path,CvDemoStateService(),task) #worker with context
+            self._worker.frameUpdate.connect(self._onMobFrameUpdated)
             self._worker.finished.connect(self._on_run_cv_mob_detect_pipe_finished)
             self._worker.error.connect(self._on_run_cv_mob_detect_pipe_error)
-            #self._worker.finished.connect(self._worker.deleteLater)
+            self._worker.finished.connect(self._worker.deleteLater)
             self._worker.start()
         except Exception as e:
             print(f"{self.__class__.__name__}.run_cv_mob_detect_pipe error: {e}")
 
-    def _on_run_cv_mob_detect_pipe_finished(self, img_64):
-        self.mobFrameUpdated.emit(img_64)
+    def _on_run_cv_mob_detect_pipe_finished(self):
         self._worker = None
 
     def _on_run_cv_mob_detect_pipe_error(self):
         pass
     
     @pyqtSlot(str)
-    def onMobFrameUpdated(self,frame_64):
-        self.mobFrameUpdated(frame_64)
+    def _onMobFrameUpdated(self,frame_64):
+        self.mobFrameUpdated.emit(frame_64)
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)

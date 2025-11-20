@@ -21,6 +21,7 @@ class CvWorker(QThread):
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
+    frameUpdate = pyqtSignal(str)
 
     def run(self):
         #main method, this is entered after backend calls worker
@@ -45,8 +46,9 @@ class CvWorker(QThread):
                         try:
                             frame = next(generator)
                             frame_base64 = ImageEncoder.to_base64(frame)
-                            self.finished.emit(frame_base64)
+                            self.frameUpdate.emit(frame_base64)
                         except StopIteration:
+                            self.finished.emit("")
                             break
                 
                 case _:
