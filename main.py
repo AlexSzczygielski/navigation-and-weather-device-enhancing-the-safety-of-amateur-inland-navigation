@@ -29,7 +29,8 @@ class Backend(QObject):
                 print("Previous worker still running")
                 return
 
-            self._worker = CvWorker(self._model_path,CvDemoStateService()) #worker with context
+            task = "roi_creation"
+            self._worker = CvWorker(self._model_path,CvDemoStateService(), task) #worker with context
             self._worker.finished.connect(self._on_run_cv_roi_pipe_finished)
             self._worker.error.connect(self._on_run_cv_roi_pipe_error)
             self._worker.finished.connect(self._worker.deleteLater)
@@ -52,8 +53,8 @@ class Backend(QObject):
             return None
         return self._roi_img_base_64
 
-    ### MOB CV DETECTION PIPE ###
 
+    ### MOB CV DETECTION PIPE ###
     frameUpdated = pyqtSignal(str)        
 
     @pyqtSlot()
@@ -64,7 +65,8 @@ class Backend(QObject):
                 print("Previous worker still running")
                 return
             
-            self._worker = CvWorker(self._model_path,CvDemoStateService()) #worker with context
+            task = "mob_detection_pipe"
+            self._worker = CvWorker(self._model_path,CvDemoStateService(),task) #worker with context
             self._worker.finished.connect(self._on_run_cv_mob_detect_pipe_finished)
             self._worker.error.connect(self._on_run_cv_mob_detect_pipe_error)
             self._worker.finished.connect(self._worker.deleteLater)

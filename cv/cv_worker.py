@@ -1,32 +1,51 @@
 #cv_worker.py
-#Class responsible for managing QThreading for cv_service.py logic
+# QThread inherited worker responsible for running Computer Vision tasks in background threads.
+# input:
+# _model_path: path to the YOLO model
+# _service_state: CvState pattern defines the input for services
+# _task: string defining which task to perform
+# Worker is responsible for starting the CvService, which executes given task without blocking the main UI loop.
+
 from PyQt5.QtCore import QThread, pyqtSignal
 import os
-import cv2
-import base64
 from cv.cv_service import CvService
+from cv.image_encoder import ImageEncoder
 
 
 class CvWorker(QThread):
-    def __init__(self, model_path, service_state):
+    def __init__(self, model_path, service_state ,task):
         super().__init__()
         self._model_path = model_path
         self._service_state = service_state #State for Service class started from this thread
+        self._task = task #Determines the task to be started
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
-    
+
     def run(self):
+        #main method, this is entered after backend calls worker
         try:
             cv = CvService(self._model_path, self._service_state)
-            img = cv.run_roi_creation_pipeline()
-            #img_path = os.path.abspath("output_mask.jpg")
-            #self.finished.emit(img_path)
 
-            #Encoding image to base_64
-            _, buffer = cv2.imencode('.jpg', img)
-            img_base64 = base64.b64encode(buffer).decode('utf-8')
-            self.finished.emit(img_base64)
+            if self._task == "roi_creation":
+                img = cv.run_roi_creation_pipeline()
+                #img_path = os.path.abspath("output_mask.jpg")
+                #self.finished.emit(img_path)
+
+                #Encoding image to base_64
+                img_base64 = ImageEncoder.to_base64(img)
+                self.finished.emit(img_base64)
+            
+
+            if self._task == "mob_detection_pipe":
+                frame = cv.run_video_detection_pipeline()
+
+                #Encoding image to base_64
+                img_base64 = ImageEncoder.to_base64(frame)
+                self.finished.emit(img_base64)
+            
+            else:
+                raise ValueError(f"Unknown task: {self._task}")
             
         except Exception as e:
             print(f"run_cv_roi_pipe_worker failed: {e}")
