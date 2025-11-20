@@ -41,6 +41,6 @@ class CvService():
     def setup_vid_stream(self):
         return self._state.setup_vid_stream()
 
-    def run_video_detection_pipeline(self):
+    def run_mob_detection_pipeline(self):
         cap = self.setup_vid_stream()
         self._video_processor.run_video_inference(cap)

@@ -51,7 +51,7 @@ classDiagram
         + run_roi_creation_pipeline(): ndarray
         + fetch_frame(cap): (bool, ndarray)
         + setup_vid_stream(): VideoCapture
-        + run_video_detection_pipeline(): void
+        + run_mob_detection_pipeline(): void
     }
 
     class CvState {

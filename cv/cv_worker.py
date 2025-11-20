@@ -27,25 +27,26 @@ class CvWorker(QThread):
         try:
             cv = CvService(self._model_path, self._service_state)
 
-            if self._task == "roi_creation":
-                img = cv.run_roi_creation_pipeline()
-                #img_path = os.path.abspath("output_mask.jpg")
-                #self.finished.emit(img_path)
+            match self._task:
+                case "roi_creation":
+                    img = cv.run_roi_creation_pipeline()
+                    #img_path = os.path.abspath("output_mask.jpg")
+                    #self.finished.emit(img_path)
 
-                #Encoding image to base_64
-                img_base64 = ImageEncoder.to_base64(img)
-                self.finished.emit(img_base64)
-            
+                    #Encoding image to base_64
+                    img_base64 = ImageEncoder.to_base64(img)
+                    self.finished.emit(img_base64)
+                
 
-            if self._task == "mob_detection_pipe":
-                frame = cv.run_video_detection_pipeline()
+                case "mob_detection_pipe":
+                    frame = cv.run_mob_detection_pipeline()
 
-                #Encoding image to base_64
-                img_base64 = ImageEncoder.to_base64(frame)
-                self.finished.emit(img_base64)
-            
-            else:
-                raise ValueError(f"Unknown task: {self._task}")
+                    #Encoding image to base_64
+                    img_base64 = ImageEncoder.to_base64(frame)
+                    self.finished.emit(img_base64)
+                
+                case _:
+                    raise ValueError(f"Unknown task: {self._task}")
             
         except Exception as e:
-            print(f"run_cv_roi_pipe_worker failed: {e}")
+            print(f"CvWorker failed: {e}")
