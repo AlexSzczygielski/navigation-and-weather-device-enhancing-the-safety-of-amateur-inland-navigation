@@ -17,7 +17,6 @@ class CvService():
         self._image_path = None
         self._mask_coords = None
         self._roi_processor = RoiProcessor(model_path)
-        self._video_processor = VideoProcessor(model_path)
         self.transition_to(state)
     
     def transition_to(self, state: CvState):
@@ -31,16 +30,15 @@ class CvService():
 
     def run_roi_creation_pipeline(self):
         img = self.fetch_image() # Important! Fetch image only once (avoids bugs with camera movement)
-        roi_mask = self._roi_processor._mask_exporter(img) # !! MASK COORDS SHOULD BE STORED ALSO IN MEMORY! (TODO!)
+        roi_mask = self._roi_processor._mask_exporter(img) # !! MASK COORDS SHOULD BE STORED ALSO IN MEMORY! (TODO Issue #24!)
         return self._roi_processor._mask_painter(img,roi_mask) #image
     
-    ### ROI CV COUNT PIPELINE ###
-    def fetch_frame(self, cap):
-        return self._state.fetch_frame(cap)
-    
-    def setup_vid_stream(self):
-        return self._state.setup_vid_stream()
+    ### ROI CV COUNT PIPELINE ###   
+    def get_vid_source(self):
+        return self._state.get_vid_source()
 
-    def run_mob_detection_pipeline(self):
-        cap = self.setup_vid_stream()
-        self._video_processor.run_video_inference(cap)
+    def run_mob_detect_pipe_process(self):
+        vid_source = self.get_vid_source()
+        v_processor = VideoProcessor(self._model_path, vid_source)
+
+        v_processor.run_video_inference()

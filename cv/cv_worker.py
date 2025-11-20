@@ -39,7 +39,7 @@ class CvWorker(QThread):
                 
 
                 case "mob_detection_pipe":
-                    frame = cv.run_mob_detection_pipeline()
+                    frame = cv.run_mob_detect_pipe_process()
 
                     #Encoding image to base_64
                     img_base64 = ImageEncoder.to_base64(frame)

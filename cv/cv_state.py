@@ -16,6 +16,10 @@ class CvState(ABC):
         self._context = context
 
     @abstractmethod
+    def get_vid_source(self) -> str:
+        pass
+    
+    @abstractmethod
     def setup_vid_stream(self) -> None:
         pass
     

@@ -5,32 +5,26 @@ import cv2
 from ultralytics import YOLO
 
 class VideoProcessor():
-    def __init__(self,model_path):
+    def __init__(self,model_path, video_path):
         self._model = YOLO(model_path)
+        self._video_path = video_path
     
     ### ROI CV COUNT PIPELINE ###
 
-    def run_video_inference(self, cap):
-        if cap is None:
-            raise TypeError("cap (capture cv2 object) is None!")
+    def run_video_inference(self):
+        cap = cv2.VideoCapture(self._video_path)
+
+        #Perform checks
+        if not cap.isOpened():
+            raise IOError(f"Cannot open video input: {self._video_path}")
         if self._model is None:
             raise TypeError("_model is None!")
-
-        # Get video properties
-        #width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        #height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        #fps    = cap.get(cv2.CAP_PROP_FPS)
-
-        # Define output video writer
-        #out = cv2.VideoWriter("motor1Out.mp4", cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
-
-        ret, frame = self.fetch_frame(cap)
-        if frame is None:
-            raise IOError("Cannot access the frame")
             
-        while(True):
-            ret, frame = self.fetch_frame(cap)
+        while True:
+            ret, frame = cap.read()
+            print("it works")
             if not ret: #End of the clip
+                print("end")
                 break
             
             #Perform inference
@@ -39,7 +33,5 @@ class VideoProcessor():
             # Visualize
             annotated_frame = results[0].plot()
 
-            # Write to output
-            #out.write(annotated_frame)
         cap.release()
         #out.release()
