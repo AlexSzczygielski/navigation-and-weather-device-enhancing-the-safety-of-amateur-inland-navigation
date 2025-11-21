@@ -38,4 +38,3 @@ class VideoProcessor():
             yield annotated_frame #return each frame without ending the method
 
         cap.release()
-        #out.release()

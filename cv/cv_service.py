@@ -2,13 +2,10 @@
 #This is a class file responsible for handling/coordinating operations connected with
 #Computer Vision modules
 #A context class in state pattern
-from ultralytics import YOLO
-import numpy as np
-import cv2
-from abc import ABC,abstractmethod
 from cv.cv_state import CvState
 from cv.roi_processor import RoiProcessor
 from cv.video_processor import VideoProcessor
+from multiprocessing import Process, Queue
 
 class CvService():
     _state = None
@@ -37,8 +34,15 @@ class CvService():
     def get_vid_source(self):
         return self._state.get_vid_source()
 
+    def _start_video_process(self, vid_source, queue: Queue):
+        v_processor = VideoProcessor(self._model_path, vid_source)
+        for frame in v_processor.run_video_inference():
+            queue.put(frame) #Sending frames
+        queue.put(None) #end of frames
+
     def run_mob_detect_pipe_process(self):
         vid_source = self.get_vid_source()
-        v_processor = VideoProcessor(self._model_path, vid_source)
-
-        return v_processor.run_video_inference()
+        queue = Queue()
+        p = Process(target = self._start_video_process, args=(vid_source, queue))
+        p.start()
+        return queue

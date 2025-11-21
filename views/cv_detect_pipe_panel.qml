@@ -122,6 +122,12 @@ RowLayout{
         target: backend
         function onMobFrameUpdated(base_64_str){
             cv_frame.source = "data:image/jpg;base64," + base_64_str
+        }
+    }
+
+    Component.onCompleted: {
+        var img = backend.get_roi_img()
+        if (img) {
             maskStatus.isReady = true
         }
     }
