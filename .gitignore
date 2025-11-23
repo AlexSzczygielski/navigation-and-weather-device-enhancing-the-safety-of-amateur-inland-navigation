@@ -225,3 +225,6 @@ qml_rc.py
 
 #Ignore temp files
 cv/temp/
+
+#Ignore .pt weights for now 
+*.pt
