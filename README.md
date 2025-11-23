@@ -31,6 +31,7 @@ The device is based on RaspberryPi single board computer and utilizes several ot
 
 ## Documentation:
 ### [UML Class Diagram](UML/class_diagram.md)
+### [State Diagrams](UML/state_diagrams.md)
 
 ---
 
