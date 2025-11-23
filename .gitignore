@@ -211,22 +211,9 @@ __marimo__/
 #Ignore DS_Store
 .DS_Store
 
-#Ignore .jpg pics
-*.jpg
-*.jpeg
-
 #Ignore auto generated files/directories
 qml_rc.py
 .vscode/
 
-#Ignore movie clips
-*.MOV
-*.mov
-*.mp4
-*.mpeg4
-
 #Ignore temp files
 cv/temp/
-
-#Ignore .pt weights for now 
-*.pt
