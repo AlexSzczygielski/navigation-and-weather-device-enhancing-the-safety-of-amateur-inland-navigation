@@ -3,17 +3,18 @@
 from cv.cv_state import CvState
 from cv.cv_service import CvService
 import cv2
+import config
 
 class CvDemoStateService(CvState):
     def get_vid_source(self):
-        return "cv/demonstration_assets/motor1.MOV"
+        return config.DEMO_ASSETS["video"]
 
     def setup_vid_stream(self):
-        cap = cv2.VideoCapture("cv/demonstration_assets/motor1.MOV")
+        cap = cv2.VideoCapture(self.get_vid_source())
         return cap
 
     def fetch_image(self):
-        self.context._image_path = 'cv/demonstration_assets/IMG_6003.jpg'
+        self.context._image_path = config.DEMO_ASSETS["deck_photo"]
         return self.context._image_path
 
     def fetch_frame(self, cap):

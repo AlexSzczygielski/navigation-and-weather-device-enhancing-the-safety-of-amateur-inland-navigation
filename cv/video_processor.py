@@ -13,7 +13,7 @@ class VideoProcessor():
 
     def run_video_inference(self):
         #This method uses yield
-        #This is then a generator method
+        #This is a generator method
         cap = cv2.VideoCapture(self._video_path)
 
         #Perform checks
@@ -30,7 +30,7 @@ class VideoProcessor():
                 break
             
             #Perform inference
-            results = self._model(frame)
+            results = self._model(frame, classes=[0])
 
             # Visualize
             annotated_frame = results[0].plot()

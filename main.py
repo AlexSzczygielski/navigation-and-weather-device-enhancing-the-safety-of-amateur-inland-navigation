@@ -9,11 +9,13 @@ import qml_rc
 from cv.cv_worker import CvWorker
 from cv.cv_state import CvState
 from cv.cv_demo_state_service import CvDemoStateService
+import config
 
 class Backend(QObject):
-    def __init__(self,model_path):
+    def __init__(self,roi_img_model_path,vid_model_path):
         super().__init__()
-        self._model_path = model_path
+        self._roi_img_model_path = roi_img_model_path
+        self._vid_model_path = vid_model_path
         self._worker = None
         self._roi_img_base_64 = None #required for showing loaded mask
         
@@ -30,7 +32,7 @@ class Backend(QObject):
                 return
 
             task = "roi_creation"
-            self._worker = CvWorker(self._model_path,CvDemoStateService(), task) #worker with context
+            self._worker = CvWorker(self._roi_img_model_path,CvDemoStateService(), task) #worker with context
             self._worker.finished.connect(self._on_run_cv_roi_pipe_finished)
             self._worker.error.connect(self._on_run_cv_roi_pipe_error)
             self._worker.finished.connect(self._worker.deleteLater)
@@ -66,7 +68,7 @@ class Backend(QObject):
                 return
             
             task = "mob_detection_pipe"
-            self._worker = CvWorker(self._model_path,CvDemoStateService(),task) #worker with context
+            self._worker = CvWorker(self._vid_model_path,CvDemoStateService(),task) #worker with context
             self._worker.frameUpdate.connect(self._onMobFrameUpdated)
             self._worker.finished.connect(self._on_run_cv_mob_detect_pipe_finished)
             self._worker.error.connect(self._on_run_cv_mob_detect_pipe_error)
@@ -90,8 +92,8 @@ if __name__ == "__main__":
     view = QQmlApplicationEngine()
     view.addImportPath(sys.path[0])
     
-    _model_path = 'cv/first_model_omega_boat_deck_weights.pt'
-    backend = Backend(_model_path)
+    backend = Backend(roi_img_model_path= config.MODEL_WEIGHTS["first_deck_seg"],
+                      vid_model_path= config.MODEL_WEIGHTS["yolo11"])
     view.rootContext().setContextProperty("backend",backend)
 
     #view.load("App/views/home.qml")

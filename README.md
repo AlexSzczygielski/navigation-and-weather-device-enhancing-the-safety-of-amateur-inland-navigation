@@ -42,3 +42,10 @@ The device consists of:
 - [7-inch touchscreen](https://www.waveshare.com/wiki/7inch_HDMI_LCD_%28C%29)
 - [Camera](https://www.waveshare.com/wiki/RPi_Camera_%28G%29)
 - Custom 3D printed enclosure
+
+---
+<div align="center">
+<img width = 20%  src= "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Znak_graficzny_AGH.svg/2048px-Znak_graficzny_AGH.svg.png">
+<img width = 20%  src= "https://iet.agh.edu.pl/wp-content/uploads/2021/05/Logo-WIET-2021.png">
+</div>
+
