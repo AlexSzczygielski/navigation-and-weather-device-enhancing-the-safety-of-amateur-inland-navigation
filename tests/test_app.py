@@ -7,11 +7,13 @@ import cv2
 from unittest.mock import patch
 from main import create_app
 from main import Backend
-import cv.roi_processor
 
 from unittest.mock import patch
 
 class DummyRoiProcessor:
+    def __init__(self, model_path):
+        self._model_path = ""
+
     def _mask_exporter(self, img):
         # returns dummy mask coords
         return [[0,0],[1,1]]
@@ -24,7 +26,8 @@ class DummyRoiProcessor:
 @pytest.fixture
 def mock_roi_processor(monkeypatch):
     # Replace RoiProcessor with it's dummy testing version
-    monkeypatch.setattr(cv.roi_processor, "cv.RoiProcessor" , DummyRoiProcessor)
+    from cv import roi_processor
+    monkeypatch.setattr(roi_processor, "RoiProcessor" , DummyRoiProcessor)
 
 
 
