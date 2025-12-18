@@ -26,5 +26,5 @@
 5. Installation
 - To run this application on RaspberryPi **it is necessary to expose the python virtual enviroment to system site packages (`python3 -m venv --system-site-packages venv`)**.
 
-> For the time of the project creation there is an issue with PyQt5 packages - their pip source is broken and they have to installed globally via sudo apt install. In this kind of setup venv has to be exposed to system packages in order to see PyQt5 modules and import them.
+> For the time of the project creation there is an issue with PyQt5 packages - their pip source is broken and they have to be installed globally via sudo apt install. In this kind of setup venv has to be exposed to system packages in order to see PyQt5 modules and import them.
     

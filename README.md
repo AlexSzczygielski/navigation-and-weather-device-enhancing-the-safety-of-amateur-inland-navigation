@@ -34,7 +34,7 @@ The device is based on RaspberryPi single board computer and utilizes several ot
 
 ## Usage
 
-### For RaspberryPi Usage
+### For RaspberryPi
 1. Prepare python and it's virtual enviroment with required packages by running `setup_env_rpi.sh`.
 ```bash
 chmod +x setup_env_rpi.sh
