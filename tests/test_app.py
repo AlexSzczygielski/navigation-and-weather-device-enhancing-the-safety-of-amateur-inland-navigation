@@ -1,7 +1,7 @@
 # app_tests.py
 
 import pytest
-from factories.create_backend import create_backend
+from app.factories.create_backend import create_backend
 
 def test_cv_worker(qtbot):
     # Create Backend

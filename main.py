@@ -5,7 +5,7 @@ from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtCore import QUrl
 
 import qml_rc # DON'T DELETE
-from factories.create_backend import create_backend
+from app.factories.create_backend import create_backend
 
 def create_app():
     # Composition function - it wires together all components required to start an app

@@ -68,6 +68,28 @@ pip install -r requirements.txt
 
 ---
 
+## Project Structure
+```bash
+navigation-and-weather-device-enhancing-the-safety-of-amateur-inland-navigation % tree -L1
+.
+├── app/ # Python application code
+├── assets/ # Static GUI resources
+├── components/ # Reusable QML components
+├── cv/ # CV pipelines and logic
+├── data/ # Demo datasets/data
+├── docs/ # Documentation
+├── models/ # ML weights
+├── tests/ # Unit tests
+├── views/ # QML GUI
+├── main.py # Appliaction entry point
+├── main.qml # Main QML UI file
+├── qml.qrc # QML Resources
+├── config.py # Global project configuration
+└── setup_env_rpi.sh # Setup script for RPi
+```
+
+---
+
 ## Documentation:
 ### [Project Requirements](docs/REQUIREMENTS.md)
 ### [UML Class Diagram](docs/UML/class_diagram.md)

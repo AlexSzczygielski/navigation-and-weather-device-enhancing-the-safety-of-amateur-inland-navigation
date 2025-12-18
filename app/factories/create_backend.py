@@ -1,6 +1,6 @@
 # create_backend.py
 from app.backend import Backend
-import config
+import config as config
 
 def create_backend():
     return Backend(
