@@ -32,9 +32,46 @@ The device is based on RaspberryPi single board computer and utilizes several ot
 
 ---
 
+## Usage
+
+### For RaspberryPi Usage
+1. Prepare python and it's virtual enviroment with required packages by running `setup_env_rpi.sh`.
+```bash
+chmod +x setup_env_rpi.sh
+./setup_env_rpi.sh
+```
+> Please watch installation closely - usually one package does not install on the first run and requires re-running this script once again. *Installation might take up to few minutes*. For further explanation please refer to the [requirements installation section](docs/REQUIREMENTS.md#installation)
+2. At first run use:
+```bash
+chmod +x compile.sh
+./compile.sh
+ ```
+ > This script turns on the `venv` and prepares a `.qrc` file necessary to run the QML GUI. Though not necessary `./compile.sh` can also be run at every start of the application and should provide accurate operation.
+
+ 3. Every next run use:
+ ```bash
+source vevn/bin/activate
+python main.py
+ ```
+
+### For Local Development
+1. Prepare and activate a python virtual enviroment
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+> Note: *Activation command might vary depending on the operating system*
+2. Install python dependencies (**ensure you are in venv**)
+```bash
+pip install -r requirements.txt 
+```
+
+---
+
 ## Documentation:
-### [UML Class Diagram](UML/class_diagram.md)
-### [State Diagrams](STATEDIAGRAMS.md)
+### [Project Requirements](docs/REQUIREMENTS.md)
+### [UML Class Diagram](docs/UML/class_diagram.md)
+### [State Diagrams](docs/STATEDIAGRAMS.md)
 
 ---
 
