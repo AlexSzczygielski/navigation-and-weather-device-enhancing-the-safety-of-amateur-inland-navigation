@@ -87,8 +87,9 @@ class Backend(QObject):
     def _onMobFrameUpdated(self,frame_64):
         self.mobFrameUpdated.emit(frame_64)
 
-if __name__ == "__main__":
-    app = QGuiApplication(sys.argv)
+
+def create_app():
+    #app = QGuiApplication(sys.argv)
     view = QQmlApplicationEngine()
     view.addImportPath(sys.path[0])
     
@@ -98,7 +99,18 @@ if __name__ == "__main__":
 
     #view.load("App/views/home.qml")
     view.load(QUrl("qrc:main.qml"))
+
+    #return app,view, backend
+    return view, backend
+
+
+if __name__ == "__main__":
+    # Create app and run it
+    app = QGuiApplication(sys.argv)
+    #app, view, backend = create_app()
+    app, view, backend = create_app()
     ex = app.exec()
 
+    # After Qt app finish
     del view
     sys.exit(ex)
