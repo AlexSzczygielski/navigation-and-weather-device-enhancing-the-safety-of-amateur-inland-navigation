@@ -9,9 +9,9 @@ sudo apt update && sudo apt upgrade -y
 echo "Installing Python and pip"
 sudo apt install -y python3 python3-pip
 
-echo "Creating and activating python virtual enviroment (yolo)"
-python3 -m venv --system-site-packages yolo
-source yolo/bin/activate
+echo "Creating and activating python virtual enviroment (with exposure to system-site-packages)"
+python3 -m venv --system-site-packages venv
+source venv/bin/activate
 
 echo "Updating system"
 sudo apt update -y
@@ -26,7 +26,6 @@ echo "Install Ultralytics (YOLO) package"
 pip install ultralytics
 
 echo "Installing GUI dependencies"
-sudo apt install 
 
 echo "Installing PyQt5 and QML"
 sudo apt install -y python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtmultimedia pyqt5-dev-tools
