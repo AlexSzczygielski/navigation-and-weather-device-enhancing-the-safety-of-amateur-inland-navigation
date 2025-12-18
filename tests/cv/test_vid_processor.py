@@ -6,8 +6,10 @@ import pytest
 from cv.video_processor import VideoProcessor
 import config
 
+dummy_mask = [[0,0],[1,1]]
+
 def test_run_video_inference():
-    processor = VideoProcessor(config.MODEL_WEIGHTS["yolo11"], config.DEMO_ASSETS["video"])
+    processor = VideoProcessor(config.MODEL_WEIGHTS["yolo11"], config.DEMO_ASSETS["video"], dummy_mask)
 
     try:
         generator = processor.run_video_inference()

@@ -1,13 +1,18 @@
 #video_processor.py
-#This class is responsible for handling logic with
+# This class is responsible for handling logic with
+# model_path - weights.pt
+# video_path - either filepath to the demonstration asset or camera index 
+# (both work fine with cv2.VideoCapture())
 # **MOB DETECTION CV PIPELINE**
+
 import cv2
 from ultralytics import YOLO
 
 class VideoProcessor():
-    def __init__(self,model_path, video_path):
+    def __init__(self,model_path, video_path, roi_mask):
         self._model = YOLO(model_path)
         self._video_path = video_path
+        self._roi_mask = roi_mask
     
     ### ROI CV COUNT PIPELINE ###
 
@@ -30,7 +35,7 @@ class VideoProcessor():
                 break
             
             #Perform inference
-            results = self._model(frame, classes=[0])
+            results = self._model(frame, classes=[0]) #Detect only people class
 
             # Visualize
             annotated_frame = results[0].plot()

@@ -27,15 +27,15 @@ class CvService():
 
     def run_roi_creation_pipeline(self):
         img = self.fetch_image() # Important! Fetch image only once (avoids bugs with camera movement)
-        roi_mask = self._roi_processor._mask_exporter(img) # !! MASK COORDS SHOULD BE STORED ALSO IN MEMORY! (TODO Issue #24!)
-        return self._roi_processor._mask_painter(img,roi_mask) #image
+        self._mask_coords = self._roi_processor._mask_exporter(img) # !! MASK COORDS SHOULD BE STORED ALSO IN MEMORY! (TODO Issue #24!)
+        return self._roi_processor._mask_painter(img,self._mask_coords) #image
     
     ### ROI CV COUNT PIPELINE ###   
     def get_vid_source(self):
         return self._state.get_vid_source()
 
-    def _start_video_process(self, vid_source, queue: Queue):
-        v_processor = VideoProcessor(self._model_path, vid_source)
+    def _start_video_process(self, vid_source, roi_mask, queue: Queue):
+        v_processor = VideoProcessor(self._model_path, vid_source, roi_mask)
         for frame in v_processor.run_video_inference():
             queue.put(frame) #Sending frames
         queue.put(None) #end of frames
@@ -43,6 +43,6 @@ class CvService():
     def run_mob_detect_pipe_process(self):
         vid_source = self.get_vid_source()
         queue = Queue()
-        p = Process(target = self._start_video_process, args=(vid_source, queue))
+        p = Process(target = self._start_video_process, args=(vid_source, self._mask_coords, queue))
         p.start()
         return queue
