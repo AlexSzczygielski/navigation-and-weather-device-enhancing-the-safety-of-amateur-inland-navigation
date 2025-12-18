@@ -1,13 +1,11 @@
 # app_tests.py
 
 import pytest
-from main import Backend
-import config
+from factories.create_backend import create_backend
 
 def test_cv_worker(qtbot):
     # Create Backend
-    backend = Backend(roi_img_model_path= config.MODEL_WEIGHTS["first_deck_seg"],
-                      vid_model_path= config.MODEL_WEIGHTS["yolo11"])
+    backend = create_backend()
 
      # Run the ROI pipeline
     backend.run_cv_roi_pipe()

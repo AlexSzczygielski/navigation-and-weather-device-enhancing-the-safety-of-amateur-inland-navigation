@@ -1,11 +1,11 @@
 #main.py
 import sys
-import os
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine 
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
 
 import qml_rc
+#from factories.create_backend import create_backend
 from cv.cv_worker import CvWorker
 from cv.cv_state import CvState
 from cv.cv_demo_state_service import CvDemoStateService
@@ -89,10 +89,12 @@ class Backend(QObject):
 
 
 def create_app():
+    # Composition function - it wires together all components required to start an app
     #app = QGuiApplication(sys.argv)
     view = QQmlApplicationEngine()
     view.addImportPath(sys.path[0])
     
+    #backend = create_backend()
     backend = Backend(roi_img_model_path= config.MODEL_WEIGHTS["first_deck_seg"],
                       vid_model_path= config.MODEL_WEIGHTS["yolo11"])
     view.rootContext().setContextProperty("backend",backend)
@@ -108,7 +110,7 @@ if __name__ == "__main__":
     # Create app and run it
     app = QGuiApplication(sys.argv)
     #app, view, backend = create_app()
-    app, view, backend = create_app()
+    view, backend = create_app()
     ex = app.exec()
 
     # After Qt app finish
