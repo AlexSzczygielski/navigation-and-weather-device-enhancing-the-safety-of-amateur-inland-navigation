@@ -1,5 +1,5 @@
 # create_backend.py
-from main import Backend
+from app.backend import Backend
 import config
 
 def create_backend():
