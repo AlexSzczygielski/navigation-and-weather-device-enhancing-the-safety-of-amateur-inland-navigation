@@ -7,6 +7,7 @@ import cv2
 from unittest.mock import patch
 from main import create_app
 from main import Backend
+import config
 
 from unittest.mock import patch
 
@@ -32,8 +33,9 @@ def mock_roi_processor(monkeypatch):
 
 
 def test_cv_worker(qtbot):
-    # Create App
-    view, backend = create_app()
+    # Create Backend
+    backend = Backend(roi_img_model_path= config.MODEL_WEIGHTS["first_deck_seg"],
+                      vid_model_path= config.MODEL_WEIGHTS["yolo11"])
 
      # Run the ROI pipeline
     backend.run_cv_roi_pipe()
