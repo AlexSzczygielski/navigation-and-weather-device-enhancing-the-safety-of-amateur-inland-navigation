@@ -6,6 +6,7 @@
 [![PyQt5](https://img.shields.io/badge/GUI_Framework-x?logo=qt&label=PyQt5)](https://pypi.org/project/PyQt5/)
 [![Yolo](https://img.shields.io/badge/Computer_Vision-blue?logo=YOLO&label=YOLOv11)](https://github.com/ultralytics)
 [![Python](https://img.shields.io/badge/Python-Backend-blue?logo=python&logoColor=yellow)](https://www.python.org)
+
 [![Python tests](https://github.com/AlexSzczygielski/navigation-and-weather-device-enhancing-the-safety-of-amateur-inland-navigation/actions/workflows/python-tests.yml/badge.svg)](https://github.com/AlexSzczygielski/navigation-and-weather-device-enhancing-the-safety-of-amateur-inland-navigation/actions/workflows/python-tests.yml)
 
 </div>
