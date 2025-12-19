@@ -212,7 +212,7 @@ __marimo__/
 .DS_Store
 
 #Ignore auto generated files/directories
-#qml_rc.py
+qml_rc.py
 .vscode/
 
 #Ignore temp files
