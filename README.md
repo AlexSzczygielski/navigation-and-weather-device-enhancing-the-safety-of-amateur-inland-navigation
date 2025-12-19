@@ -1,4 +1,4 @@
-# Engineering Thesis
+# Engineering Project
 ## A navigation and weather device enhancing the safety of amateur inland navigation
 
 <div align="center">
@@ -6,6 +6,7 @@
 [![PyQt5](https://img.shields.io/badge/GUI_Framework-x?logo=qt&label=PyQt5)](https://pypi.org/project/PyQt5/)
 [![Yolo](https://img.shields.io/badge/Computer_Vision-blue?logo=YOLO&label=YOLOv11)](https://github.com/ultralytics)
 [![Python](https://img.shields.io/badge/Python-Backend-blue?logo=python&logoColor=yellow)](https://www.python.org)
+[![Python tests](https://github.com/AlexSzczygielski/navigation-and-weather-device-enhancing-the-safety-of-amateur-inland-navigation/actions/workflows/python-tests.yml/badge.svg)](https://github.com/AlexSzczygielski/navigation-and-weather-device-enhancing-the-safety-of-amateur-inland-navigation/actions/workflows/python-tests.yml)
 
 </div>
 
@@ -13,15 +14,15 @@ The device is based on RaspberryPi single board computer and utilizes several ot
 
 ### The project consists of:
 
-- Custom GUI built on top of linux operating system,
+- Custom dedicated application with it's **frontend** constructed using `QML - a descriptive language framework`, while **backend** was implemented using a `PyQt 5 framework`.
 
-- Cellular internet connection,
+- Cellular `4G` internet connection,
 
-- Weather forecast and warnings data fetched via API,
+- Weather forecast and warnings data fetched using `weather API`,
 
-- Current yacht's telemetry (position, speed, etc.),
+- Current yacht's telemetry (position, speed, etc.) accessed using `GPS`,
 
-- A custom Man Overboard detection system based on computer vision solution,
+- A custom **"Man Overboard Accident" detection system** based on `computer vision` solution,
 
 
 
@@ -34,7 +35,7 @@ The device is based on RaspberryPi single board computer and utilizes several ot
 
 ## Usage
 
-### For RaspberryPi
+### For RaspberryPi Deployment
 1. Prepare python and it's virtual enviroment with required packages by running `setup_env_rpi.sh`.
 ```bash
 chmod +x setup_env_rpi.sh
