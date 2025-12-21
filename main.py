@@ -17,6 +17,7 @@ def create_app():
     # Create backend class, expose it to QML engine. 
     # Load qrc resources
     backend = create_backend()
+    view.rootContext().setContextProperty("backend",backend)
     view.rootContext().setContextProperty("cv_backend",backend.cv)
     view.load(QUrl("qrc:main.qml"))
 

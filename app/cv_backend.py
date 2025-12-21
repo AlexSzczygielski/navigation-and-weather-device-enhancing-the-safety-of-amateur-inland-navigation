@@ -45,6 +45,15 @@ class CvBackend(QObject):
         self._roi_img_base_64 = None #required for showing loaded mask
     
 
+    def shutdown(self):
+        "Terminate all CvWorkers at appliaction close triggered by GUI."
+        if self._worker:
+            self._worker.stop()
+            self._worker.quit()
+            self._worker.wait()
+            print("shutdown called")
+        self._worker = None
+
     roiImageUpdated = pyqtSignal(str) # ROI Creation pipe
     mobFrameUpdated = pyqtSignal(str) # MOB cv detection pipe
 

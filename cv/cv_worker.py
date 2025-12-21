@@ -40,9 +40,13 @@ class CvWorker(QThread):
         self._model_path = model_path
         self._service_state = service_state #State for Service class started from this thread
         self._task = task #Determines the task to be started
-        
+        self._cv_service = None
+        self._running = True
+
     def stop(self):
-        print("stop worker called")
+        self._running=False
+        if self._cv_service:
+            self._cv_service.stop_video_process()
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
@@ -65,11 +69,11 @@ class CvWorker(QThread):
         """
         #main method, this is entered after backend calls worker
         try:
-            cv = CvService(self._model_path, self._service_state)
+            self._cv_service = CvService(self._model_path, self._service_state)
 
             match self._task:
                 case "roi_creation":
-                    img = cv.run_roi_creation_pipeline()
+                    img = self._cv_service.run_roi_creation_pipeline()
                     #img_path = os.path.abspath("output_mask.jpg")
                     #self.finished.emit(img_path)
 
@@ -79,10 +83,13 @@ class CvWorker(QThread):
                 
 
                 case "mob_detection_pipe":
-                    queue = cv.run_mob_detect_pipe_process()
+                    queue = self._cv_service.run_mob_detect_pipe_process()
 
                     while True:
-                        frame = queue.get()
+                        if not self._running:
+                            break
+
+                        frame = queue.get(timeout=0.2)
                         if frame is None:
                             self.finished.emit("")
                             break
@@ -95,3 +102,5 @@ class CvWorker(QThread):
             
         except Exception as e:
             print(f"CvWorker failed: {e}")
+
+        self._cv_service = None

@@ -7,6 +7,12 @@ import QtQuick.Controls.Material 2.15
 import "qrc:/components"
 
 ApplicationWindow {
+    Connections {
+        target: backend
+    }
+    onClosing: {
+        backend.shutdown_all()
+    }
     visible: true
     width: 1024
     height: 600
