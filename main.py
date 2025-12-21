@@ -5,7 +5,7 @@ from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtCore import QUrl
 
 import qml_rc # DON'T DELETE
-from app.factories.create_backend import create_backend
+from app.factories import create_backend
 
 def create_app():
     # Composition function - it wires together all components required to start an app
@@ -17,7 +17,7 @@ def create_app():
     # Create backend class, expose it to QML engine. 
     # Load qrc resources
     backend = create_backend()
-    view.rootContext().setContextProperty("backend",backend)
+    view.rootContext().setContextProperty("cv_backend",backend.cv)
     view.load(QUrl("qrc:main.qml"))
 
     return app, view, backend

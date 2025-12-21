@@ -28,7 +28,7 @@ RowLayout{
                 text: "Create ROI"
 
                 onClicked: {
-                    backend.run_cv_roi_pipe()
+                    cv_backend.run_cv_roi_pipe()
                 }
             }
 
@@ -54,7 +54,7 @@ RowLayout{
 
     // ROI Creation update
     Connections {
-        target: backend
+        target: cv_backend
         function onRoiImageUpdated(base_64_str){
             cv_roi_photo.source = "data:image/jpg;base64," + base_64_str
             maskStatus.isReady = true
@@ -62,7 +62,7 @@ RowLayout{
     }
 
     Component.onCompleted: {
-        var img = backend.get_roi_img()
+        var img = cv_backend.get_roi_img()
         if (img) {
             cv_roi_photo.source = "data:image/jpg;base64," + img
             maskStatus.isReady = true
