@@ -3,6 +3,7 @@ import sys
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine 
 from PyQt5.QtCore import QUrl
+import platform
 
 import qml_rc # DON'T DELETE
 from app.factories import create_backend
@@ -20,6 +21,11 @@ def create_app():
     view.rootContext().setContextProperty("backend",backend)
     view.rootContext().setContextProperty("cv_backend",backend.cv)
     view.load(QUrl("qrc:main.qml"))
+
+    # Start the app full screen
+    if platform.system() == 'Linux':
+        window = view.rootObjects()[0]
+        window.showFullScreen()
 
     return app, view, backend
 

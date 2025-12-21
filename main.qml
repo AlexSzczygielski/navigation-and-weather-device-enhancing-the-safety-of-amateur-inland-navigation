@@ -28,7 +28,26 @@ ApplicationWindow {
             if (b) b.selected = false
         }
     }
-
+//////////////CHANGHE//////////////////////////////////
+     Rectangle {
+        width: 50
+        height: 50
+        color: "red"
+        radius: 10
+        Text {
+            anchors.centerIn: parent
+            text: "X"
+            color: "white"
+            font.pixelSize: 20
+        }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                Qt.quit()  // This will quit the app when the button is clicked
+            }
+        }
+    }
+////////////////////!!!!!!!?/////////////////////////////
 
     RowLayout {
         anchors.fill: parent
