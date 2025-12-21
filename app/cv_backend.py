@@ -1,26 +1,41 @@
 #cv_backend.py
+"""This module contains the CvBackend class, responsible for managing backend of CV Components"""
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
 from cv.cv_worker import CvWorker
 from cv.cv_state import CvState
 from cv.cv_demo_state_service import CvDemoStateService
 class CvBackend(QObject):
     """
-    Backend class that manages connection (using signals/slots) between the GUI and Workers.
+    Manages connection (using signals/slots) between the CV GUI and CV Workers.
 
-    Backend is responsible for delegating tasks that are triggered through signals coming from
-    GUI (e.g. a button click) to dedicated workers that handle the task's execution. Workers 
+    CvBackend is responsible for delegating tasks that are triggered through signals coming from
+    GUI (e.g. a button click) to dedicated workers, that handle the task's execution. Workers 
     are able to return data back to GUI using slots.
+
+    Supports:
+    - ROI (Region of Interest) mask creation pipeline
+    - MOB (Man Overboard) detection pipeline
 
     Inherits from QObject - base class that provides signals/slots, event handling, object trees,
     memory management for Qt Objects.
 
     Each task checks if the previous worker is still running - to prevent starting many workers
     before the current one finishes it's job.
+    Not being able to create ROI mask while running MOB detection task is intentional.
 
     Parameters
     ----------
-    QObject : _type_
-        _description_
+    roi_img_model_path : str
+        Path to the boat_deck_segmenation ML model weights.
+    vid_model_path : str
+        Path to the YOLO CV model weights.
+    
+    Attributes
+    ----------
+    roiImageUpdated : pyqtSignal(str)
+        PyQt signal emitted when new ROI mask is returned.
+    mobFrameUpdated : pyqtSignal(str)
+        PyQt signal emitted when new MOB frame is returned.
     """
     def __init__(self,roi_img_model_path,vid_model_path):
         super().__init__()
@@ -29,14 +44,27 @@ class CvBackend(QObject):
         self._worker = None
         self._roi_img_base_64 = None #required for showing loaded mask
     
-    # Parameters:
+
     roiImageUpdated = pyqtSignal(str) # ROI Creation pipe
     mobFrameUpdated = pyqtSignal(str) # MOB cv detection pipe
 
-    ### ROI CREATION PIPE ###
+    ### ROI CREATION PIPELINE ###
     @pyqtSlot()
     def run_cv_roi_pipe(self):
-        #Run Create ROI pipe
+        """
+        Runs the Region Of Interest creation pipeline, PyQt slot.
+
+        Returns immediately if previous worker (pipe)
+        is still running.
+        Creates a new CVWorker, uses _on_run_cv_roi_pipe_finished(),
+        _on_run_cv_roi_pipe_error() and 
+        get_roi_img() to communicate with GUI. 
+
+        Emits
+        -----
+        roiImageUpdated : str
+            Base64 encoded string of image.
+        """
         try:
             #Ensure old worker is cleaned up
             if self._worker and self._worker.isRunning():
@@ -53,15 +81,18 @@ class CvBackend(QObject):
             print(f"{self.__class__.__name__}.run_cv_roi_pipe error: {e}")
 
     def _on_run_cv_roi_pipe_finished(self, img_64):
+        """Handles end of the task - emits to GUI."""
         self._roi_img_base_64 = img_64
         self.roiImageUpdated.emit(self._roi_img_base_64)
         self._worker = None #Release the reference
 
     def _on_run_cv_roi_pipe_error(self):
+        """Emits error GUI."""
         print("error")
 
     @pyqtSlot(result=str)
     def get_roi_img(self):
+        """If ready return base64 encoded ROI image."""
         #This can be used when loading/reloading the cv_create_roi_panel view
         if self._roi_img_base_64 is None:
             return None
@@ -71,6 +102,20 @@ class CvBackend(QObject):
     ### MOB CV DETECTION PIPE ###  
     @pyqtSlot()
     def run_cv_mob_detect_pipe(self):
+        """
+        Runs the Man Overboard detection pipeline. PyQt slot.
+
+        Returns immediately if previous worker (pipe)
+        is still running.
+        Creates a new CVWorker, uses _on_run_cv_mob_detect_pipe_finished(),
+        _on_run_cv_mob_detect_pipe__error() and 
+        _onMobFrameUpdated() to communicate with GUI. 
+
+        Emits
+        -----
+        _onMobFrameUpdated : str
+            Base64 encoded string of an image frame.
+        """
         #Runs mob detection system
         try:
             if self._worker and self._worker.isRunning():
@@ -88,11 +133,14 @@ class CvBackend(QObject):
             print(f"{self.__class__.__name__}.run_cv_mob_detect_pipe error: {e}")
 
     def _on_run_cv_mob_detect_pipe_finished(self):
+        """Handles end of the task - emits to GUI."""
         self._worker = None
 
     def _on_run_cv_mob_detect_pipe_error(self):
-        pass
+        """Emits error GUI."""
+        print("error")
     
     @pyqtSlot(str)
     def _onMobFrameUpdated(self,frame_64):
+        """Return updated frame."""
         self.mobFrameUpdated.emit(frame_64)

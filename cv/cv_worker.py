@@ -1,11 +1,5 @@
 #cv_worker.py
-# QThread inherited worker responsible for running Computer Vision tasks in background threads.
-# input:
-# _model_path: path to the YOLO model
-# _service_state: CvState pattern defines the input for services
-# _task: string defining which task to perform
-# Worker is responsible for starting the CvService, which executes given task without blocking the main UI loop.
-
+"""This module contains the CvWorker class, responsible for starting the managing QThreads used by CvService Components"""
 from PyQt5.QtCore import QThread, pyqtSignal
 import os
 from cv.cv_service import CvService
@@ -13,17 +7,62 @@ from cv.image_encoder import ImageEncoder
 
 
 class CvWorker(QThread):
+    """
+    A worker class managing asynchronous (threaded) CV tasks execution.
+
+    Responsible for starting appropriate service class and it's task.
+    Task is specified during CvWorker initialization (CvBackend).
+    Unblocks the main GUI Thread.
+    Returns results using PyQt signals.
+
+    Parameters
+    ----------
+    model_path : str
+        Path to the appropriate ML model weights.
+    service_state : CvState
+        State class object required by CvState.
+    task : str
+        Task to perform:
+        - "roi_creation" : starts ROI pipeline service
+        - "mob_detection_pipe" : starts MOB detection pipeline service.
+
+    Signals
+    -------
+    finished : pyqtSignal(str)
+        PyQt signal emitted when task is finished.
+    error : pyqtSignal(str)
+        PyQt signal emitted upon error.
+    frameUpdate : pyqtSignal(str)
+        PyQt signal emitted when new MOB frame is returned.
+    """
     def __init__(self, model_path, service_state ,task):
         super().__init__()
         self._model_path = model_path
         self._service_state = service_state #State for Service class started from this thread
         self._task = task #Determines the task to be started
+        
+    def stop(self):
+        print("stop worker called")
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
     frameUpdate = pyqtSignal(str)
 
     def run(self):
+        """
+        This method is entered by calling a QThread.start(). Entry point of the operation.
+
+        Called from backend - `self._task` argument determines which task to start:
+        - "ROI creation"
+        - "MOB detection pipe"
+        Creates CvService, which can emit signal after its' task is finished
+        Signal emitted from CvService is emitted further to appropriate backend.
+
+        Raises
+        ------
+        ValueError
+            If `self._task` is none
+        """
         #main method, this is entered after backend calls worker
         try:
             cv = CvService(self._model_path, self._service_state)
