@@ -1,4 +1,4 @@
-# Updated for commit [`61f2f04`](https://github.com/AlexSzczygielski/navigation-and-weather-device-enhancing-the-safety-of-amateur-inland-navigation/tree/61f2f047f7a5d1419de4b148b8427dd4965c065f)
+# Updated for commit [`4b29971`](https://github.com/AlexSzczygielski/navigation-and-weather-device-enhancing-the-safety-of-amateur-inland-navigation/tree/4b299714e3c6331925caa291a1c8c346e9ebbbfe)
 
 ```mermaid
 ---
@@ -6,38 +6,43 @@ title: Class Diagram
 ---
 
 classDiagram
-    note for Backend "Backend manages connection
-    (signals/slots)
-    betweenen GUI and Workers logic"
-
+    note for Backend "Backend is a wrapper for CvBackend"
     class Backend {
-        # _model_path: str
+        + cv: CvBackend
+        + << create >> Backend(CvBackend)
+    }
+
+    note for CvBackend "CvBackend manages connection
+    (signals/slots)
+    between GUI and Workers logic"
+    class CvBackend {
+        # _roi_img_model_path: str
+        # _vid_model_path: str
         # _worker: CvWorker
         # _roi_img_base_64: str
-        + img_ready: pyqtSignal
-        + imageUpdated: pyqtSignal
-        + << create >> Backend(model_path: str)
+        + roiImageUpdated: pyqtSignal
+        + mobFrameUpdated: pyqtSignal
+        + << create >> CvBackend(roi_img_model_path: str, vid_model_path: str)
         + << slot >> run_cv_roi_pipe(): void
-        + on_run_cv_roi_pipe_finished(img_64: str): void
-        + on_run_cv_roi_pipe_error(): void
+        + << slot >> run_cv_mob_detect_pipe(): void
         + get_roi_img(): str
     }
 
     note for CvWorker "Worker classes are 
     responsible for QThread management"
-
     class CvWorker {
         # _model_path: str
         # _service_state: CvState
+        # _task: str
         + finished: pyqtSignal
         + error: pyqtSignal
-        + << create >> CvWorker(model_path: str, service_state: CvState)
+        + frameUpdate: pyqtSignal
+        + << create >> CvWorker(model_path: str, service_state: CvState, task: str)
         + run(): void
     }
 
     note for CvService "Service classes are responsible 
     for logic implementation. This is a context class."
-
     class CvService {
         # _model_path: str
         # _image_path: str
@@ -49,19 +54,20 @@ classDiagram
         + transition_to(state: CvState): void
         + fetch_image(): str
         + run_roi_creation_pipeline(): ndarray
-        + fetch_frame(cap): (bool, ndarray)
-        + setup_vid_stream(): VideoCapture
-        + run_video_detection_pipeline(): void
+        + get_vid_source(): str
+        + run_mob_detect_pipe_process(): Queue
     }
 
     class CvState {
         + context: CvService
-        + << abstract >> setup_vid_stream(): VideoCapture
-        + << abstract >> fetch_image(): str
-        + << abstract >> fetch_frame(cap): (bool, ndarray)
+        + << abstract >> get_vid_source(): str
+        + << abstract >> setup_vid_stream(): void
+        + << abstract >> fetch_image(): void
+        + << abstract >> fetch_frame(): void
     }
 
     class CvDemoStateService {
+        + get_vid_source(): str
         + setup_vid_stream(): VideoCapture
         + fetch_image(): str
         + fetch_frame(cap): (bool, ndarray)
@@ -76,14 +82,24 @@ classDiagram
 
     class VideoProcessor {
         # _model: YOLO
-        + << create >> VideoProcessor(model_path: str)
-        + run_video_inference(cap): void
+        # _video_path: str
+        # _roi_mask: ndarray
+        + << create >> VideoProcessor(model_path: str, video_path: str, roi_mask: ndarray)
+        + run_video_inference(): generator
     }
 
-    Backend *-- CvWorker
+    class ImageEncoder {
+        <<static>> + to_base64(img: ndarray): str
+    }
+
+    Backend *-- CvBackend
+    CvBackend --|> QObject
+    CvBackend *-- CvWorker
     CvWorker --|> QThread
     CvWorker *-- CvService
+    CvWorker ..> ImageEncoder : uses
     CvService o-- CvState
     CvService o-- RoiProcessor
     CvService o-- VideoProcessor
     CvDemoStateService --|> CvState
+```
