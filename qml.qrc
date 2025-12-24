@@ -5,10 +5,12 @@
         <file>views/home.qml</file>
         <file>views/cv_create_roi_panel.qml</file>
         <file>views/cv_detect_pipe_panel.qml</file>
+        <file>views/gps_data_panel.qml</file>
 
         <!-- QML Components -->
         <file>components/IconButton.qml</file>
         <file>components/StatusIndicator.qml</file>
+        <file>components/DataRow.qml</file>
         
 
         <!-- Assets Icons -->

@@ -79,6 +79,11 @@ ApplicationWindow {
                 id: loaderNavi
                 iconSource: "qrc:/assets/navi.svg"
                 Component.onCompleted: allButtons.push(loaderNavi)
+                onIconClicked: {
+                    resetSelection()
+                    loaderNavi.selected = true
+                    mainLoader.source = "qrc:/views/gps_data_panel.qml"
+                }
             }
 
             IconButton{
