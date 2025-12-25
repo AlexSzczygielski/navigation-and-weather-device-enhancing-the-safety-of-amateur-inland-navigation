@@ -19,6 +19,7 @@ class GpsBackend(QObject):
         self._worker = None
 
     #Possible signals
+    runningStatusUpdated = pyqtSignal(bool)
     latitudeUpdated = pyqtSignal(str)
     longitudeUpdated = pyqtSignal(str)
     altitudeUpdated = pyqtSignal(str)
@@ -30,7 +31,7 @@ class GpsBackend(QObject):
     error = pyqtSignal(str)
 
     @pyqtSlot()
-    def start_gps_worker(self):
+    def start_gnss_worker(self):
         try:
             #Ensure old worker is cleaned up
             if self._worker and self._worker.isRunning():
@@ -38,19 +39,29 @@ class GpsBackend(QObject):
                 return
             
             self._worker = GpsWorker()
+            
             self._worker.latitude.connect(self.latitudeUpdated)
-            self._worker.finished.connect(self._on_start_gps_worker_finished)
-            self._worker.error.connect(self._on_start_gps_worker_error)
+            self._worker.longitude.connect(self.longitudeUpdated)
+            self._worker.altitude.connect(self.altitudeUpdated)
+            self._worker.speed.connect(self.speedUpdated)
+            self._worker.heading.connect(self.headingUpdated)
+            self._worker.satelitesNumber.connect(self.satelitesNumberUpdated)
+            self._worker.gpsFix.connect(self.gpsFixUpdated)
+            self._worker.runningStatus.connect(self.runningStatusUpdated)
+            self._worker.error.connect(self.error)
+
+            self._worker.finished.connect(self._on_start_gnss_worker_finished)
+            self._worker.error.connect(self._on_start_gnss_worker_error)
             self._worker.finished.connect(self._worker.deleteLater)
             self._worker.start()
 
         except Exception as e:
-            print(f"{self.__class__.__name__}.start_gps_worker error: {e}")
+            print(f"{self.__class__.__name__}.start_gnss_worker error: {e}")
 
-    def _on_start_gps_worker_finished(self):
+    def _on_start_gnss_worker_finished(self):
         """Handles end of the task."""
         self._worker = None #Release the reference
 
-    def _on_start_gps_worker_error(self):
+    def _on_start_gnss_worker_error(self):
         """Emits error GUI."""
         print("error")

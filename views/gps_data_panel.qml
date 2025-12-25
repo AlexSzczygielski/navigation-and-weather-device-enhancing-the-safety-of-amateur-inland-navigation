@@ -19,8 +19,17 @@ ColumnLayout{
     property string rectangleColor: "#00bfa5"
     property int divisionHeight: 5
     property int dataRowSpacing: 12
+    property string notAvailableText: "n/a"
 
-    property string latitude: "n/a"
+    //Properties for input signals
+    property bool isThreadRunning: false
+    property string latitude: notAvailableText
+    property string longitude: notAvailableText
+    property string altitude: notAvailableText
+    property string gpsFix: notAvailableText
+    property string satelitesNumber: notAvailableText
+    property string speed: notAvailableText
+    property string heading: notAvailableText
 
     //Left Column Section
     Rectangle {
@@ -47,14 +56,15 @@ ColumnLayout{
                 }
 
                 DataRow{
+                    id: gpsThreadRunStatus
                     descriptionText: ""
                     notReadyText: "Not running"
                     readyText: "Running"
                 }
 
                 Button{
-                    text: "Start/STOP GPS"
-                    onClicked: gps_backend.start_gps_worker()
+                    text: isThreadRunning ? "STOP GPS" : "START GPS"
+                    onClicked: gps_backend.start_gnss_worker()
                 }
 
                 Rectangle{
@@ -70,19 +80,24 @@ ColumnLayout{
                 }
 
                 DataRow{
-                    descriptionText: "Latitude:"
+                    id: latRow
+                    descriptionText: "Latitude: " 
                     readyText: latitude
-                    notReadyText: "n/a"
+                    notReadyText: "Empty device"
                 }
 
                 DataRow{
+                    id: longRow
                     descriptionText: "Longitude:"
-                    notReadyText: "n/a"
+                    readyText: longitude
+                    notReadyText: "Empty device"
                 }
 
                 DataRow{
+                    id: altRow
                     descriptionText: "Altitude:"
-                    notReadyText: "n/a"
+                    readyText: altitude
+                    notReadyText: "Empty device"
                 }
             }
             
@@ -104,14 +119,16 @@ ColumnLayout{
                 }
 
                 DataRow{
+                    id: gpsFixRow
                     descriptionText: "GPS fix:"
                     readyText: "OK"
                     notReadyText: "None"
                 }
                 
                 DataRow{
+                    id: satRow
                     descriptionText: "Satelites:"
-                    readyText: ""
+                    readyText: satelitesNumber
                     notReadyText: "None"
                 }
             }
@@ -133,15 +150,17 @@ ColumnLayout{
                 }
 
                 DataRow{
+                    id: speedRow
                     descriptionText: "Speed:"
-                    readyText: ""
-                    notReadyText: "n/a"
+                    readyText: speed
+                    notReadyText: "Empty device"
                 }
 
                 DataRow{
+                    id: headRow
                     descriptionText: "Heading:"
-                    readyText: ""
-                    notReadyText: "n/a"
+                    readyText: heading
+                    notReadyText: "Empty device"
                 }
             }
         }
@@ -149,8 +168,13 @@ ColumnLayout{
 
     Connections{
         target: gps_backend
-        function onLatitudeUpdated(value){
-            latitude = value
-        }
+        onRunningStatusUpdated: function(isRunning){isThreadRunning = isRunning; gpsThreadRunStatus.ready = isRunning}
+        onLatitudeUpdated: function(value){latitude = value; latRow.ready = true}
+        onLongitudeUpdated:function(value){longitude = value; longRow.ready = true}
+        onAltitudeUpdated: function(value){altitude = value; altRow.ready = true}
+        onGpsFixUpdated: function(value){gpsFix = value; gpsFixRow.ready = true}
+        onSatelitesNumberUpdated: function(value){satelitesNumber = value; satRow.ready = true}
+        onSpeedUpdated: function(value){speed = value; speedRow.ready = true}
+        onHeadingUpdated: function(value){heading = value; headRow.ready = true}
     }
 }
