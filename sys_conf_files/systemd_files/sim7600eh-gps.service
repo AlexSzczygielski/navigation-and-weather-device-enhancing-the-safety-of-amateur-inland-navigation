@@ -1,0 +1,11 @@
+[UNIT]
+Description= Turn on GPS using AT commmand on SIM7600E-H
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c 'echo "AT+CGPS=1" > /dev/ttyUSB2'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

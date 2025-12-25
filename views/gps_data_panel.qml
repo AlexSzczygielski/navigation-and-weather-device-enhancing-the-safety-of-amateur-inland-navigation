@@ -41,6 +41,29 @@ ColumnLayout{
 
                 Label{
                     font.bold: true
+                    text: "GPS Thread Status:"
+                }
+
+                DataRow{
+                    descriptionText: ""
+                    notReadyText: "Not running"
+                    readyText: "Running"
+                }
+
+                Button{
+                    text: "Start/STOP GPS"
+                    onClicked: gps_backend.start_gps_service()
+                }
+
+                Rectangle{
+                    color: rectangleColor
+                    height: divisionHeight
+                    Layout.fillWidth: true
+                }
+                
+
+                Label{
+                    font.bold: true
                     text: "Position:"
                 }
 
@@ -119,5 +142,10 @@ ColumnLayout{
                 }
             }
         }
+    }
+
+    Connections{
+        target: gps_backend
+
     }
 }

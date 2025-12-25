@@ -1,7 +1,7 @@
 #gps_service.py
 
 import serial
-from config import config
+import config
 
 class GpsService():
     def __init__(self):
@@ -36,11 +36,6 @@ class GpsService():
             
             if not self.send_and_verify_AT(serial_AT,"AT+CGPS=1"): #Open GPS
                 raise serial.SerialException("GPS initialization failed")
-            
-            self.send_AT(serial_AT, "AT+CGPSNMEAPORTCFG=3") #Configure NMEA port output
-            self.send_AT(serial_AT, "AT+CGPSNMEA=197119") # Enable NMEA sentences
-            self.send_AT(serial_AT, "AT+CGPSINFOCFG=10,31") # GPS info fields passed in NMEA
-            self.send_AT(serial_AT, "AT+CGPSAUTO=1") # GPS auto start at reboot
 
             serial_AT.close()
         except (serial.SerialException) as e:
@@ -49,19 +44,6 @@ class GpsService():
             if serial_AT and serial_AT.is_open:
                 serial_AT.close()
 
-    def read_gps_output(self):
-        serial_gps_out = serial.Serial(
-            port=config.GPS_SERIAL_PORT,
-            baudrate=config.GPS_BAUD_RATE,
-            timeout=config.GPS_TIMEOUT
-        )
-
-        while True:
-            gps_out_line = serial_gps_out.readline().decode(errors="ignore").strip()
-            if gps_out_line.startswith("$"):
-                print(gps_out_line)
-
 if __name__ == "__main__":
     service = GpsService()
-    GpsService.start_gps_service()
-    GpsService.read_gps_output()
+    service.start_gps_service()

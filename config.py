@@ -4,13 +4,13 @@
 # Cellular modem SIM7600E and GPS expansion configuration
 # GPS NMEA returns
 GPS_NMEA_SERIAL_PORT = "/dev/ttyUSB2"
-GPS__NMEA_BAUD_RATE = 9600
-GPS__NMEA_TIMEOUT = 1
+GPS__NMEA_BAUD_RATE = 115200
+GPS__NMEA_TIMEOUT = 2
 
 # AT Commands Port
-AT_SERIAL_PORT = "/dev/ttyUSB0"
+AT_SERIAL_PORT = "/dev/ttyUSB2"
 AT_BAUD_RATE = 115200
-AT_TIMEOUT = 1
+AT_TIMEOUT = 2
 #--------------------
 
 # CV Computer Vision configuration

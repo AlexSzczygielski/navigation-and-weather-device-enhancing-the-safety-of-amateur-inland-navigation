@@ -30,5 +30,27 @@ echo "Installing GUI dependencies"
 echo "Installing PyQt5 and QML"
 sudo apt install -y python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtmultimedia pyqt5-dev-tools
 
-echo "Installing QtQuick dependencies":
-sudo apt install -y qml-module-qtquick2 qml-module-qtquick-layouts qml-module-qtquick-controls qml-module-qtquick-controls2 
+echo "Installing QtQuick dependencies"
+sudo apt install -y qml-module-qtquick2 qml-module-qtquick-layouts qml-module-qtquick-controls qml-module-qtquick-controls2
+
+echo "Installing python-gps"
+sudo apt install python3-gps
+
+echo "Installing gpsd"
+sudo apt install gpsd gpsd-clients
+echo "Disabling gps socket mode"
+sudo systemctl stop gpsd.socket
+sudo systemctl disable gpsd.socket
+
+echo "Configure gpsd daemon from etc_files gpsd prepared script"
+sudo cp sys_conf_files/etc_files/gpsd /etc/default/gpsd
+
+echo "Starting and enabling gpsd"
+sudo systemctl enable gpsd
+sudo systemctl start gpsd
+
+echo "Copy and enable auto gps start md service"
+sudo cp sys_conf_files/systemd_files/sim7600eh-gps.service /etc/systemd/system/sim7600eh-gps.service
+sudo systemctl daemon-reload
+sudo systemctl enable sim7600eh-gps
+sudo systemctl start sim7600eh-gps
