@@ -1,13 +1,27 @@
 #config.py
-# This file contains CONSTANT configuration paths
+"""This module contains CONSTANT configuration and data access paths or parameters."""
 
-# Path to the models weights
+# Cellular modem SIM7600E and GPS expansion configuration
+# GPS NMEA returns
+GPS_NMEA_SERIAL_PORT = "/dev/ttyUSB2"
+GPS__NMEA_BAUD_RATE = 9600
+GPS__NMEA_TIMEOUT = 1
 
+# AT Commands Port
+AT_SERIAL_PORT = "/dev/ttyUSB0"
+AT_BAUD_RATE = 115200
+AT_TIMEOUT = 1
+#--------------------
+
+# CV Computer Vision configuration
+# Paths to the models weights
 MODEL_WEIGHTS = {
     "first_deck_seg" : "models/first_model_deck_seg_weights.pt",
     "yolo11" : "models/yolo11n.pt"
 }
+#-----------------
 
+# Paths to data access
 DEMO_ASSETS = {
     "video" : "data/demonstration_assets/vid_demonstration1.mov",
     "deck_photo" : "data/demonstration_assets/roi_base_demonstration1.jpg",

@@ -10,31 +10,33 @@ from app.factories import create_backend
 
 def create_app():
     # Composition function - it wires together all components required to start an app
-    # Create Qt app and QML engine (view)
+    # Create Qt app and QML engine
     app = QGuiApplication(sys.argv)
-    view = QQmlApplicationEngine()
-    view.addImportPath(sys.path[0])
+    engine = QQmlApplicationEngine()
+    engine.addImportPath(sys.path[0])
     
-    # Create backend class, expose it to QML engine. 
-    # Load qrc resources
+    # Create backend classes, expose them to QML engine. 
     backend = create_backend()
-    view.rootContext().setContextProperty("backend",backend)
-    view.rootContext().setContextProperty("cv_backend",backend.cv)
-    view.load(QUrl("qrc:main.qml"))
+    engine.rootContext().setContextProperty("backend",backend)
+    engine.rootContext().setContextProperty("cv_backend",backend.cv)
+    engine.rootContext().setContextProperty("gps_backend",backend.gps)
 
-    # Start the app full screen
+    # Load qrc resources
+    engine.load(QUrl("qrc:main.qml"))
+
+    # Start the app full screen on Linux
     if platform.system() == 'Linux':
-        window = view.rootObjects()[0]
+        window = engine.rootObjects()[0]
         window.showFullScreen()
 
-    return app, view, backend
+    return app, engine, backend
 
 
 if __name__ == "__main__":
     # Entry point - create app and run it
-    app, view, backend = create_app()
+    app, engine, backend = create_app()
     ex = app.exec()
 
-    # After Qt app finishes
-    del view
+    # Clean up after Qt app finishes
+    del engine
     sys.exit(ex)
