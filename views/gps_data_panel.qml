@@ -149,6 +149,8 @@ ColumnLayout{
 
     Connections{
         target: gps_backend
-        onLatitudeUpdated: latitude = value
+        function onLatitudeUpdated(value){
+            latitude = value
+        }
     }
 }

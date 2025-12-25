@@ -25,7 +25,7 @@ class GpsWorker(QThread):
         # Import this only on linux, fixes tests issues
         from gps import gps, WATCH_ENABLE, WATCH_NEWSTYLE
 
-        session = gps(mode=gps.WATCH_ENABLE | WATCH_NEWSTYLE)
+        session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
 
         try:
             while self._running:
