@@ -2,7 +2,7 @@
 """This module contains the GpsBackend class responsible for managing backend of the GPS components."""
 
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
-from gps_module.gps_worker import GpsWorker
+from gnss_module.gnss_worker import GpsWorker
 
 class GpsBackend(QObject):
     def __init__(self):
@@ -40,7 +40,7 @@ class GpsBackend(QObject):
             self._worker = GpsWorker()
             self._worker.latitude.connect(self.latitudeUpdated)
             self._worker.finished.connect(self._on_start_gps_worker_finished)
-            self._worker.error.connect(self._on_run_cv_roi_pipe_error)
+            self._worker.error.connect(self._on_start_gps_worker_error)
             self._worker.finished.connect(self._worker.deleteLater)
             self._worker.start()
 
