@@ -1,6 +1,7 @@
 #factories.py
 """This module contains functions responsible for creation of backends."""
 import config as config
+import platform
 from app.backend import Backend
 from app.cv_backend import CvBackend
 from app.gps_backend import GpsBackend

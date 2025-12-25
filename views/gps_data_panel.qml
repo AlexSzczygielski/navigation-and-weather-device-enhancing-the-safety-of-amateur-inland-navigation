@@ -52,7 +52,7 @@ ColumnLayout{
 
                 Button{
                     text: "Start/STOP GPS"
-                    onClicked: gps_backend.start_gps_service()
+                    onClicked: gps_backend.start_gps_worker()
                 }
 
                 Rectangle{
@@ -69,17 +69,18 @@ ColumnLayout{
 
                 DataRow{
                     descriptionText: "Latitude:"
-                    notReadyText: "Dummy data"
+                    readyText: latitude
+                    notReadyText: "n/a"
                 }
 
                 DataRow{
                     descriptionText: "Longitude:"
-                    notReadyText: "Dummy data"
+                    notReadyText: "n/a"
                 }
 
                 DataRow{
                     descriptionText: "Altitude:"
-                    notReadyText: "Dummy data"
+                    notReadyText: "n/a"
                 }
             }
             
@@ -132,13 +133,13 @@ ColumnLayout{
                 DataRow{
                     descriptionText: "Speed:"
                     readyText: ""
-                    notReadyText: "None"
+                    notReadyText: "n/a"
                 }
 
                 DataRow{
                     descriptionText: "Heading:"
                     readyText: ""
-                    notReadyText: "None"
+                    notReadyText: "n/a"
                 }
             }
         }
@@ -146,6 +147,8 @@ ColumnLayout{
 
     Connections{
         target: gps_backend
-
+        function onLatitudeUpdated(value){
+            latitude = value
+        }
     }
 }
