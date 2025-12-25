@@ -168,13 +168,44 @@ ColumnLayout{
 
     Connections{
         target: gps_backend
-        onRunningStatusUpdated: function(isRunning){isThreadRunning = isRunning; gpsThreadRunStatus.ready = isRunning}
-        onLatitudeUpdated: function(value){latitude = value; latRow.ready = true}
-        onLongitudeUpdated:function(value){longitude = value; longRow.ready = true}
-        onAltitudeUpdated: function(value){altitude = value; altRow.ready = true}
-        onGpsFixUpdated: function(value){gpsFix = value; gpsFixRow.ready = true}
-        onSatelitesNumberUpdated: function(value){satelitesNumber = value; satRow.ready = true}
-        onSpeedUpdated: function(value){speed = value; speedRow.ready = true}
-        onHeadingUpdated: function(value){heading = value; headRow.ready = true}
+        function onRunningStatusUpdated(isRunning) {
+            gpsThreadRunStatus.ready = isRunning
+            isThreadRunning = isRunning
+        }
+
+        function onLatitudeUpdated(value) {
+            latRow.notReadyText = value
+            latRow.ready = true
+        }
+
+        function onLongitudeUpdated(value) {
+            longRow.notReadyText = value
+            longRow.ready = true
+        }
+
+        function onAltitudeUpdated(value) {
+            altRow.notReadyText = value
+            altRow.ready = true
+        }
+
+        function onGpsFixUpdated(value) {
+            gpsFixRow.notReadyText = value
+            gpsFixRow.ready = true
+        }
+
+        function onSatelitesNumberUpdated(value) {
+            satRow.notReadyText = value
+            satRow.ready = true
+        }
+
+        function onSpeedUpdated(value) {
+            speedRow.notReadyText = value
+            speedRow.ready = true
+        }
+
+        function onHeadingUpdated(value) {
+            headRow.notReadyText = value
+            headRow.ready = true
+        }
     }
 }
