@@ -2,7 +2,7 @@
 """This module contains the GpsBackend class responsible for managing backend of the GPS components."""
 
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
-from gps.gps_worker import GpsWorker
+from gps_module.gps_worker import GpsWorker
 
 class GpsBackend(QObject):
     def __init__(self):
