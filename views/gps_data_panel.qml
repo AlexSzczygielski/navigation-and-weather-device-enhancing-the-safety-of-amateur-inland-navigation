@@ -15,7 +15,7 @@ ColumnLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
     property int borderWidth: 3
-    property int firstColumnWidth: 170
+    property int firstColumnWidth: 200
     property string rectangleColor: "#00bfa5"
     property int divisionHeight: 5
     property int dataRowSpacing: 12
@@ -55,11 +55,8 @@ ColumnLayout{
                     text: "GPS Thread Status:"
                 }
 
-                DataRow{
-                    id: gpsThreadRunStatus
-                    descriptionText: ""
-                    notReadyText: "Not running"
-                    readyText: "Running"
+                Label{
+                    text: isThreadRunning ? "Running" : "Not Running"
                 }
 
                 Button{
