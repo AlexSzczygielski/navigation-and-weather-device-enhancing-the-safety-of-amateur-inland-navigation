@@ -49,11 +49,12 @@ class GpsWorker(QThread):
                     if hasattr(report, 'mode'):
                         self.gpsFix.emit(str(report.mode))
                     
-                    if hasattr(report, 'satellites'):
-                        self.satelitesNumber.emit(str(len(report.satellites)))
-                    
                     if hasattr(report, 'track'):
                         self.heading.emit(f"{report.track:.2f}")
+                
+                if report['class'] == 'SKY':
+                    if hasattr(report, 'satellites'):
+                        self.satelitesNumber.emit(str(len(report.satellites)))
 
         except Exception as e:
             print(f"GnssWorker failure: {e}")
