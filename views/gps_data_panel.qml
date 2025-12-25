@@ -20,6 +20,8 @@ ColumnLayout{
     property int divisionHeight: 5
     property int dataRowSpacing: 12
 
+    property string latitude: "n/a"
+
     //Left Column Section
     Rectangle {
         color: "transparent"
@@ -147,8 +149,6 @@ ColumnLayout{
 
     Connections{
         target: gps_backend
-        function onLatitudeUpdated(value){
-            latitude = value
-        }
+        onLatitudeUpdated: latitude = value
     }
 }

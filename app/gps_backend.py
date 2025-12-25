@@ -51,6 +51,6 @@ class GpsBackend(QObject):
         """Handles end of the task."""
         self._worker = None #Release the reference
 
-    def _on_run_cv_roi_pipe_error(self):
+    def _on_start_gps_worker_error(self):
         """Emits error GUI."""
         print("error")
