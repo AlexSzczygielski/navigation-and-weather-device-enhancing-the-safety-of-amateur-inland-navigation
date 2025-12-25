@@ -12,7 +12,7 @@ class Backend(QObject):
     There is a file factories.py containing construction functions
     for all service backends as well as this backend."
     """
-    def __init__(self, CvBackend):
+    def __init__(self, CvBackend, GpsBackend):
         super().__init__()
         self.cv = CvBackend
         self.gps = GpsBackend
