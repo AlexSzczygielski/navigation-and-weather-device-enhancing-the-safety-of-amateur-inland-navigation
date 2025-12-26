@@ -39,6 +39,7 @@ class MapWorker(QThread):
                 image = m.render(zoom=15)
                 os.makedirs(os.path.dirname(self._out_path), exist_ok=True)
                 image.save(self._out_path)
+                self.mapReady.emit(self._out_path)
 
         except Exception as e:
             print(f"MapWorker failure: {e}")

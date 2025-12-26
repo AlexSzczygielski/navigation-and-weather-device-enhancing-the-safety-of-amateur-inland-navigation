@@ -2,8 +2,8 @@
 """This module contains CONSTANT configuration and data access paths or parameters."""
 
 # Map configuration
-MAP_WIDTH = 100
-MAP_HEIGHT = 100
+MAP_WIDTH = 500
+MAP_HEIGHT = 500
 #--------------------
 
 # CV Computer Vision configuration
