@@ -15,11 +15,12 @@ RowLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
     property int borderWidth: 3
-    property int firstColumnWidth: 200
+    property int firstColumnWidth: 220
     property string rectangleColor: "#00bfa5"
     property int divisionHeight: 5
     property int dataRowSpacing: 12
     property string notAvailableText: "Dev OFF"
+    propert int coordsPrecision: 5
 
     //Properties for input signals
     property bool isThreadRunning: false
@@ -83,14 +84,14 @@ RowLayout{
                 DataRow{
                     id: latRow
                     descriptionText: "Latitude: " 
-                    readyText: latitude
+                    readyText: latitude >= 0 ? latitude.toFixed(coordsPrecision) + "N" : (-latitude).toFixed(coordsPrecision) + "S"
                     notReadyText: notAvailableText
                 }
 
                 DataRow{
                     id: longRow
                     descriptionText: "Longitude:"
-                    readyText: longitude
+                    readyText: longitude >= 0 ? longitude.toFixed(coordsPrecision) + "E" : (-longitude).toFixed(coordsPrecision) + "W"
                     notReadyText: notAvailableText
                 }
 
