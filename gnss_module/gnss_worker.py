@@ -35,10 +35,10 @@ class GnssWorker(QThread):
 
                 if report['class'] =='TPV':
                     if hasattr(report,'lat'):
-                        self.latitude.emit(f"{report.lat:.6f}")
+                        self.latitude.emit(float(report.lat))
                         
                     if hasattr(report,'lon'):
-                        self.longitude.emit(f"{report.lon:.6f}")
+                        self.longitude.emit(float(report.lon))
 
                     if hasattr(report,'alt'):
                         self.altitude.emit(f"{report.alt:.6f}")

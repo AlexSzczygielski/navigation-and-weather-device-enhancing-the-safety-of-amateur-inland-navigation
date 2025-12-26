@@ -54,3 +54,6 @@ sudo cp sys_conf_files/systemd_files/sim7600eh-gps.service /etc/systemd/system/s
 sudo systemctl daemon-reload
 sudo systemctl enable sim7600eh-gps
 sudo systemctl start sim7600eh-gps
+
+echo "Installing rest of the GNSS module dependencies"
+sudo pip3 install haversine
