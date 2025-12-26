@@ -8,8 +8,8 @@ class GnssWorker(QThread):
         self._running = True
 
     runningStatus = pyqtSignal(bool)
-    latitude = pyqtSignal(str)
-    longitude = pyqtSignal(str)
+    latitude = pyqtSignal(float)
+    longitude = pyqtSignal(float)
     altitude = pyqtSignal(str)
     gpsFix = pyqtSignal(str)
     satelitesNumber = pyqtSignal(str)

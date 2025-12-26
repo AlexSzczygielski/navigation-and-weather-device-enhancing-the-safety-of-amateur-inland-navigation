@@ -171,8 +171,8 @@ RowLayout{
     Image{
         id: staticMap
         source: "qrc:/assets/empty_map.png"
-        width: 500
-        height: 500
+        width: gps_backend.map_width
+        height: gps_backend.map_height
         fillMode: Image.PreserveAspectFit
         cache: false
     }
@@ -193,6 +193,11 @@ RowLayout{
                 speedRow.isReady = false
                 headRow.isReady = false
             }
+        }
+
+        function onMapUpdated(path) {
+            staticMap.source = ""
+            staticMap.source = "file:" + path
         }
 
         function onLatitudeUpdated(value) {
