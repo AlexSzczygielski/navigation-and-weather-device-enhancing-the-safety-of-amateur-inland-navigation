@@ -37,6 +37,7 @@ class MapWorker(QThread):
                 m.add_marker(marker=mark)
 
                 image = m.render(zoom=15)
+                os.makedirs(os.path.dirname(self._out_path), exist_ok=True)
                 image.save(self._out_path)
 
         except Exception as e:
