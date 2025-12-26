@@ -20,12 +20,12 @@ RowLayout{
     property int divisionHeight: 5
     property int dataRowSpacing: 12
     property string notAvailableText: "Dev OFF"
-    propert int coordsPrecision: 5
+    property int coordsPrecision: 5
 
     //Properties for input signals
     property bool isThreadRunning: false
-    property string latitude: notAvailableText
-    property string longitude: notAvailableText
+    property real latitude
+    property real longitude
     property string altitude: notAvailableText
     property string gpsFix: notAvailableText
     property string satelitesNumber: notAvailableText
@@ -84,14 +84,14 @@ RowLayout{
                 DataRow{
                     id: latRow
                     descriptionText: "Latitude: " 
-                    readyText: latitude >= 0 ? latitude.toFixed(coordsPrecision) + "N" : (-latitude).toFixed(coordsPrecision) + "S"
+                    readyText: latitude >= 0 ? latitude.toFixed(coordsPrecision) + " N" : (-latitude).toFixed(coordsPrecision) + " S"
                     notReadyText: notAvailableText
                 }
 
                 DataRow{
                     id: longRow
                     descriptionText: "Longitude:"
-                    readyText: longitude >= 0 ? longitude.toFixed(coordsPrecision) + "E" : (-longitude).toFixed(coordsPrecision) + "W"
+                    readyText: longitude >= 0 ? longitude.toFixed(coordsPrecision) + " E" : (-longitude).toFixed(coordsPrecision) + " W"
                     notReadyText: notAvailableText
                 }
 
