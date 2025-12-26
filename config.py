@@ -4,6 +4,7 @@
 # Map configuration
 MAP_WIDTH = 500
 MAP_HEIGHT = 500
+MAP_STANDARD_ZOOM = 15 # 1-19 constraint
 #--------------------
 
 # CV Computer Vision configuration
