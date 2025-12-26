@@ -43,7 +43,6 @@ RowLayout{
         Image {
             id: cv_roi_photo
             Layout.topMargin: 30
-            //source: "qrc:/assets/model.png"
             source: ""
             fillMode: Image.PreserveAspectFit
             Layout.alignment: Qt.AlignHCenter

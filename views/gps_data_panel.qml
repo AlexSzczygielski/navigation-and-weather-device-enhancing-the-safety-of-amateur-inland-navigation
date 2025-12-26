@@ -11,7 +11,7 @@ import QtQuick.Controls.Material 2.15
 
 import "qrc:/components"
 
-ColumnLayout{
+RowLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
     property int borderWidth: 3
@@ -31,6 +31,8 @@ ColumnLayout{
     property string speed: notAvailableText
     property string heading: notAvailableText
 
+    
+        
     //Left Column Section
     Rectangle {
         color: "transparent"
@@ -164,6 +166,18 @@ ColumnLayout{
             }
         }
     }
+
+    // Map Image
+    Image{
+        id: staticMap
+        source: "qrc:/assets/empty_map.png"
+        width: 500
+        height: 500
+        fillMode: Image.PreserveAspectFit
+        cache: false
+    }
+
+    
 
     Connections{
         target: gps_backend

@@ -21,5 +21,6 @@
 
         <!-- Assets Pictures -->
         <file>assets/model.png</file>
+        <file>assets/empty_map.png</file>
     </qresource>
 </RCC>
