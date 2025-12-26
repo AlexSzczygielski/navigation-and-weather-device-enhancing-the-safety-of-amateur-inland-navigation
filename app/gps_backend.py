@@ -1,16 +1,16 @@
 #gps_backend.py
-"""This module contains the GpsBackend class responsible for managing backend of the GPS components."""
+"""This module contains the GnssBackend class responsible for managing backend of the GPS components."""
 
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
-from gnss_module.gnss_worker import GpsWorker
+from gnss_module.gnss_worker import GnssWorker
 
-class GpsBackend(QObject):
+class GnssBackend(QObject):
     def __init__(self):
         super().__init__()
         self._worker = None
 
     def shutdown(self):
-        "Terminate all GpsWorkers at appliaction close triggered by GUI."
+        "Terminate all GnssWorkers at appliaction close triggered by GUI."
         if self._worker:
             self._worker.stop()
             self._worker.quit()
@@ -38,7 +38,7 @@ class GpsBackend(QObject):
                 print("Previous worker still running")
                 return
             
-            self._worker = GpsWorker()
+            self._worker = GnssWorker()
             
             self._worker.latitude.connect(self.latitudeUpdated)
             self._worker.longitude.connect(self.longitudeUpdated)

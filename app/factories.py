@@ -4,7 +4,7 @@ import config as config
 import platform
 from app.backend import Backend
 from app.cv_backend import CvBackend
-from app.gps_backend import GpsBackend
+from app.gps_backend import GnssBackend
 
 def create_backend():
     return Backend(
@@ -19,4 +19,4 @@ def create_cv_backend():
     )
 
 def create_gps_backend():
-    return GpsBackend()
+    return GnssBackend()

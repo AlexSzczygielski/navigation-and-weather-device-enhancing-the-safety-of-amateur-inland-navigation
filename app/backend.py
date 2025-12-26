@@ -2,7 +2,7 @@
 """This module contains Backend class - wrapper of all backends used in this app."""
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
 from app.cv_backend import CvBackend
-from app.gps_backend import GpsBackend
+from app.gps_backend import GnssBackend
 
 class Backend(QObject):
     """
@@ -12,10 +12,10 @@ class Backend(QObject):
     There is a file factories.py containing construction functions
     for all service backends as well as this backend."
     """
-    def __init__(self, CvBackend, GpsBackend):
+    def __init__(self, CvBackend, GnssBackend):
         super().__init__()
         self.cv = CvBackend
-        self.gps = GpsBackend
+        self.gps = GnssBackend
 
     @pyqtSlot()
     def shutdown_all(self):

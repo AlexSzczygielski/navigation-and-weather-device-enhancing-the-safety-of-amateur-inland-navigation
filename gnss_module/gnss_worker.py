@@ -1,8 +1,8 @@
 #gnss_worker.py
-
+"""This module contains the GnssWorker class, responsible for starting the managing QThreads - main task: fetching GPS data."""
 from PyQt5.QtCore import QThread, pyqtSignal
 import platform
-class GpsWorker(QThread):
+class GnssWorker(QThread):
     def __init__(self):
         super().__init__()
         self._running = True
