@@ -19,7 +19,7 @@ ColumnLayout{
     property string rectangleColor: "#00bfa5"
     property int divisionHeight: 5
     property int dataRowSpacing: 12
-    property string notAvailableText: "n/a"
+    property string notAvailableText: "Dev OFF"
 
     //Properties for input signals
     property bool isThreadRunning: false
@@ -50,6 +50,7 @@ ColumnLayout{
                 spacing: dataRowSpacing
                 //anchors.centerIn: parent
 
+                //Thread Status vertically to denote difference between the rest
                 Label{
                     font.bold: true
                     text: "GPS Thread Status:"
@@ -61,7 +62,8 @@ ColumnLayout{
 
                 Button{
                     text: isThreadRunning ? "STOP GPS" : "START GPS"
-                    onClicked: gps_backend.start_gnss_worker()
+                    //Needs backend update
+                    onClicked: isThreadRunning ? gps_backend.start_gnss_worker() : gps_backend.start_gnss_worker()
                 }
 
                 Rectangle{
@@ -70,7 +72,7 @@ ColumnLayout{
                     Layout.fillWidth: true
                 }
                 
-
+                //Position section
                 Label{
                     font.bold: true
                     text: "Position:"
@@ -80,21 +82,21 @@ ColumnLayout{
                     id: latRow
                     descriptionText: "Latitude: " 
                     readyText: latitude
-                    notReadyText: "Empty device"
+                    notReadyText: notAvailableText
                 }
 
                 DataRow{
                     id: longRow
                     descriptionText: "Longitude:"
                     readyText: longitude
-                    notReadyText: "Empty device"
+                    notReadyText: notAvailableText
                 }
 
                 DataRow{
                     id: altRow
                     descriptionText: "Altitude:"
                     readyText: altitude
-                    notReadyText: "Empty device"
+                    notReadyText: notAvailableText
                 }
             }
             
@@ -118,15 +120,15 @@ ColumnLayout{
                 DataRow{
                     id: gpsFixRow
                     descriptionText: "GPS fix:"
-                    readyText: "OK"
-                    notReadyText: "None"
+                    readyText: Number(gpsFix) > 1 ? gpsFix + "D" : ""
+                    notReadyText: notAvailableText
                 }
                 
                 DataRow{
                     id: satRow
                     descriptionText: "Satelites:"
                     readyText: satelitesNumber
-                    notReadyText: "None"
+                    notReadyText: notAvailableText
                 }
             }
 
@@ -150,14 +152,14 @@ ColumnLayout{
                     id: speedRow
                     descriptionText: "Speed:"
                     readyText: speed
-                    notReadyText: "Empty device"
+                    notReadyText: notAvailableText
                 }
 
                 DataRow{
                     id: headRow
                     descriptionText: "Heading:"
                     readyText: heading
-                    notReadyText: "Empty device"
+                    notReadyText: notAvailableText
                 }
             }
         }
@@ -166,43 +168,52 @@ ColumnLayout{
     Connections{
         target: gps_backend
         function onRunningStatusUpdated(isRunning) {
-            gpsThreadRunStatus.ready = isRunning
             isThreadRunning = isRunning
+
+            if(!isRunning) {
+                latRow.isReady = false
+                longRow.isReady = false
+                altRow.isReady = false
+                gpsFixRow.isReady = false
+                satRow.isReady = false
+                speedRow.isReady = false
+                headRow.isReady = false
+            }
         }
 
         function onLatitudeUpdated(value) {
-            latRow.notReadyText = value
-            latRow.ready = true
+            latitude = value
+            latRow.isReady = true
         }
 
         function onLongitudeUpdated(value) {
-            longRow.notReadyText = value
-            longRow.ready = true
+            longitude = value
+            longRow.isReady = true
         }
 
         function onAltitudeUpdated(value) {
-            altRow.notReadyText = value
-            altRow.ready = true
+            altitude = value
+            altRow.isReady = true
         }
 
         function onGpsFixUpdated(value) {
-            gpsFixRow.notReadyText = value
-            gpsFixRow.ready = true
+            gpsFix = value
+            gpsFixRow.isReady = true
         }
 
         function onSatelitesNumberUpdated(value) {
-            satRow.notReadyText = value
-            satRow.ready = true
+            satelitesNumber = value
+            satRow.isReady = true
         }
 
         function onSpeedUpdated(value) {
-            speedRow.notReadyText = value
-            speedRow.ready = true
+            speed = value
+            speedRow.isReady = true
         }
 
         function onHeadingUpdated(value) {
-            headRow.notReadyText = value
-            headRow.ready = true
+            heading = value
+            headRow.isReady = true
         }
     }
 }

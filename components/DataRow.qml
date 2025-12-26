@@ -11,14 +11,10 @@ RowLayout{
     id: root
 
     //Component variables
-    // Description Label
+    property bool isReady: false
     property string descriptionText: "?"
-    // Status Indicator - data field
-    property bool ready: false
     property string readyText: "?"
     property string notReadyText: "?"
-    property string readyIcon: ""
-    property string notReadyIcon: ""
 
     spacing: 8
 
@@ -29,10 +25,7 @@ RowLayout{
     }
 
     //Data variable text
-    StatusIndicator {
-        readyText: root.readyText
-        notReadyText: root.notReadyText
-        readyIcon: root.readyIcon
-        notReadyIcon: root.notReadyIcon
+    Text {
+        text: root.isReady ? root.readyText : root.notReadyText
     }
 }
