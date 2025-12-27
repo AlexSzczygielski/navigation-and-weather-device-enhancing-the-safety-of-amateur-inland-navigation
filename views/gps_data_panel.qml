@@ -31,6 +31,7 @@ RowLayout{
     property string satelitesNumber: notAvailableText
     property string speed: notAvailableText
     property string heading: notAvailableText
+    property string currentMap: "file:data/temp/current_map.png"
 
     
         
@@ -171,7 +172,7 @@ RowLayout{
     // Map Image
     Image{
         id: staticMap
-        source: "qrc:/assets/empty_map.png"
+        source: isThreadRunning ? currentMap : "qrc:/assets/empty_map.png"
         width: gps_backend.map_width
         height: gps_backend.map_height
         fillMode: Image.PreserveAspectFit
