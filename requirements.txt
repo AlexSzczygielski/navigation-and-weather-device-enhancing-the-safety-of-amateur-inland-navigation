@@ -4,5 +4,5 @@ opencv-python
 numpy
 pytest
 pytest-qt
-staticmap
+staticmap==0.5.7
 haversine

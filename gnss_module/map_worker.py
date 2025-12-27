@@ -1,8 +1,7 @@
 #map_worker.py
 
 from PyQt5.QtCore import QThread, pyqtSignal
-from staticmap import StaticMap, CircleMarker, tile_provider
-import os
+from gnss_module.map_service import MapService
 
 import config
 
@@ -23,28 +22,15 @@ class MapWorker(QThread):
     def run(self):
         print("MAP_WORKER STARTED")
         try:
-            #Chcek if the cache folder exists, if not create it
-            os.makedirs(self.cache_folder, exist_ok=True)
-
-            # Configure map tile provider for staticmap
-            provider = tile_provider.OSM()
-            provider.tile_cache = self.cache_folder
-
-            # Configure static map
-            m = StaticMap(config.MAP_WIDTH,config.MAP_HEIGHT, tile_provider=provider)
-            mark = CircleMarker(
-                coord=(self._new_longitude, self._new_latitude),
-                color='red',
-                width=12
+            map_service = MapService(
+                zoom=self._zoom,
+                latitude=self._new_latitude,
+                longitude=self._new_longitude
             )
-            m.add_marker(marker=mark)
 
-            # Render map
-            image = m.render(zoom=self._zoom)
-
-            #Save new map tile and emit filepath
-            image.save(self._map_tile_path)
-            self.mapReady.emit(self._map_tile_path)
+            ready_map = map_service.render_map()
+            if ready_map:
+                self.mapReady.emit(ready_map)
 
         except Exception as e:
             print(f"MapWorker failure: {e}")
