@@ -89,7 +89,7 @@ class CvWorker(QThread):
                         if not self._running:
                             break
 
-                        frame = queue.get(timeout=0.2)
+                        frame = queue.get(timeout=2)
                         if frame is None:
                             self.finished.emit("")
                             break

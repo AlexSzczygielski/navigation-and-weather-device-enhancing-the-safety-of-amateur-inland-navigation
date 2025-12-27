@@ -5,6 +5,13 @@ from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtCore import QUrl
 import platform
 
+# Set new process start method to 'spawn' - for correct YOLO initialization in vid processor
+from multiprocessing import set_start_method
+try:
+    set_start_method('spawn')
+except RuntimeError:
+    pass #Already set
+
 import qml_rc # DON'T DELETE
 from app.factories import create_backend
 
