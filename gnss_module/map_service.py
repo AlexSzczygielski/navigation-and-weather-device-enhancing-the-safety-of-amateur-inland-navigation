@@ -30,3 +30,4 @@ class MapService():
             os.makedirs("data/temp", exist_ok=True)
             save_path = "data/temp/current_map.png" #TODO: Change to pass this map as binary or encoded base64
             image.save(save_path)
+            return save_path
