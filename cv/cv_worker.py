@@ -2,6 +2,9 @@
 """This module contains the CvWorker class, responsible for starting the managing QThreads used by CvService Components"""
 from PyQt5.QtCore import QThread, pyqtSignal
 import os
+from queue import Empty
+
+from cv.cv_pipe_status import CvPipeStatus
 from cv.cv_service import CvService
 from cv.image_encoder import ImageEncoder
 
@@ -83,19 +86,36 @@ class CvWorker(QThread):
                 
 
                 case "mob_detection_pipe":
-                    queue = self._cv_service.run_mob_detect_pipe_process()
+                    status_queue, frame_queue = self._cv_service.run_mob_detect_pipe_process()
+                    cv_pipeline_running = False
 
-                    while True:
-                        if not self._running:
-                            break
+                    while self._running:
+                        try:
+                            status, msg = status_queue.get_nowait()
+                            if status == CvPipeStatus.Running:
+                                cv_pipeline_running = True
+                                print("CV pipe running")
 
-                        frame = queue.get(timeout=2)
-                        if frame is None:
-                            self.finished.emit("")
-                            break
+                            elif status == CvPipeStatus.END:
+                                cv_pipeline_running = False
+                                print("CV pipe end signal - stopping")
+                            
+                            elif status == CvPipeStatus.ERROR:
+                                print(f"CV pipe error: {msg}")
+                        except Empty:
+                            pass # No status message
                         
-                        frame_base64 = ImageEncoder.to_base64(frame)
-                        self.frameUpdate.emit(frame_base64)                            
+                        if cv_pipeline_running:
+                            try:
+                                frame = frame_queue.get(timeout=5)
+                                if frame is None: # END of stream
+                                    self.finished.emit("")
+                                    break
+                                
+                                frame_base64 = ImageEncoder.to_base64(frame)
+                                self.frameUpdate.emit(frame_base64)
+                            except Empty:
+                                continue
                 
                 case _:
                     raise ValueError(f"Unknown task: {self._task}")

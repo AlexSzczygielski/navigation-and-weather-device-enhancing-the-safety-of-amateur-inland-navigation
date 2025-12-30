@@ -3,10 +3,13 @@
 #This is a class file responsible for handling/coordinating operations connected with
 #Computer Vision modules
 #A context class in state pattern
+from multiprocessing import Process, Queue
+
+from cv.cv_pipe_status import CvPipeStatus
 from cv.cv_state import CvState
 from cv.roi_processor import RoiProcessor
 from cv.video_processor import VideoProcessor
-from multiprocessing import Process, Queue
+
 
 class CvService():
     """
@@ -76,12 +79,13 @@ class CvService():
         """Setup video input source (device/memory) - depending on state."""
         return self._state.get_vid_source()
 
-    def _start_video_process(self, vid_source, roi_mask, queue: Queue):
+    def _start_video_process(self, vid_source, roi_mask, status_queue: Queue, frame_queue: Queue):
         """
-        Manage separate process for MOB detection pipe.
+        THIS IS A SEPARATE process for MOB detection pipe.
 
         Uses run_mob_detect_pipe_process() for starting the process.
         Values from VideoProcessor.run_video_inference() are returned using yield.
+        Values are returned to main process using queue.
 
         Parameters:
         ----------
@@ -89,15 +93,22 @@ class CvService():
             Video source string.
         roi_mask : ndarray
             ROI mask coordinates
-        queue : multiprocessing.Queue
+        frame_queue : multiprocessing.Queue
             Queue used to send output frames to caller.
         """
-        v_processor = VideoProcessor(self._model_path, vid_source, roi_mask)
-        for frame in v_processor.run_video_inference():
-            if frame is None:
-                break
-            queue.put(frame) #Sending frames
-        queue.put(None) #end of frames
+        try:    
+            v_processor = VideoProcessor(self._model_path, vid_source, roi_mask)
+            status_queue.put((CvPipeStatus.Running, "")) # Sending status message
+            
+            for frame in v_processor.run_video_inference():
+                if frame is None:
+                    break
+                frame_queue.put(frame) #Sending frames
+            frame_queue.put(None) #end of frames
+            status_queue.put((CvPipeStatus.END, "")) # Sending end status
+
+        except Exception as e:
+            status_queue.put((CvPipeStatus.ERROR,str(e)))
 
     def run_mob_detect_pipe_process(self):
         """
@@ -112,10 +123,11 @@ class CvService():
             Queue emitting output frames.
         """
         vid_source = self.get_vid_source()
-        queue = Queue()
-        self._video_process = Process(target = self._start_video_process, args=(vid_source, self._mask_coords, queue))
+        status_queue = Queue()
+        frame_queue = Queue()
+        self._video_process = Process(target = self._start_video_process, args=(vid_source, self._mask_coords, status_queue, frame_queue))
         self._video_process.start()
-        return queue
+        return status_queue, frame_queue
     
     def stop_video_process(self):
         """Terminate mob detection separate process"""
