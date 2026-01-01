@@ -24,7 +24,7 @@ RowLayout{
 
     //Properties for input signals
     property bool isThreadRunning: false
-    property real latitude
+    property real latitude: gps_backend.gnss_data.latitude == "NaN" ? notAvailableText : gps_backend.gnss_data.latitude
     property real longitude
     property string altitude: notAvailableText
     property string gpsFix: notAvailableText
@@ -83,10 +83,14 @@ RowLayout{
                 }
 
                 DataRow{
-                    id: latRow
                     descriptionText: "Latitude: " 
                     readyText: latitude >= 0 ? latitude.toFixed(coordsPrecision) + " N" : (-latitude).toFixed(coordsPrecision) + " S"
-                    notReadyText: notAvailableText
+                    notReadyText: {
+                        if(!Number.isFinite(latitude)) {
+                            return notAvailableText
+                        }
+                        else {latitude >= 0 ? latitude.toFixed(coordsPrecision) + " N" : (-latitude).toFixed(coordsPrecision) + " S"}
+                    }
                 }
 
                 DataRow{

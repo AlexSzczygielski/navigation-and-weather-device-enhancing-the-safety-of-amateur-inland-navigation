@@ -2,13 +2,15 @@
 """This module contains the GnssWorker class, responsible for starting the managing QThreads - main task: fetching GPS data."""
 from PyQt5.QtCore import QThread, pyqtSignal
 import platform
+from gnss_module.gnss_data import GnssData
+
 class GnssWorker(QThread):
-    def __init__(self):
+    def __init__(self, gnss_data):
         super().__init__()
+        self.gnss_data = gnss_data
         self._running = True
 
     runningStatus = pyqtSignal(bool)
-    latitude = pyqtSignal(float)
     longitude = pyqtSignal(float)
     altitude = pyqtSignal(str)
     gpsFix = pyqtSignal(str)
@@ -35,7 +37,7 @@ class GnssWorker(QThread):
 
                 if report['class'] =='TPV':
                     if hasattr(report,'lat'):
-                        self.latitude.emit(float(report.lat))
+                        self.gnss_data.latitude = float(report.lat)
                         
                     if hasattr(report,'lon'):
                         self.longitude.emit(float(report.lon))

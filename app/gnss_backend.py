@@ -1,4 +1,4 @@
-#gps_backend.py
+#gnss_backend.py
 """This module contains the GnssBackend class responsible for managing backend of the GPS components."""
 
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
@@ -6,6 +6,7 @@ from haversine import haversine, Unit
 
 from gnss_module.gnss_worker import GnssWorker
 from gnss_module.map_worker import MapWorker
+from gnss_module.gnss_data import GnssData
 import config
 
 class GnssBackend(QObject):
@@ -13,6 +14,7 @@ class GnssBackend(QObject):
         super().__init__()
         self._gnss_worker = None
         self._map_worker = None
+        self._gnss_data = GnssData()
         self._last_latitude = None
         self._last_longitude = None
 
@@ -33,6 +35,10 @@ class GnssBackend(QObject):
         self._map_worker = None
 
     #Possible signals GnssWorker
+    @pyqtProperty(QObject, constant=True)
+    def gnss_data(self):
+        return self._gnss_data
+    
     runningStatusUpdated = pyqtSignal(bool)
     latitudeUpdated = pyqtSignal(float)
     longitudeUpdated = pyqtSignal(float)
@@ -60,9 +66,9 @@ class GnssBackend(QObject):
                 print("Previous worker still running")
                 return
             
-            self._gnss_worker = GnssWorker()
+            self._gnss_worker = GnssWorker(gnss_data=self.gnss_data)
             """Method on_x_updated is called automatically whenever x emits value. Arguments are automatically passed to the pointed method."""
-            self._gnss_worker.latitude.connect(self._on_latitude_updated)
+            #self._gnss_worker.latitude.connect(self._on_latitude_updated)
             self._gnss_worker.longitude.connect(self._on_longitude_updated)
 
             self._gnss_worker.altitude.connect(self.altitudeUpdated)

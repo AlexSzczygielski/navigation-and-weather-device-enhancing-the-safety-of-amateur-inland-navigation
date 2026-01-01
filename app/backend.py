@@ -2,7 +2,7 @@
 """This module contains Backend class - wrapper of all backends used in this app."""
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
 from app.cv_backend import CvBackend
-from app.gps_backend import GnssBackend
+from app.gnss_backend import GnssBackend
 
 class Backend(QObject):
     """
