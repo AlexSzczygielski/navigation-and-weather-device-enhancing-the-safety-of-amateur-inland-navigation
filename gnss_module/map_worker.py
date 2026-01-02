@@ -2,22 +2,24 @@
 
 from PyQt5.QtCore import QThread, pyqtSignal
 from gnss_module.map_service import MapService
+from gnss_data import GnssData
 
 import config
 
 class MapWorker(QThread):
-    def __init__(self, new_latitude, new_longitude, zoom=config.MAP_STANDARD_ZOOM):
+    def __init__(self, gnss_data: GnssData, new_latitude, new_longitude, zoom=config.MAP_STANDARD_ZOOM):
         super().__init__()
         self._running = True
+        self._gnss_data = gnss_data
         self._new_latitude = new_latitude
         self._new_longitude = new_longitude
         self._map_tile_path = "data/map_tiles/temp_map.png"
         self._zoom = zoom
 
-    mapReady = pyqtSignal(str)
+    
     error = pyqtSignal(str)
 
-    cache_folder = "data/map_tiles/osm_map_tiles_cache"
+    cache_folder = config.MAP_CACHE_FOLDER
 
     def run(self):
         print("MAP_WORKER STARTED")
@@ -30,7 +32,7 @@ class MapWorker(QThread):
 
             ready_map = map_service.render_map()
             if ready_map:
-                self.mapReady.emit(ready_map)
+                self._gnss_data.newMap = ready_map
 
         except Exception as e:
             print(f"MapWorker failure: {e}")

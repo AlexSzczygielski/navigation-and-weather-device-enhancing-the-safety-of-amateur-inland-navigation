@@ -135,8 +135,7 @@ class GnssBackend(QObject):
             if self.should_update_map(new_latitude, new_longitude) == False:
                 return
             else:
-                self._map_worker = MapWorker(new_latitude=new_latitude, new_longitude=new_longitude)
-                self._map_worker.mapReady.connect(self.mapUpdated)
+                self._map_worker = MapWorker(self._gnss_data, new_latitude=new_latitude, new_longitude=new_longitude)
                 self._map_worker.error.connect(self._on_update_map_worker_error)
                 self._map_worker.finished.connect(self._on_update_map_worker_finished)
                 self._map_worker.finished.connect(self._map_worker.deleteLater)

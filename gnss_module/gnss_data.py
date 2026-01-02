@@ -4,6 +4,7 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtProperty
 class GnssData(QObject):
     def __init__(self):
         super().__init__()
+        # gnss_worker
         self._latitude = float('nan')
         self._longitude = float('nan')
         self._altitude = float('nan')
@@ -13,8 +14,12 @@ class GnssData(QObject):
         self._satellitesNumber = "None"
         self._runningStatus = False
         self._gpsFix = "None"
+
+        # map_worker
+        self._newMap = ""
     
     # --- Update signals - notify QML frontend about new data ---
+    # gnss_worker
     latitudeChanged = pyqtSignal(float)
     longitudeChanged = pyqtSignal(float)
     altitudeChanged = pyqtSignal(float)
@@ -25,9 +30,13 @@ class GnssData(QObject):
     satellitesNumberChanged = pyqtSignal(str)
     gpsFixChanged = pyqtSignal(str)
 
+    # map_worker
+    newMapChanged = pyqtSignal(str)
+
     # ---
 
     # --- Properties - getters and setters used by QML frontend
+    # gnss_worker
     @pyqtProperty(float, notify=latitudeChanged)
     def latitude(self):
         return self._latitude
@@ -107,3 +116,14 @@ class GnssData(QObject):
         if self._satellitesNumber != value:
             self._satellitesNumber = value
             self.satellitesNumberChanged.emit(self._satellitesNumber)
+    
+    # map_worker
+    @pyqtProperty(str, notify=newMapChanged)
+    def newMap(self):
+        return self._newMap
+    
+    @newMap.setter
+    def newMap(self,value):
+        if self._newMap != value:
+            self._newMap = value
+            self.newMapChanged.emit(self._newMap)

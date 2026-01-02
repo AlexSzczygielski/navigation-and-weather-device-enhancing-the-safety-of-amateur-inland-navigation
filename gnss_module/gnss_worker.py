@@ -5,7 +5,7 @@ import platform
 from gnss_module.gnss_data import GnssData
 
 class GnssWorker(QThread):
-    def __init__(self, gnss_data):
+    def __init__(self, gnss_data: GnssData):
         super().__init__()
         self.gnss_data = gnss_data
         self._running = True

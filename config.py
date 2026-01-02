@@ -5,6 +5,7 @@
 MAP_WIDTH = 500
 MAP_HEIGHT = 500
 MAP_STANDARD_ZOOM = 15 # 1-19 constraint
+MAP_CACHE_FOLDER = "data/map_tiles/osm_map_tiles_cache"
 #--------------------
 
 # CV Computer Vision configuration
