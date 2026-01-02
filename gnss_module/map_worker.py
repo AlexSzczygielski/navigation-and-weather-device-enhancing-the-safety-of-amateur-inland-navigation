@@ -3,7 +3,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from gnss_module.map_service import MapService
 from gnss_module.gnss_data import GnssData
-from cv.image_encoder import ImageEncoder
 
 import config
 
@@ -18,6 +17,7 @@ class MapWorker(QThread):
 
     
     error = pyqtSignal(str)
+    
 
     cache_folder = config.MAP_CACHE_FOLDER
 
@@ -34,6 +34,7 @@ class MapWorker(QThread):
 
             if ready_map:
                 self._gnss_data.newMap = ready_map
+                self._gnss_data.zoom = self._zoom
 
         except Exception as e:
             print(f"MapWorker failure: {e}")

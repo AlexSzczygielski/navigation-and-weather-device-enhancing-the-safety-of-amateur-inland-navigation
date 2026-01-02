@@ -5,6 +5,8 @@
 MAP_WIDTH = 500
 MAP_HEIGHT = 500
 MAP_STANDARD_ZOOM = 15 # 1-19 constraint
+MAP_MAX_ZOOM = 19
+MAP_MIN_ZOOM = 1
 MAP_CACHE_FOLDER = "data/map_tiles/osm_map_tiles_cache"
 #--------------------
 

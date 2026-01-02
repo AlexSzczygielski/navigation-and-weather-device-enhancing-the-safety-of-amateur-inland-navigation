@@ -106,9 +106,12 @@ class GnssBackend(QObject):
     ###
 
     ### MAP WORKER ###
-    def should_update_map(self, new_latitude, new_longitude, minimum_distance = 10):
+    def should_update_map(self, new_latitude, new_longitude, minimum_distance = 1, new_zoom=None):
         # first update - check if class members exist
         if self._last_latitude is None or self._last_longitude is None:
+            return True
+        # If user wants to update zoom - allow it
+        if new_zoom is not None: 
             return True
         
         #get distance between last position and new position in meters
@@ -117,29 +120,30 @@ class GnssBackend(QObject):
             point2=(new_latitude, new_longitude),
             unit=Unit.METERS 
         )
-
         return distance_change >= minimum_distance
 
-    def _update_map_worker(self, new_latitude, new_longitude):
+    def _update_map_worker(self, new_latitude, new_longitude, new_zoom=None):
         try:
             #Ensure old worker is cleaned up
             if self._map_worker and self._map_worker.isRunning():
-                print("Previous worker still running")
                 return
             
             #Prevent single coordinate race
             if new_latitude is None or new_longitude is None:
-                return
-            
+                    return
+                
             # Decision about fetching new map
-            if self.should_update_map(new_latitude, new_longitude) == False:
-                return
-            else:
-                self._map_worker = MapWorker(self._gnss_data, new_latitude=new_latitude, new_longitude=new_longitude)
+            if self.should_update_map(new_latitude, new_longitude, new_zoom=new_zoom):
+                if new_zoom is None:
+                    self._map_worker = MapWorker(self._gnss_data, new_latitude=new_latitude, new_longitude=new_longitude)
+                else:
+                    self._map_worker = MapWorker(self._gnss_data, new_latitude=new_latitude, new_longitude=new_longitude, zoom=new_zoom)
                 self._map_worker.error.connect(self._on_update_map_worker_error)
                 self._map_worker.finished.connect(self._on_update_map_worker_finished)
                 self._map_worker.finished.connect(self._map_worker.deleteLater)
                 self._map_worker.start()
+            else:
+                return
         except Exception as e:
             print(f"{self.__class__.__name__}._update_map_worker error: {e}")
         
@@ -152,4 +156,30 @@ class GnssBackend(QObject):
     def _on_update_map_worker_error(self):
         """Emits error GUI."""
         print("error")
+    
+    @pyqtSlot(str)
+    def change_zoom(self, direction=None):
+        if direction is None:
+            self.error.emit("Zoom direction was not passed, abandon zoom change.")
+            return
+        if self.gnss_data.zoom < 0:
+            self.error.emit("Zoom not available, abandon zoom change.")
+            return
+        
+        if direction == "+":
+            new_zoom = self._gnss_data.zoom + 1
+        elif direction == "-":
+            new_zoom = self._gnss_data.zoom - 1
+        else:
+            self.error.emit("Wrong direction, abandon zoom change.")
+            return
+        
+        # Limit zoom range
+        new_zoom = max(config.MAP_MIN_ZOOM, min(config.MAP_MAX_ZOOM, new_zoom))
+
+        self._update_map_worker(
+            new_latitude=self._last_latitude,
+            new_longitude=self._last_longitude,
+            new_zoom=new_zoom
+        )
     ###

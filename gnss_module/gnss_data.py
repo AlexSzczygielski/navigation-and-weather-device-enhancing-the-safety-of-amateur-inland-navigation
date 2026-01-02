@@ -17,6 +17,7 @@ class GnssData(QObject):
 
         # map_worker
         self._newMap = ""
+        self._zoom = -1
     
     # --- Update signals - notify QML frontend about new data ---
     # gnss_worker
@@ -32,6 +33,7 @@ class GnssData(QObject):
 
     # map_worker
     newMapChanged = pyqtSignal(str)
+    zoomChanged = pyqtSignal(int)
 
     # ---
 
@@ -127,3 +129,13 @@ class GnssData(QObject):
         if self._newMap != value:
             self._newMap = value
             self.newMapChanged.emit(self._newMap)
+
+    @pyqtProperty(int, notify=zoomChanged)
+    def zoom(self):
+        return self._zoom
+    
+    @zoom.setter
+    def zoom(self,value):
+        if self._zoom != value:
+            self._zoom = value
+            self.zoomChanged.emit(self._zoom)

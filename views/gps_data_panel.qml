@@ -171,13 +171,41 @@ RowLayout{
         }
     }
 
-    // Map Image
-    Image{
-        id: staticMap
-        source: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.newMap : noFixMap
-        width: gnss_backend.map_width
-        height: gnss_backend.map_height
-        fillMode: Image.PreserveAspectFit
-        cache: false
+    // Map Section
+    ColumnLayout{
+        
+        Image{
+            id: staticMap
+            source: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.newMap : noFixMap
+            width: gnss_backend.map_width
+            height: gnss_backend.map_height
+            fillMode: Image.PreserveAspectFit
+            cache: false
+        }
+
+        RowLayout{
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 12
+            Button{
+                text: "-"
+                onClicked: gnss_backend.change_zoom("-")
+            }
+
+            DataRow{
+                descriptionText: "Zoom: "
+                dataText: {
+                    if(gnss_backend.gnss_data.runningStatus){
+                        gnss_backend.gnss_data.zoom > -1 ? gnss_backend.gnss_data.zoom : "?"
+                    }
+                    else{""}
+                }
+            }
+
+            Button{
+                text: "+"
+                onClicked: gnss_backend.change_zoom("+")
+            }
+        }
     }
 }
