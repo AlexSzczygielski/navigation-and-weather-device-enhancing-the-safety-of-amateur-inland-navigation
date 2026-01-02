@@ -2,7 +2,8 @@
 
 from PyQt5.QtCore import QThread, pyqtSignal
 from gnss_module.map_service import MapService
-from gnss_data import GnssData
+from gnss_module.gnss_data import GnssData
+from cv.image_encoder import ImageEncoder
 
 import config
 
@@ -13,7 +14,6 @@ class MapWorker(QThread):
         self._gnss_data = gnss_data
         self._new_latitude = new_latitude
         self._new_longitude = new_longitude
-        self._map_tile_path = "data/map_tiles/temp_map.png"
         self._zoom = zoom
 
     
@@ -30,7 +30,8 @@ class MapWorker(QThread):
                 longitude=self._new_longitude
             )
 
-            ready_map = map_service.render_map()
+            ready_map = "data:image/png;base64," + map_service.render_map()
+
             if ready_map:
                 self._gnss_data.newMap = ready_map
 

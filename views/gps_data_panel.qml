@@ -23,7 +23,7 @@ RowLayout{
     property int coordsPrecision: 5
 
     //Properties 
-    property string noFixMap: "file:data/temp/current_map.png"
+    property string noFixMap: "qrc:/assets/empty_map.png"
 
     
         
@@ -174,21 +174,10 @@ RowLayout{
     // Map Image
     Image{
         id: staticMap
-        source: gnss_backend.gnss_data.runningStatus ? noFixMap : "qrc:/assets/empty_map.png"
+        source: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.newMap : noFixMap
         width: gnss_backend.map_width
         height: gnss_backend.map_height
         fillMode: Image.PreserveAspectFit
         cache: false
-    }
-
-    
-
-    Connections{
-        target: gnss_backend
-
-        function onMapUpdated(path) {
-            staticMap.source = ""
-            staticMap.source = "file:" + path
-        }
     }
 }

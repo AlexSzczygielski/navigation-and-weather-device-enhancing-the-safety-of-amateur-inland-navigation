@@ -4,6 +4,10 @@ from staticmap import CircleMarker
 import config
 import os
 
+from PIL import Image
+from io import BytesIO
+import base64
+
 class MapService():
     def __init__(self, zoom=None, latitude = None, longitude=None):
           self._zoom = zoom
@@ -24,10 +28,12 @@ class MapService():
             m.add_marker(marker=mark)
 
             # Render map
-            image = m.render(zoom=self._zoom)
+            image = m.render(zoom=self._zoom) #PIL object
 
-            #Save new map tile and emit filepath
-            os.makedirs("data/temp", exist_ok=True)
-            save_path = "data/temp/current_map.png" #TODO: Change to pass this map as binary or encoded base64
-            image.save(save_path)
-            return save_path
+            return self._encode_pil_to_base_64(image)
+
+    def _encode_pil_to_base_64(self, image: Image.Image):
+          buffer = BytesIO()
+          image.save(buffer, format="PNG")
+          buffer.seek(0)
+          return base64.b64encode(buffer.read()).decode("utf-8")
