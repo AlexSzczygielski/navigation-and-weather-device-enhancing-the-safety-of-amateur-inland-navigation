@@ -48,8 +48,9 @@ class GnssWorker(QThread):
                 
                 if report['class'] == 'SKY':
                     if hasattr(report, 'satellites'):
-                        self.gnss_data.satellitesNumber=len(report.satellites)
-                        print("sats: ", report.satellites)
+                        used_sats = len([sat for sat in report.satellites if sat['used']])
+                        seen_sats = len(report.satellites)
+                        self.gnss_data.satellitesNumber=f"{used_sats}/{seen_sats}"
 
         except Exception as e:
             print(f"GnssWorker failure: {e}")

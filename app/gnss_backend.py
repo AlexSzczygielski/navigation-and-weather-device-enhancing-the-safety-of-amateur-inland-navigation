@@ -82,12 +82,10 @@ class GnssBackend(QObject):
     
     def _on_latitude_updated(self, latitude):
         #First emit signal, later update map
-        self.latitudeUpdated.emit(latitude)
         self._last_latitude = latitude
     
     def _on_longitude_updated(self, longitude):
         #First emit signal, later update map
-        self.longitudeUpdated.emit(longitude)
         self._update_map_worker(self._last_latitude,longitude)
 
         #Update class's last longitude **after** map update

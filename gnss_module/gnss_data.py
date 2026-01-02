@@ -10,7 +10,7 @@ class GnssData(QObject):
         self._speed = float('nan')
         self._heading = float('nan')
         
-        self._satellitesNumber = -1
+        self._satellitesNumber = "None"
         self._runningStatus = False
         self._gpsFix = "None"
     
@@ -21,8 +21,8 @@ class GnssData(QObject):
     speedChanged = pyqtSignal(float)
     headingChanged = pyqtSignal(float)
 
-    satellitesNumberChanged = pyqtSignal(int)
     runningStatusChanged = pyqtSignal(bool)
+    satellitesNumberChanged = pyqtSignal(str)
     gpsFixChanged = pyqtSignal(str)
 
     # ---
@@ -98,7 +98,7 @@ class GnssData(QObject):
             self._gpsFix = value
             self.gpsFixChanged.emit(self._gpsFix)
 
-    @pyqtProperty(int, notify=satellitesNumberChanged)
+    @pyqtProperty(str, notify=satellitesNumberChanged)
     def satellitesNumber(self):
         return self._satellitesNumber
 

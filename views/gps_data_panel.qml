@@ -15,7 +15,7 @@ RowLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
     property int borderWidth: 3
-    property int firstColumnWidth: 220
+    property int firstColumnWidth: 230
     property string rectangleColor: "#00bfa5"
     property int divisionHeight: 5
     property int dataRowSpacing: 12
@@ -77,26 +77,26 @@ RowLayout{
                 DataRow{
                     descriptionText: "Latitude: " 
                     dataText: {
-                        if(!Number.isFinite(gnss_backend.gnss_data.latitude)) {
-                            return notAvailableText
+                        if(gnss_backend.gnss_data.runningStatus) {
+                            gnss_backend.gnss_data.latitude >= 0 ? gnss_backend.gnss_data.latitude.toFixed(coordsPrecision) + " N" : (-gnss_backend.gnss_data.latitude).toFixed(coordsPrecision) + " S"
                         }
-                        else {gnss_backend.gnss_data.latitude >= 0 ? gnss_backend.gnss_data.latitude.toFixed(coordsPrecision) + " N" : (-gnss_backend.gnss_data.latitude).toFixed(coordsPrecision) + " S"}
+                        else {notAvailableText}
                     }
                 }
 
                 DataRow{
                     descriptionText: "Longitude:"
                     dataText: {
-                        if(!Number.isFinite(gnss_backend.gnss_data.longitude)) {
-                            return notAvailableText
+                        if(gnss_backend.gnss_data.runningStatus) {
+                            gnss_backend.gnss_data.longitude >= 0 ? gnss_backend.gnss_data.longitude.toFixed(coordsPrecision) + " E" : (-gnss_backend.gnss_data.longitude).toFixed(coordsPrecision) + " W"
                         }
-                        else {gnss_backend.gnss_data.longitude >= 0 ? gnss_backend.gnss_data.longitude.toFixed(coordsPrecision) + " E" : (-gnss_backend.gnss_data.longitude).toFixed(coordsPrecision) + " W"}
+                        else {notAvailableText}
                     }
                 }
 
                 DataRow{
                     descriptionText: "Altitude:"
-                    dataText: !Number.isFinite(gnss_backend.gnss_data.altitude) ? notAvailableText : gnss_backend.gnss_data.altitude
+                    dataText: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.altitude : notAvailableText
                 }
             }
             
@@ -121,15 +121,22 @@ RowLayout{
                     id: gpsFixRow
                     descriptionText: "GPS fix:"
                     dataText: {
-                        var fix = gnss_backend.gnss_data.gpsFix;
-                        return Number(fix) > 1 ? fix + "D" : notAvailableText;
+                        if(gnss_backend.gnss_data.runningStatus){
+                            gnss_backend.gnss_data.gpsFix > 1 ? gnss_backend.gnss_data.gpsFix + "D" : "No";
+                        }
+                        else{notAvailableText}
                     }
                 }
                 
                 DataRow{
                     id: satRow
-                    descriptionText: "satellites:"
-                    dataText: gnss_backend.gnss_data.satellitesNumber < 0 ? notAvailableText : gnss_backend.gnss_data.satellitesNumber
+                    descriptionText: "Used/Seen Sats:"
+                    dataText: {
+                        if(gnss_backend.gnss_data.runningStatus){
+                            gnss_backend.gnss_data.satellitesNumber < 0 ? notAvailableText : gnss_backend.gnss_data.satellitesNumber
+                        }
+                        else{notAvailableText}
+                    }
                 }
             }
 
@@ -152,13 +159,13 @@ RowLayout{
                 DataRow{
                     id: speedRow
                     descriptionText: "Speed:"
-                    dataText: !Number.isFinite(gnss_backend.gnss_data.speed) ? notAvailableText : gnss_backend.gnss_data.speed
+                    dataText: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.speed : notAvailableText
                 }
 
                 DataRow{
                     id: headRow
                     descriptionText: "Heading:"
-                    dataText: !Number.isFinite(gnss_backend.gnss_data.heading) ? notAvailableText : gnss_backend.gnss_data.heading
+                    dataText: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.heading : notAvailableText
                 }
             }
         }
