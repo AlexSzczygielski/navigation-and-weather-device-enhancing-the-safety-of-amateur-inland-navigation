@@ -39,15 +39,6 @@ class GnssBackend(QObject):
     def gnss_data(self):
         return self._gnss_data
     
-    runningStatusUpdated = pyqtSignal(bool)
-    latitudeUpdated = pyqtSignal(float)
-    longitudeUpdated = pyqtSignal(float)
-    altitudeUpdated = pyqtSignal(str)
-    gpsFixUpdated = pyqtSignal(str)
-    satelitesNumberUpdated = pyqtSignal(str)
-    speedUpdated = pyqtSignal(str)
-    headingUpdated = pyqtSignal(str)
-    
     # Possible signals Map Configuration
     mapWidthChanged = pyqtSignal()
     mapHeightChanged = pyqtSignal()
@@ -68,15 +59,9 @@ class GnssBackend(QObject):
             
             self._gnss_worker = GnssWorker(gnss_data=self.gnss_data)
             """Method on_x_updated is called automatically whenever x emits value. Arguments are automatically passed to the pointed method."""
-            #self._gnss_worker.latitude.connect(self._on_latitude_updated)
-            self._gnss_worker.longitude.connect(self._on_longitude_updated)
+            self._gnss_data.latitudeChanged.connect(self._on_latitude_updated)
+            self._gnss_data.longitudeChanged.connect(self._on_longitude_updated)
 
-            self._gnss_worker.altitude.connect(self.altitudeUpdated)
-            self._gnss_worker.speed.connect(self.speedUpdated)
-            self._gnss_worker.heading.connect(self.headingUpdated)
-            self._gnss_worker.satelitesNumber.connect(self.satelitesNumberUpdated)
-            self._gnss_worker.gpsFix.connect(self.gpsFixUpdated)
-            self._gnss_worker.runningStatus.connect(self.runningStatusUpdated)
             self._gnss_worker.error.connect(self.error)
 
             self._gnss_worker.finished.connect(self._on_start_gnss_worker_finished)

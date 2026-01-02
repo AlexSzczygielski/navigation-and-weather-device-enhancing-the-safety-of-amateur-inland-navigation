@@ -22,16 +22,8 @@ RowLayout{
     property string notAvailableText: "Dev OFF"
     property int coordsPrecision: 5
 
-    //Properties for input signals
-    property bool isThreadRunning: false
-    property real latitude: gps_backend.gnss_data.latitude == "NaN" ? notAvailableText : gps_backend.gnss_data.latitude
-    property real longitude
-    property string altitude: notAvailableText
-    property string gpsFix: notAvailableText
-    property string satelitesNumber: notAvailableText
-    property string speed: notAvailableText
-    property string heading: notAvailableText
-    property string currentMap: "file:data/temp/current_map.png"
+    //Properties 
+    property string noFixMap: "file:data/temp/current_map.png"
 
     
         
@@ -61,13 +53,13 @@ RowLayout{
                 }
 
                 Label{
-                    text: isThreadRunning ? "Running" : "Not Running"
+                    text: gnss_backend.gnss_data.runningStatus ? "Running" : "Not Running"
                 }
 
                 Button{
-                    text: isThreadRunning ? "STOP GPS" : "START GPS"
+                    text: gnss_backend.gnss_data.runningStatus ? "STOP GPS" : "START GPS"
                     //Needs backend update
-                    onClicked: isThreadRunning ? gps_backend.start_gnss_worker() : gps_backend.start_gnss_worker()
+                    onClicked: gnss_backend.gnss_data.runningStatus ? gnss_backend.start_gnss_worker() : gnss_backend.start_gnss_worker()
                 }
 
                 Rectangle{
@@ -84,27 +76,27 @@ RowLayout{
 
                 DataRow{
                     descriptionText: "Latitude: " 
-                    readyText: latitude >= 0 ? latitude.toFixed(coordsPrecision) + " N" : (-latitude).toFixed(coordsPrecision) + " S"
-                    notReadyText: {
-                        if(!Number.isFinite(latitude)) {
+                    dataText: {
+                        if(!Number.isFinite(gnss_backend.gnss_data.latitude)) {
                             return notAvailableText
                         }
-                        else {latitude >= 0 ? latitude.toFixed(coordsPrecision) + " N" : (-latitude).toFixed(coordsPrecision) + " S"}
+                        else {gnss_backend.gnss_data.latitude >= 0 ? gnss_backend.gnss_data.latitude.toFixed(coordsPrecision) + " N" : (-gnss_backend.gnss_data.latitude).toFixed(coordsPrecision) + " S"}
                     }
                 }
 
                 DataRow{
-                    id: longRow
                     descriptionText: "Longitude:"
-                    readyText: longitude >= 0 ? longitude.toFixed(coordsPrecision) + " E" : (-longitude).toFixed(coordsPrecision) + " W"
-                    notReadyText: notAvailableText
+                    dataText: {
+                        if(!Number.isFinite(gnss_backend.gnss_data.longitude)) {
+                            return notAvailableText
+                        }
+                        else {gnss_backend.gnss_data.longitude >= 0 ? gnss_backend.gnss_data.longitude.toFixed(coordsPrecision) + " E" : (-gnss_backend.gnss_data.longitude).toFixed(coordsPrecision) + " W"}
+                    }
                 }
 
                 DataRow{
-                    id: altRow
                     descriptionText: "Altitude:"
-                    readyText: altitude
-                    notReadyText: notAvailableText
+                    dataText: !Number.isFinite(gnss_backend.gnss_data.altitude) ? notAvailableText : gnss_backend.gnss_data.altitude
                 }
             }
             
@@ -128,15 +120,16 @@ RowLayout{
                 DataRow{
                     id: gpsFixRow
                     descriptionText: "GPS fix:"
-                    readyText: Number(gpsFix) > 1 ? gpsFix + "D" : ""
-                    notReadyText: notAvailableText
+                    dataText: {
+                        var fix = gnss_backend.gnss_data.gpsFix;
+                        return Number(fix) > 1 ? fix + "D" : notAvailableText;
+                    }
                 }
                 
                 DataRow{
                     id: satRow
-                    descriptionText: "Satelites:"
-                    readyText: satelitesNumber
-                    notReadyText: notAvailableText
+                    descriptionText: "satellites:"
+                    dataText: gnss_backend.gnss_data.satellitesNumber < 0 ? notAvailableText : gnss_backend.gnss_data.satellitesNumber
                 }
             }
 
@@ -159,15 +152,13 @@ RowLayout{
                 DataRow{
                     id: speedRow
                     descriptionText: "Speed:"
-                    readyText: speed
-                    notReadyText: notAvailableText
+                    dataText: !Number.isFinite(gnss_backend.gnss_data.speed) ? notAvailableText : gnss_backend.gnss_data.speed
                 }
 
                 DataRow{
                     id: headRow
                     descriptionText: "Heading:"
-                    readyText: heading
-                    notReadyText: notAvailableText
+                    dataText: !Number.isFinite(gnss_backend.gnss_data.heading) ? notAvailableText : gnss_backend.gnss_data.heading
                 }
             }
         }
@@ -176,9 +167,9 @@ RowLayout{
     // Map Image
     Image{
         id: staticMap
-        source: isThreadRunning ? currentMap : "qrc:/assets/empty_map.png"
-        width: gps_backend.map_width
-        height: gps_backend.map_height
+        source: gnss_backend.gnss_data.runningStatus ? noFixMap : "qrc:/assets/empty_map.png"
+        width: gnss_backend.map_width
+        height: gnss_backend.map_height
         fillMode: Image.PreserveAspectFit
         cache: false
     }
@@ -186,59 +177,11 @@ RowLayout{
     
 
     Connections{
-        target: gps_backend
-        function onRunningStatusUpdated(isRunning) {
-            isThreadRunning = isRunning
-
-            if(!isRunning) {
-                latRow.isReady = false
-                longRow.isReady = false
-                altRow.isReady = false
-                gpsFixRow.isReady = false
-                satRow.isReady = false
-                speedRow.isReady = false
-                headRow.isReady = false
-            }
-        }
+        target: gnss_backend
 
         function onMapUpdated(path) {
             staticMap.source = ""
             staticMap.source = "file:" + path
-        }
-
-        function onLatitudeUpdated(value) {
-            latitude = value
-            latRow.isReady = true
-        }
-
-        function onLongitudeUpdated(value) {
-            longitude = value
-            longRow.isReady = true
-        }
-
-        function onAltitudeUpdated(value) {
-            altitude = value
-            altRow.isReady = true
-        }
-
-        function onGpsFixUpdated(value) {
-            gpsFix = value
-            gpsFixRow.isReady = true
-        }
-
-        function onSatelitesNumberUpdated(value) {
-            satelitesNumber = value
-            satRow.isReady = true
-        }
-
-        function onSpeedUpdated(value) {
-            speed = value
-            speedRow.isReady = true
-        }
-
-        function onHeadingUpdated(value) {
-            heading = value
-            headRow.isReady = true
         }
     }
 }

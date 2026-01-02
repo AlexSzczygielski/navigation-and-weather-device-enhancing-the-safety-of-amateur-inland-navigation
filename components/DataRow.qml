@@ -11,10 +11,8 @@ RowLayout{
     id: root
 
     //Component variables
-    property bool isReady: false
     property string descriptionText: "?"
-    property string readyText: "?"
-    property string notReadyText: "?"
+    property string dataText: "?"
 
     spacing: 8
 
@@ -26,6 +24,6 @@ RowLayout{
 
     //Data variable text
     Text {
-        text: root.isReady ? root.readyText : root.notReadyText
+        text: dataText
     }
 }

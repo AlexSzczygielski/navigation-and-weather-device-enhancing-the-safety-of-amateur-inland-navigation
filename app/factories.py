@@ -9,7 +9,7 @@ from app.gnss_backend import GnssBackend
 def create_backend():
     return Backend(
         create_cv_backend(),
-        create_gps_backend()
+        create_gnss_backend()
     )
 
 def create_cv_backend():
@@ -18,5 +18,5 @@ def create_cv_backend():
         vid_model_path=config.MODEL_WEIGHTS["yolo11"]
     )
 
-def create_gps_backend():
+def create_gnss_backend():
     return GnssBackend()

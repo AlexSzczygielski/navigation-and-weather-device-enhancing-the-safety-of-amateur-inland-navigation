@@ -10,14 +10,6 @@ class GnssWorker(QThread):
         self.gnss_data = gnss_data
         self._running = True
 
-    runningStatus = pyqtSignal(bool)
-    longitude = pyqtSignal(float)
-    altitude = pyqtSignal(str)
-    gpsFix = pyqtSignal(str)
-    satelitesNumber = pyqtSignal(str)
-    speed = pyqtSignal(str)
-    heading = pyqtSignal(str)
-
     error = pyqtSignal(str)
 
     def run(self):
@@ -33,35 +25,36 @@ class GnssWorker(QThread):
         try:
             while self._running:
                 report = session.next()
-                self.runningStatus.emit(True)
+                self.gnss_data.runningStatus = True
 
                 if report['class'] =='TPV':
                     if hasattr(report,'lat'):
                         self.gnss_data.latitude = float(report.lat)
                         
                     if hasattr(report,'lon'):
-                        self.longitude.emit(float(report.lon))
+                        self.gnss_data.longitude=float(report.lon)
 
                     if hasattr(report,'alt'):
-                        self.altitude.emit(f"{report.alt:.6f}")
+                        self.gnss_data.altitude=float(report.alt)
                     
                     if hasattr(report,'speed'):
-                        self.speed.emit(f"{report.speed:.6f}")
+                        self.gnss_data.speed=float(report.speed)
 
                     if hasattr(report, 'mode'):
-                        self.gpsFix.emit(str(report.mode))
+                        self.gnss_data.gpsFix=str(report.mode)
                     
                     if hasattr(report, 'track'):
-                        self.heading.emit(f"{report.track:.2f}")
+                        self.gnss_data.heading=float(report.track)
                 
                 if report['class'] == 'SKY':
                     if hasattr(report, 'satellites'):
-                        self.satelitesNumber.emit(str(len(report.satellites)))
+                        self.gnss_data.satellitesNumber=len(report.satellites)
+                        print("sats: ", report.satellites)
 
         except Exception as e:
             print(f"GnssWorker failure: {e}")
             self.error.emit(str(e))
 
     def stop(self):
-        self.runningStatus.emit(False)
+        self.gnss_data.runningStatus=False
         self._running = False
