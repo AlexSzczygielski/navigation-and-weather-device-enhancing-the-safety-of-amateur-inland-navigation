@@ -2,85 +2,163 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
+
+import "qrc:/components"
+
 //Left Data
 RowLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
+    spacing: 10
 
-ColumnLayout{
-    Layout.fillHeight: true
-    spacing: 16
-    Layout.preferredWidth: 150
-    Dial {
-        id: volumeDial
-        from: 0
-        value: 42
-        to: 100
-        stepSize: 1
+    property int mainPrecision: 1
+    property int borderWidth: 3
+    property int coordsPrecision: 2
+    property string notAvailableText: "Dev OFF"
+    property string rectangleColor: "#00bfa5"
 
-        Layout.alignment: Qt.AlignHCenter
-        Layout.preferredWidth: 128
-        Layout.preferredHeight: 128
-    }
-}
-
-// Divider
-Rectangle { color: "#00bfa5"; implicitWidth: 2; Layout.fillHeight: true }
-
-//Middle Section
-ColumnLayout{
-    Layout.fillWidth: true
-    Layout.fillHeight: true
-    spacing: 20
-    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-    //Time and Date
-    ColumnLayout {
-        spacing: 2
-        Layout.alignment: Qt.AlignHCenter
-
-        Label {
-            text: "12:00"
-            font.pixelSize: 78
-            font.bold: true
+    ColumnLayout{
+        Layout.fillWidth: true
+        spacing: 50
+        ColumnLayout{
+            //Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter
+            spacing: 10
+            
+            Dial {
+                id: speeDial
+                from: 0
+                value: gnss_backend.gnss_data.runningStatus ? (gnss_backend.gnss_data.speed*1.94384).toFixed(coordsPrecision) : 0
+                to: 12
+                stepSize: 1
+
+                enabled: false 
+
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: 128
+                Layout.preferredHeight: 128
+            }
+
+                Label{
+                    Layout.alignment: Qt.AlignHCenter
+                    font.bold: true
+                    text: "Speed (knt)"
+                }
         }
 
-        Label {
-            text: "15/07/1410"
-            font.pixelSize: 18
-            font.bold: true
+        ColumnLayout{
+            Layout.fillWidth: true
+            Label{
+                font.bold: true
+                text: "NAV DATA:"
+            }
+
+            Rectangle{
+                color: "transparent"
+                border.color: rectangleColor
+                border.width: borderWidth
+
+                Layout.preferredWidth: 150
+                Layout.preferredHeight: 200
+                
+                ColumnLayout{
+                    Layout.fillHeight: true
+                    anchors.centerIn: parent
+                    spacing: 20
+                    DataRow{
+                        id: headRow
+                        descriptionText: "Heading:"
+                        dataText: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.heading : notAvailableText
+                    }
+
+                    DataRow{
+                        descriptionText: "Latitude: " 
+                        dataText: {
+                            if(gnss_backend.gnss_data.runningStatus) {
+                                gnss_backend.gnss_data.latitude >= 0 ? gnss_backend.gnss_data.latitude.toFixed(coordsPrecision) + " N" : (-gnss_backend.gnss_data.latitude).toFixed(coordsPrecision) + " S"
+                            }
+                            else {notAvailableText}
+                        }
+                    }
+
+                    DataRow{
+                        descriptionText: "Longitude:"
+                        dataText: {
+                            if(gnss_backend.gnss_data.runningStatus) {
+                                gnss_backend.gnss_data.longitude >= 0 ? gnss_backend.gnss_data.longitude.toFixed(coordsPrecision) + " E" : (-gnss_backend.gnss_data.longitude).toFixed(coordsPrecision) + " W"
+                            }
+                            else {notAvailableText}
+                        }
+                    }
+
+                } 
+            }
+        }
+    }
+
+    // Divider
+    Rectangle { color: "#00bfa5"; implicitWidth: 2; Layout.fillHeight: true }
+
+    //Middle Section
+    ColumnLayout{
+        Layout.preferredWidth: 80
+        Layout.fillHeight: true
+        spacing: 20
+        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+        //Time and Date
+        ColumnLayout {
+            spacing: 2
+            Layout.alignment: Qt.AlignHCenter
+
+            Label {
+                text: {
+                    var now = new Date()
+                    now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0')
+                }
+                font.pixelSize: 78
+                font.bold: true
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            Label {
+                text: {
+                    var now = new Date()
+                    now.getDate().toString().padStart(2,'0') + "/" +
+                    (now.getMonth()+1).toString().padStart(2,'0') + "/" +
+                    now.getFullYear()
+                }
+                font.pixelSize: 18
+                font.bold: true
+                Layout.alignment: Qt.AlignHCenter
+            }
+        }
+
+        Image {
+            Layout.topMargin: 20
+            source: "file:assets/model2.png"
+            //fillMode: Image.PreserveAspectFit
             Layout.alignment: Qt.AlignHCenter
         }
     }
 
-    Image {
-        Layout.topMargin: 40
-        source: "qrc:/assets/model.png"
-        fillMode: Image.PreserveAspectFit
-        Layout.alignment: Qt.AlignHCenter
-        Layout.preferredWidth: 300
-        Layout.preferredHeight: 300
+    //Divider
+    Rectangle { color: "#00bfa5"; implicitWidth: 2; Layout.fillHeight: true }
+
+    ColumnLayout{
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+        spacing: 16
+        Dial {
+            id: volumeDial2
+            from: 0
+            value: 42
+            to: 100
+            stepSize: 1
+
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: 128
+            Layout.preferredHeight: 128
+        }
     }
-}
-
-//Divider
-Rectangle { color: "#00bfa5"; implicitWidth: 2; Layout.fillHeight: true }
-
-ColumnLayout{
-    Layout.fillHeight: true
-    spacing: 16
-    Layout.preferredWidth: 150
-    Dial {
-        id: volumeDial2
-        from: 0
-        value: 42
-        to: 100
-        stepSize: 1
-
-        Layout.alignment: Qt.AlignHCenter
-        Layout.preferredWidth: 128
-        Layout.preferredHeight: 128
-    }
-}
 }

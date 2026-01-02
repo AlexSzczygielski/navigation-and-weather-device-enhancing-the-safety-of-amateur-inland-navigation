@@ -21,6 +21,7 @@ RowLayout{
     property int dataRowSpacing: 12
     property string notAvailableText: "Dev OFF"
     property int coordsPrecision: 5
+    property int mainPrecision: 1
 
     //Properties 
     property string noFixMap: "qrc:/assets/empty_map.png"
@@ -158,8 +159,8 @@ RowLayout{
 
                 DataRow{
                     id: speedRow
-                    descriptionText: "Speed:"
-                    dataText: gnss_backend.gnss_data.runningStatus ? gnss_backend.gnss_data.speed : notAvailableText
+                    descriptionText: "Speed (knt):"
+                    dataText: gnss_backend.gnss_data.runningStatus ? (gnss_backend.gnss_data.speed*1.94384).toFixed(mainPrecision) : notAvailableText
                 }
 
                 DataRow{
