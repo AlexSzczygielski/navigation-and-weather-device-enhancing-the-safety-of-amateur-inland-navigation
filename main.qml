@@ -21,7 +21,7 @@ ApplicationWindow {
     //color: "#0b1d2a"
     color: Material.background
 
-    property bool nightMode: false
+    property bool nightMode: true
 
     Material.theme: nightMode ? Material.Dark : Material.Light
     Material.background: nightMode ? "#0b1d2a" : "#f5f5f5"

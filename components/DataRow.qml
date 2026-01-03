@@ -13,7 +13,6 @@ RowLayout{
     //Component variables
     property string descriptionText: "?"
     property string dataText: "?"
-    property bool nightMode: false
 
     spacing: 8
 
@@ -24,8 +23,8 @@ RowLayout{
     }
 
     //Data variable text
-    Text {
+    Label {
         text: dataText
-        color: nightMode ? "#e0f2f1" : "#212121"
+        font.bold: true
     }
 }
