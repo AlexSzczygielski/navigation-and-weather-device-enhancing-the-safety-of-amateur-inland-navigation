@@ -13,10 +13,21 @@ ApplicationWindow {
     onClosing: {
         backend.shutdown_all()
     }
+    id: app
     visible: true
     width: 1024
     height: 600
     title: "Yacht System GUI"
+    //color: "#0b1d2a"
+    color: Material.background
+
+    property bool nightMode: false
+
+    Material.theme: nightMode ? Material.Dark : Material.Light
+    Material.background: nightMode ? "#0b1d2a" : "#f5f5f5"
+    Material.foreground: nightMode ? "#e0f2f1" : "#212121"
+    Material.primary: "#00bfa5"
+    Material.accent: "#00bfa5"
 
     property int iconSize: 50
     //property int currentPage: 0
@@ -64,6 +75,7 @@ ApplicationWindow {
             //Loading icons from IconButton.qml
             IconButton{
                 id: loaderHome
+                nightMode: app.nightMode
                 iconSource: "qrc:/assets/home.svg"
                 selected: true
                 Component.onCompleted: allButtons.push(loaderHome)
@@ -77,6 +89,7 @@ ApplicationWindow {
 
             IconButton{
                 id: loaderNavi
+                nightMode: app.nightMode
                 iconSource: "qrc:/assets/navi.svg"
                 Component.onCompleted: allButtons.push(loaderNavi)
                 onIconClicked: {
@@ -88,6 +101,7 @@ ApplicationWindow {
 
             IconButton{
                 id: loaderSett
+                nightMode: app.nightMode
                 iconSource: "qrc:/assets/settings.svg"
                 Component.onCompleted: allButtons.push(loaderSett.item)
             }
@@ -113,6 +127,7 @@ ApplicationWindow {
             //Loading icons from IconButton.qml
             IconButton{
                 id: loaderCvRoi
+                nightMode: app.nightMode
                 iconSource: "qrc:/assets/camera100.svg"
                 Component.onCompleted: allButtons.push(loaderCvRoi)
 
@@ -125,6 +140,7 @@ ApplicationWindow {
 
             IconButton{
                 id: loaderCvDetection
+                nightMode: app.nightMode
                 iconSource: "qrc:/assets/camera100.svg"
                 Component.onCompleted: allButtons.push(loaderCvDetection)
 
@@ -137,6 +153,7 @@ ApplicationWindow {
 
             IconButton{
                 id: loaderSett2
+                nightMode: app.nightMode
                 iconSource: "qrc:/assets/settings.svg"
                 onIconClicked: allButtons.push(loaderSett2)
             }

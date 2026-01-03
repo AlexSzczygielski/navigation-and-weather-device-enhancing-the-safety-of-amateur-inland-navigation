@@ -1,3 +1,4 @@
+//home.qml
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
@@ -17,6 +18,8 @@ RowLayout{
     property string notAvailableText: "Dev OFF"
     property string rectangleColor: "#00bfa5"
 
+    property int speed: (gnss_backend.gnss_data.speed*1.94384).toFixed(coordsPrecision)
+
     ColumnLayout{
         Layout.fillWidth: true
         spacing: 50
@@ -26,24 +29,52 @@ RowLayout{
             spacing: 10
             
             Dial {
-                id: speeDial
+                //speed data defined as view's property
+                id: speedDial
                 from: 0
-                value: gnss_backend.gnss_data.runningStatus ? (gnss_backend.gnss_data.speed*1.94384).toFixed(coordsPrecision) : 0
+                value: gnss_backend.gnss_data.runningStatus ? speed : 0
                 to: 12
                 stepSize: 1
 
-                enabled: false 
+                enabled: true
+
+                ColumnLayout{
+                    anchors.centerIn: speedDial
+                    Label {
+                        id: speedDialSpeedLabel
+                        text: speed
+                        font.pixelSize: 22
+                        font.bold: true
+                        color: "#00bfa5"
+                        Layout.alignment: Qt.AlignHCenter
+                    }
+
+                    Label {
+                        text: "knt"
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "#179985"
+                        Layout.alignment: Qt.AlignHCenter
+                    }
+                }
+                
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.AllButtons
+                    onPressed: mouse.accepted = true
+                    onWheel: wheel.accepted = true
+                }
 
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: 128
                 Layout.preferredHeight: 128
             }
 
-                Label{
-                    Layout.alignment: Qt.AlignHCenter
-                    font.bold: true
-                    text: "Speed (knt)"
-                }
+            Label{
+                Layout.alignment: Qt.AlignHCenter
+                font.bold: true
+                text: "Speed"
+            }
         }
 
         ColumnLayout{
@@ -58,7 +89,7 @@ RowLayout{
                 border.color: rectangleColor
                 border.width: borderWidth
 
-                Layout.preferredWidth: 150
+                Layout.preferredWidth: 170
                 Layout.preferredHeight: 200
                 
                 ColumnLayout{

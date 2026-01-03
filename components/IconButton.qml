@@ -1,3 +1,4 @@
+//IconButton.qml
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
@@ -6,8 +7,13 @@ Rectangle {
     width: 80
     height: 80
     radius: 10
-    color: root.selected ? "#2980b9" : "#2c3e50"
+    //color: root.selected ? "#2980b9" : "#2c3e50"
 
+    color: root.selected 
+           ? (nightMode ? "#1de9b6" : "#3498db")  // night = lighter teal
+           : (nightMode ? "#144d4d" : "#2c3e50")  // night = very dark teal
+
+    property bool nightMode: false
     property string iconSource: "../assets/camera100.svg"
     property int iconSize: 50
     property bool selected: false

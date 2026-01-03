@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
+        <!-- QML CONF -->
+        <file>qtquickcontrols2.conf</file>
+        
         <!-- QML Views -->
         <file>main.qml</file>
         <file>views/home.qml</file>
