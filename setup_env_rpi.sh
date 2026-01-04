@@ -56,4 +56,5 @@ sudo systemctl enable sim7600eh-gps
 sudo systemctl start sim7600eh-gps
 
 echo "Installing rest of the GNSS module dependencies"
-sudo pip3 install haversine
+pip install haversine
+pip install staticmap
