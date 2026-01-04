@@ -35,7 +35,7 @@ class GnssBackend(QObject):
             print("shutdown called")
         self._map_worker = None
 
-    #Possible signals GnssWorker
+    #Possible signals
     @pyqtProperty(QObject, constant=True)
     def gnss_data(self):
         return self._gnss_data

@@ -108,27 +108,11 @@ RowLayout{
         Image {
             id: cv_frame
             Layout.topMargin: 30
-            //source: "qrc:/assets/model.png"
-            source: ""
+            source: cv_backend.cv_data.mobFrameBase64 ? cv_backend.cv_data.mobFrameBase64 : ""
             fillMode: Image.PreserveAspectFit
             Layout.alignment: Qt.AlignHCenter 
             Layout.maximumWidth: 550
             Layout.maximumHeight: 400
-        }
-    }
-
-    // ROI Creation update
-    Connections {
-        target: cv_backend
-        function onMobFrameUpdated(base_64_str){
-            cv_frame.source = "data:image/jpg;base64," + base_64_str
-        }
-    }
-
-    Component.onCompleted: {
-        var img = cv_backend.get_roi_img()
-        if (img) {
-            maskStatus.isReady = true
         }
     }
 }

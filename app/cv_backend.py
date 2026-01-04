@@ -1,9 +1,12 @@
 #cv_backend.py
 """This module contains the CvBackend class, responsible for managing backend of CV Components"""
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty, QProcess, QUrl
+
 from cv.cv_worker import CvWorker
 from cv.cv_state import CvState
 from cv.cv_demo_state_service import CvDemoStateService
+from cv.cv_data import CvData
+
 class CvBackend(QObject):
     """
     Manages connection (using signals/slots) between the CV GUI and CV Workers.
@@ -39,10 +42,10 @@ class CvBackend(QObject):
     """
     def __init__(self,roi_img_model_path,vid_model_path):
         super().__init__()
+        self._cv_data = CvData()
         self._roi_img_model_path = roi_img_model_path
         self._vid_model_path = vid_model_path
         self._worker = None
-        self._roi_img_base_64 = None #required for showing loaded mask
     
 
     def shutdown(self):
@@ -54,8 +57,12 @@ class CvBackend(QObject):
             print("shutdown called")
         self._worker = None
 
-    roiImageUpdated = pyqtSignal(str) # ROI Creation pipe
-    mobFrameUpdated = pyqtSignal(str) # MOB cv detection pipe
+    
+    #Possible signals
+    @pyqtProperty(QObject, constant=True)
+    def cv_data(self):
+        return self._cv_data
+    
 
     ### ROI CREATION PIPELINE ###
     @pyqtSlot()
@@ -81,7 +88,7 @@ class CvBackend(QObject):
                 return
 
             task = "roi_creation"
-            self._worker = CvWorker(self._roi_img_model_path,CvDemoStateService(), task) #worker with context
+            self._worker = CvWorker(self._roi_img_model_path,CvDemoStateService(), task, self._cv_data) #worker with context
             self._worker.finished.connect(self._on_run_cv_roi_pipe_finished)
             self._worker.error.connect(self._on_run_cv_roi_pipe_error)
             self._worker.finished.connect(self._worker.deleteLater)
@@ -89,10 +96,8 @@ class CvBackend(QObject):
         except Exception as e:
             print(f"{self.__class__.__name__}.run_cv_roi_pipe error: {e}")
 
-    def _on_run_cv_roi_pipe_finished(self, img_64):
+    def _on_run_cv_roi_pipe_finished(self):
         """Handles end of the task - emits to GUI."""
-        self._roi_img_base_64 = img_64
-        self.roiImageUpdated.emit(self._roi_img_base_64)
         self._worker = None #Release the reference
 
     def _on_run_cv_roi_pipe_error(self):
@@ -103,9 +108,9 @@ class CvBackend(QObject):
     def get_roi_img(self):
         """If ready return base64 encoded ROI image."""
         #This can be used when loading/reloading the cv_create_roi_panel view
-        if self._roi_img_base_64 is None:
+        if self._cv_data.roiImageBase64 is None:
             return None
-        return self._roi_img_base_64
+        return self._cv_data.roiImageBase64
 
 
     ### MOB CV DETECTION PIPE ###  
@@ -132,8 +137,7 @@ class CvBackend(QObject):
                 return
             
             task = "mob_detection_pipe"
-            self._worker = CvWorker(self._vid_model_path,CvDemoStateService(),task) #worker with context
-            self._worker.frameUpdate.connect(self._onMobFrameUpdated)
+            self._worker = CvWorker(self._vid_model_path,CvDemoStateService(),task, self._cv_data) #worker with context
             self._worker.finished.connect(self._on_run_cv_mob_detect_pipe_finished)
             self._worker.error.connect(self._on_run_cv_mob_detect_pipe_error)
             self._worker.finished.connect(self._worker.deleteLater)
@@ -148,8 +152,3 @@ class CvBackend(QObject):
     def _on_run_cv_mob_detect_pipe_error(self):
         """Emits error GUI."""
         print("error")
-    
-    @pyqtSlot(str)
-    def _onMobFrameUpdated(self,frame_64):
-        """Return updated frame."""
-        self.mobFrameUpdated.emit(frame_64)

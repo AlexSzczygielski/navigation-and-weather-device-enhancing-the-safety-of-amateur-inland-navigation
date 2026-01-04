@@ -43,28 +43,11 @@ RowLayout{
         Image {
             id: cv_roi_photo
             Layout.topMargin: 30
-            source: ""
+            source: cv_backend.cv_data.roiImageBase64 ? cv_backend.cv_data.roiImageBase64 : ""
             fillMode: Image.PreserveAspectFit
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: 700
             Layout.preferredHeight: 400
-        }
-    }
-
-    // ROI Creation update
-    Connections {
-        target: cv_backend
-        function onRoiImageUpdated(base_64_str){
-            cv_roi_photo.source = "data:image/jpg;base64," + base_64_str
-            maskStatus.isReady = true
-        }
-    }
-
-    Component.onCompleted: {
-        var img = cv_backend.get_roi_img()
-        if (img) {
-            cv_roi_photo.source = "data:image/jpg;base64," + img
-            maskStatus.isReady = true
         }
     }
 }

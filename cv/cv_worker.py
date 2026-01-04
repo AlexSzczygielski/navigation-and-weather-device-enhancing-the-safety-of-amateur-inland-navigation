@@ -7,6 +7,8 @@ from queue import Empty
 from cv.cv_pipe_status import CvPipeStatus
 from cv.cv_service import CvService
 from cv.image_encoder import ImageEncoder
+from cv.cv_data import CvData
+from cv.cv_state import CvState
 
 
 class CvWorker(QThread):
@@ -38,13 +40,14 @@ class CvWorker(QThread):
     frameUpdate : pyqtSignal(str)
         PyQt signal emitted when new MOB frame is returned.
     """
-    def __init__(self, model_path, service_state ,task):
+    def __init__(self, model_path: str, service_state: CvState ,task: str, cv_data: CvData):
         super().__init__()
         self._model_path = model_path
         self._service_state = service_state #State for Service class started from this thread
         self._task = task #Determines the task to be started
         self._cv_service = None
         self._running = True
+        self._cv_data = cv_data
 
     def stop(self):
         self._running=False
@@ -53,7 +56,6 @@ class CvWorker(QThread):
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
-    frameUpdate = pyqtSignal(str)
 
     def run(self):
         """
@@ -77,12 +79,10 @@ class CvWorker(QThread):
             match self._task:
                 case "roi_creation":
                     img = self._cv_service.run_roi_creation_pipeline()
-                    #img_path = os.path.abspath("output_mask.jpg")
-                    #self.finished.emit(img_path)
 
                     #Encoding image to base_64
                     img_base64 = ImageEncoder.to_base64(img)
-                    self.finished.emit(img_base64)
+                    self._cv_data.roiImageBase64 = "data:image/png;base64," + img_base64
                 
 
                 case "mob_detection_pipe":
@@ -108,12 +108,12 @@ class CvWorker(QThread):
                         if cv_pipeline_running:
                             try:
                                 frame = frame_queue.get(timeout=5)
-                                if frame is None: # END of stream
-                                    self.finished.emit("")
+                                if frame is None: # END of stream - send empty string
+                                    self._cv_data.mobFrameBase64 = ""
                                     break
                                 
                                 frame_base64 = ImageEncoder.to_base64(frame)
-                                self.frameUpdate.emit(frame_base64)
+                                self._cv_data.mobFrameBase64 = "data:image/png;base64," + frame_base64
                             except Empty:
                                 continue
                 
