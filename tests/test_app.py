@@ -12,7 +12,7 @@ def test_cv_worker(qtbot):
 
     # As CvWorker starts new thread - waiting is required for the signal to comeback
     # waiting for backend.roiImageUpdated
-    with qtbot.waitSignal(backend.cv.roiImageUpdated, timeout=5000) as blocker:
+    with qtbot.waitSignal(backend.cv.cv_data.roiImageBase64Updated, timeout=5000) as blocker:
         pass 
 
     assert backend.cv.get_roi_img() is not None, "Mask image was not returned from get_roi_img"
