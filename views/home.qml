@@ -139,26 +139,38 @@ RowLayout{
 
         //Time and Date
         ColumnLayout {
+            id: clockDate
             spacing: 2
             Layout.alignment: Qt.AlignHCenter
+            property string timeText: ""
+            property string dateText: ""
+
+            Timer {
+                interval: 1000    // update every second
+                running: true
+                repeat: true
+                triggeredOnStart: true
+                onTriggered: {
+                    var now = new Date()
+
+                    clockDate.timeText = now.getHours().toString().padStart(2, '0') + ":" +
+                                         now.getMinutes().toString().padStart(2, '0')
+
+                    clockDate.dateText = now.getDate().toString().padStart(2, '0') + "/" +
+                                         (now.getMonth() + 1).toString().padStart(2, '0') + "/" +
+                                         now.getFullYear()
+                }
+            }
 
             Label {
-                text: {
-                    var now = new Date()
-                    now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0')
-                }
+                text: clockDate.timeText
                 font.pixelSize: 78
                 font.bold: true
                 Layout.alignment: Qt.AlignHCenter
             }
 
             Label {
-                text: {
-                    var now = new Date()
-                    now.getDate().toString().padStart(2,'0') + "/" +
-                    (now.getMonth()+1).toString().padStart(2,'0') + "/" +
-                    now.getFullYear()
-                }
+                text: clockDate.dateText
                 font.pixelSize: 18
                 font.bold: true
                 Layout.alignment: Qt.AlignHCenter

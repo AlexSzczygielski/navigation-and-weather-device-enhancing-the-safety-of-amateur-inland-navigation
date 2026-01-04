@@ -2,3 +2,9 @@ home: https://www.svgrepo.com/svg/22031/home-icon-silhouette
 navi: https://www.svgrepo.com/svg/448536/navigation
 weather: https://www.svgrepo.com/svg/479345/weather-symbol-4
 settings: https://www.svgrepo.com/svg/529867/settings
+sailboat: https://www.dufour-yachts.com/en/luxury-yachts/dufour-44/
+off: https://www.svgrepo.com/svg/500948/off
+weather: https://www.svgrepo.com/svg/479345/weather-symbol-4
+night: https://www.svgrepo.com/svg/457332/night
+day: https://www.svgrepo.com/svg/490682/day-sunny
+mob_system: https://www.svgrepo.com/svg/249268/lifesaver-help

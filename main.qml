@@ -18,7 +18,6 @@ ApplicationWindow {
     width: 1024
     height: 600
     title: "Yacht System GUI"
-    //color: "#0b1d2a"
     color: Material.background
 
     property bool nightMode: true
@@ -39,26 +38,66 @@ ApplicationWindow {
             if (b) b.selected = false
         }
     }
-//////////////CHANGHE//////////////////////////////////
-     Rectangle {
-        width: 50
-        height: 50
-        color: "red"
-        radius: 10
-        Text {
-            anchors.centerIn: parent
-            text: "X"
-            color: "white"
-            font.pixelSize: 20
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                Qt.quit()  // This will quit the app when the button is clicked
-            }
+//--------- TOP BUTTONS -----------
+
+IconButton{
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.margins: 16
+    rectangleWidth: 60
+    rectangleHeight: 60
+    iconSize: 40
+    
+    id: exitButton
+    nightMode: app.nightMode
+    iconSource: "qrc:/assets/off.svg"
+    color: exitButton.selected ? ("#ff1744") : 
+                                 (nightMode ? "#8e2424" : "#d32f2f")
+            
+    Timer {
+        // Enables `animation` look
+        id: exitDelay
+        interval: 100
+        repeat: false
+        onTriggered: Qt.quit()
+    }
+
+    onIconClicked: {
+        exitButton.selected = true
+        exitDelay.start()
+    }
+}
+
+IconButton {
+    id: nightModeToggle
+    anchors.top: parent.top
+    anchors.right: parent.right
+    anchors.margins: 16
+    rectangleWidth: 60
+    rectangleHeight: 60
+    iconSize: 40
+
+    nightMode: app.nightMode
+    iconSource: nightMode ? "qrc:/assets/night.svg" : "qrc:/assets/day.svg"
+    selected: false
+
+    Timer {
+        // Enables `animation` look
+        id: animationDelay
+        interval: 200
+        repeat: false
+        onTriggered:{
+            app.nightMode = !app.nightMode
+            nightModeToggle.selected = false
         }
     }
-////////////////////!!!!!!!?/////////////////////////////
+
+    onIconClicked: {
+        selected = true
+        animationDelay.start()
+    }
+}
+//-----------------------------
 
     RowLayout {
         anchors.fill: parent
@@ -141,7 +180,7 @@ ApplicationWindow {
             IconButton{
                 id: loaderCvDetection
                 nightMode: app.nightMode
-                iconSource: "qrc:/assets/camera100.svg"
+                iconSource: "qrc:/assets/mob_system.svg"
                 Component.onCompleted: allButtons.push(loaderCvDetection)
 
                 onIconClicked: {
@@ -152,10 +191,10 @@ ApplicationWindow {
             }
 
             IconButton{
-                id: loaderSett2
+                id: loaderWeather
                 nightMode: app.nightMode
-                iconSource: "qrc:/assets/settings.svg"
-                onIconClicked: allButtons.push(loaderSett2)
+                iconSource: "qrc:/assets/weather.svg"
+                onIconClicked: allButtons.push(loaderWeather)
             }
         }        
     }

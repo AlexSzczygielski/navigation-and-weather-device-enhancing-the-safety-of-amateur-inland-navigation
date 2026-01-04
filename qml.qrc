@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <!-- QML CONF -->
         <file>qtquickcontrols2.conf</file>
-        
+
         <!-- QML Views -->
         <file>main.qml</file>
         <file>views/home.qml</file>
@@ -21,6 +21,11 @@
         <file>assets/navi.svg</file>
         <file>assets/settings.svg</file>
         <file>assets/camera100.svg</file>
+        <file>assets/off.svg</file>
+        <file>assets/weather.svg</file>
+        <file>assets/day.svg</file>
+        <file>assets/night.svg</file>
+        <file>assets/mob_system.svg</file>
 
         <!-- Assets Pictures -->
         <file>assets/model.png</file>

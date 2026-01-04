@@ -4,14 +4,15 @@ import QtQuick.Controls 2.15
 
 Rectangle {
     id: root
-    width: 80
-    height: 80
+    property int rectangleWidth: 80
+    property int rectangleHeight: 80
+    width: rectangleWidth
+    height: rectangleHeight
     radius: 10
-    //color: root.selected ? "#2980b9" : "#2c3e50"
 
-    color: root.selected 
-           ? (nightMode ? "#1de9b6" : "#3498db")  // night = lighter teal
-           : (nightMode ? "#144d4d" : "#2c3e50")  // night = very dark teal
+    property string backgroundColor: root.selected ? (nightMode ? "#1de9b6" : "#3498db")
+                                                    : (nightMode ? "#144d4d" : "#2c3e50")
+    color: backgroundColor
 
     property bool nightMode: false
     property string iconSource: "../assets/camera100.svg"
