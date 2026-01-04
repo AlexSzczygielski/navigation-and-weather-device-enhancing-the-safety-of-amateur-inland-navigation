@@ -27,6 +27,7 @@ def create_app():
     engine.rootContext().setContextProperty("backend",backend)
     engine.rootContext().setContextProperty("cv_backend",backend.cv)
     engine.rootContext().setContextProperty("gnss_backend",backend.gps)
+    engine.rootContext().setContextProperty("weather_backend",backend.weather_backend)
 
     # Load qrc resources
     engine.load(QUrl("qrc:main.qml"))

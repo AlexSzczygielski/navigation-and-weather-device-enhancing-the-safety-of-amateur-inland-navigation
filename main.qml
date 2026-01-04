@@ -194,7 +194,13 @@ IconButton {
                 id: loaderWeather
                 nightMode: app.nightMode
                 iconSource: "qrc:/assets/weather.svg"
-                onIconClicked: allButtons.push(loaderWeather)
+                Component.onCompleted: allButtons.push(loaderWeather)
+
+                onIconClicked: {
+                    resetSelection()
+                    loaderWeather.selected = true
+                    mainLoader.source = "qrc:/views/weather_data_panel.qml"
+                }
             }
         }        
     }

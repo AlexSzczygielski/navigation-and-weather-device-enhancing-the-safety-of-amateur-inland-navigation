@@ -3,6 +3,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QProcess, QUrl
 from app.cv_backend import CvBackend
 from app.gnss_backend import GnssBackend
+from app.weather_backend import WeatherBackend
 
 class Backend(QObject):
     """
@@ -12,12 +13,14 @@ class Backend(QObject):
     There is a file factories.py containing construction functions
     for all service backends as well as this backend."
     """
-    def __init__(self, CvBackend, GnssBackend):
+    def __init__(self, CvBackend: CvBackend, GnssBackend: GnssBackend, WeatherBackend: WeatherBackend):
         super().__init__()
         self.cv = CvBackend
         self.gps = GnssBackend
+        self.weather_backend = WeatherBackend
 
     @pyqtSlot()
     def shutdown_all(self):
         self.cv.shutdown()
         self.gps.shutdown()
+        self.weather_backend.shutdown()
