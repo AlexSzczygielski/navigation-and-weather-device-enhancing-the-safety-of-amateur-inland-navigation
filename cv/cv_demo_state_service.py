@@ -7,7 +7,7 @@ import config
 
 class CvDemoStateService(CvState):
     def get_vid_source(self):
-        return config.DEMO_ASSETS["video"]
+        return config.DEMO_ASSETS["video2"]
 
     def setup_vid_stream(self):
         cap = cv2.VideoCapture(self.get_vid_source())

@@ -21,6 +21,7 @@ MODEL_WEIGHTS = {
 # Paths to data access
 DEMO_ASSETS = {
     "video" : "data/demonstration_assets/vid_demonstration1.mov",
+    "video2" : "data/demonstration_assets/vid_demonstration2.mov",
     "deck_photo" : "data/demonstration_assets/roi_base_demonstration1.jpg",
     "deck_photo2" : "data/demonstration_assets/roi_base_demonstration2.jpg"
 }

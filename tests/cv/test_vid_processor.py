@@ -9,7 +9,7 @@ import config
 dummy_mask = [[0,0],[1,1]]
 
 def test_run_video_inference():
-    processor = VideoProcessor(config.MODEL_WEIGHTS["yolo11"], config.DEMO_ASSETS["video"], dummy_mask)
+    processor = VideoProcessor(config.MODEL_WEIGHTS["yolo11"], config.DEMO_ASSETS["video2"], dummy_mask)
 
     try:
         generator = processor.run_video_inference()
