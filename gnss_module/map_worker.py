@@ -17,9 +17,6 @@ class MapWorker(QThread):
 
     
     error = pyqtSignal(str)
-    
-
-    cache_folder = config.MAP_CACHE_FOLDER
 
     def run(self):
         print("MAP_WORKER STARTED")

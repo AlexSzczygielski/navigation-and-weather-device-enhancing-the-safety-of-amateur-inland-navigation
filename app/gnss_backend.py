@@ -17,6 +17,7 @@ class GnssBackend(QObject):
         self._gnss_data = GnssData()
         self._last_latitude = None
         self._last_longitude = None
+        self._pending_zoom = None
 
     def shutdown(self):
         "Terminate all workers at appliaction close triggered by GUI."
@@ -126,6 +127,10 @@ class GnssBackend(QObject):
         try:
             #Ensure old worker is cleaned up
             if self._map_worker and self._map_worker.isRunning():
+                if new_zoom is not None:
+                    # Set flag to refetch the map with new zoom when current worker finishes
+                    # Prevents lost user request
+                    self._pending_zoom = new_zoom
                 return
             
             #Prevent single coordinate race
@@ -135,7 +140,7 @@ class GnssBackend(QObject):
             # Decision about fetching new map
             if self.should_update_map(new_latitude, new_longitude, new_zoom=new_zoom):
                 if new_zoom is None:
-                    self._map_worker = MapWorker(self._gnss_data, new_latitude=new_latitude, new_longitude=new_longitude)
+                    self._map_worker = MapWorker(self._gnss_data, new_latitude=new_latitude, new_longitude=new_longitude, zoom=self._gnss_data.zoom)
                 else:
                     self._map_worker = MapWorker(self._gnss_data, new_latitude=new_latitude, new_longitude=new_longitude, zoom=new_zoom)
                 self._map_worker.error.connect(self._on_update_map_worker_error)
@@ -152,6 +157,17 @@ class GnssBackend(QObject):
     def _on_update_map_worker_finished(self):
         """Handles end of the task."""
         self._map_worker = None #Release the reference
+
+        # Handle the requested pending zoom change
+        if self._pending_zoom is not None:
+            zoom = self._pending_zoom
+            self._pending_zoom = None # Reset the flag
+
+            self._update_map_worker(    # Call the update
+                new_latitude=self._last_latitude,
+                new_longitude=self._last_longitude,
+                new_zoom=zoom
+            )
 
     def _on_update_map_worker_error(self):
         """Emits error GUI."""

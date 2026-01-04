@@ -1,6 +1,8 @@
 #gnss_data.py
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtProperty
 
+import config
+
 class GnssData(QObject):
     def __init__(self):
         super().__init__()
@@ -17,7 +19,7 @@ class GnssData(QObject):
 
         # map_worker
         self._newMap = ""
-        self._zoom = -1
+        self._zoom = config.MAP_STANDARD_ZOOM
     
     # --- Update signals - notify QML frontend about new data ---
     # gnss_worker
