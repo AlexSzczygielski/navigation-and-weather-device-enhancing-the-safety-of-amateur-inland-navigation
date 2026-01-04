@@ -39,13 +39,6 @@ class GnssBackend(QObject):
     @pyqtProperty(QObject, constant=True)
     def gnss_data(self):
         return self._gnss_data
-    
-    # Possible signals Map Configuration
-    mapWidthChanged = pyqtSignal()
-    mapHeightChanged = pyqtSignal()
-    
-    # Possible signals MapWorker
-    mapUpdated = pyqtSignal(str)
 
     error = pyqtSignal(str)
 
@@ -91,19 +84,6 @@ class GnssBackend(QObject):
 
         #Update class's last longitude **after** map update
         self._last_longitude = longitude
-
-
-    ###
-
-    ### MAP CONFIG ###
-    @pyqtProperty(int, notify=mapWidthChanged)
-    def map_width(self):
-        return config.MAP_WIDTH
-    
-    @pyqtProperty(int, notify=mapHeightChanged)
-    def map_height(self):
-        return config.MAP_HEIGHT
-
     ###
 
     ### MAP WORKER ###

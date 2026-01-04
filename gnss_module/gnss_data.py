@@ -37,6 +37,11 @@ class GnssData(QObject):
     newMapChanged = pyqtSignal(str)
     zoomChanged = pyqtSignal(int)
 
+    # Possible signals Map Configuration
+    mapWidthChanged = pyqtSignal()
+    mapHeightChanged = pyqtSignal()
+
+    
     # ---
 
     # --- Properties - getters and setters used by QML frontend
@@ -141,3 +146,12 @@ class GnssData(QObject):
         if self._zoom != value:
             self._zoom = value
             self.zoomChanged.emit(self._zoom)
+
+    ### MAP CONFIG ###
+    @pyqtProperty(int, notify=mapWidthChanged)
+    def map_width(self):
+        return config.MAP_WIDTH
+    
+    @pyqtProperty(int, notify=mapHeightChanged)
+    def map_height(self):
+        return config.MAP_HEIGHT
