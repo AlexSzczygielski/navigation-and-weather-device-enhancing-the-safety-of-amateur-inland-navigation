@@ -1,0 +1,35 @@
+flowchart TD
+    %% Application Layers
+    %% User
+    User["User"]
+    User -- "User Input" --> Frontend_Layer
+
+    %% Frontend Layer
+    subgraph Frontend_Layer["Frontend Layer"]
+        UI_Presentation[Data Presentation]
+    end
+
+    %% Backend Layer
+    subgraph Backend_Layer["Backend Layer"]
+        App_Logic[Application Logic]
+        Data_Processing[Data Management]
+        State_Logic[Application State Logic]
+        Hardware_Comm[Hardware Communication]
+        App_Logic --> Data_Processing
+        App_Logic --> State_Logic
+        App_Logic --> Hardware_Comm
+    end
+
+    %% Connections between layers
+    Frontend_Layer -- "Calls" --> App_Logic
+    App_Logic -- "Updates" --> UI_Presentation
+
+    %% Hardware
+    Device_Hardware[Hardware Components]
+    Hardware_Comm -- "Controls" --> Device_Hardware
+
+    %% Classes (optional styling)
+    class Input_Gathering,UI_Presentation frontend;
+    class App_Logic,Data_Processing,State_Logic,Hardware_Comm backend;
+    class User user;
+    class Device_Hardware hardware;

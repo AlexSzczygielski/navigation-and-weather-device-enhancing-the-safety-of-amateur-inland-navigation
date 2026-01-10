@@ -1,0 +1,25 @@
+graph TD
+    subgraph "UI Layer (QML)"
+        A[weather_data_panel.qml]
+    end
+
+    subgraph "Backend Layer"
+        B(WeatherBackend)
+    end
+
+    subgraph "State Management Layer"
+        C{{WeatherData}}
+    end
+
+    subgraph "Worker Layer (QThread)"
+        D((WeatherWorker))
+    end
+
+    %% Core UI-Backend connections
+    A -- User Interaction --> B
+    B -- Exposes API to --> A
+    C -- Signals Data Change --> A
+
+    %% Weather Data Flow
+    B -- Task Delegation --> D
+    D -- Updates State --> C

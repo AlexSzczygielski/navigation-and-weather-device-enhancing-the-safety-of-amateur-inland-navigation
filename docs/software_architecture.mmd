@@ -1,0 +1,34 @@
+graph TD
+    subgraph "UI Layer (QML)"
+        A[QML Frontend]
+    end
+
+    subgraph "Backend Layer"
+        B(Backend Class)
+    end
+
+    subgraph "State Management Layer"
+        C{{Data Class}}
+    end
+
+    subgraph "Worker Layer"
+        D((Worker Class <br> QThreads))
+    end
+
+    subgraph "Service Layer"
+        E[(Service Class)]
+    end
+
+    subgraph "Complex Tasks"
+        F[Special Case <br>Class]
+    end
+
+    A -- User Interaction --> B
+    B -- Task Delegation --> D
+    D -- Executes --> E
+    E -- Returns Result --> D
+    E -- Delegates Complex Logic --> F
+    D -- Updates State --> C
+    C -- Signals Data Change --> A
+    B -- Exposes API to --> A
+

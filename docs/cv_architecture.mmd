@@ -1,0 +1,42 @@
+graph TD
+    subgraph "UI Layer (QML)"
+        A[cv_data_panel.qml]
+    end
+
+    subgraph "Backend Layer"
+        B(CvBackend)
+    end
+
+    subgraph "State Management Layer"
+        C{{CvData}}
+    end
+
+    subgraph "Worker Layer (QThread)"
+        D((CvWorker))
+    end
+
+    subgraph "Service Layer"
+        E[(CvService)]
+    end
+
+    subgraph "Complex Tasks / Process"
+        F[RoiProcessor]
+        G[VideoProcessor <br> in Separate Process]
+    end
+    
+    subgraph "State Pattern"
+        H{{CvState}}
+    end
+
+    %% Core UI-Backend connections
+    A -- User Interaction --> B
+    B -- Exposes API to --> A
+    C -- Signals Data Change --> A
+
+    %% CV Data Flow
+    B -- Task Delegation --> D
+    D -- Creates & Uses --> E
+    E -- Uses --> H
+    E -- Uses --> F
+    E -- Starts --> G
+    D -- Updates State --> C

@@ -1,0 +1,84 @@
+flowchart LR
+    subgraph Worker_Thread["Worker Class"]
+        W1[Prepare Data]
+        W2[Emit Signal A]
+        W3[Emit Signal B]
+        W4[Emit Signal C]
+        W1 --> W2
+        W1 --> W3
+        W1 --> W4
+    end
+
+    subgraph Backend["Backend Class"]
+        B1[Signal A Handler]
+        B2[Signal B Handler]
+        B3[Signal C Handler]
+
+        B4[Frontend Property A]
+        B5[Frontend Property B]
+        B6[Frontend Property C]
+
+        B7[onUpdatedA]
+        B8[onUpdatedB]
+    end
+
+    subgraph QML["QML Layer"]
+        Q0[Connect Frontend to Backend]
+
+        Q1[Unpack and Connect to Backend Signal A]
+        Q2[Unpack and Connect to Backend Signal B]
+        Q3[Unpack and Connect to Backend Signal C]
+
+        Q4[Check Update Emitted A]
+        Q5[Check Update Emitted B]
+        Q6[Check Update Emitted C]
+
+        Q7[Set Property A]
+        Q8[Set Property B]
+        Q9[Set Property C]
+
+        Q10[If Updated Show Data A]
+        Q11[If Not Updated Show NotAvailableText A]
+
+        Q12[If Updated Show Data B]
+        Q13[If Not Updated Show NotAvailableText B]
+
+        Q14[If Updated Show Data C]
+        Q15[If Not Updated Show NotAvailableText C]
+    end
+
+    W2 --> B1
+    W3 --> B2
+    W4 --> B3
+
+    B1 --> B4
+    B2 --> B5
+    B3 --> B6
+
+    B1 --> B7
+    B2 --> B8
+
+    B4 --> Q0
+    B5 --> Q0
+    B6 --> Q0
+
+    Q0 --> Q1
+    Q0 --> Q2
+    Q0 --> Q3
+
+    Q1 --> Q4
+    Q2 --> Q5
+    Q3 --> Q6
+
+    Q4 --> Q7
+    Q5 --> Q8
+    Q6 --> Q9
+
+    Q7 --> Q10
+    Q7 --> Q11
+
+    Q8 --> Q12
+    Q8 --> Q13
+
+    Q9 --> Q14
+    Q9 --> Q15

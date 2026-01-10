@@ -1,0 +1,25 @@
+graph TD
+    subgraph "main.py"
+        A[Entry Point] --> B(create_app)
+        B --> E(create_backend)
+        B --"Returns <br> QGuiApplication"--> T(QGuiApplication)
+        
+    end
+    E--"Returns Backend Class<br>Composed of All Sub Backends"-->G
+    subgraph G ["Backend Class"]
+           I[CvBackend]
+             J[GnssBackend]
+            K[WeatherBackend]
+    end
+    B --"Returns <br>QQmlApplication"--> Y
+    subgraph "Application Engine"
+        Y(QQmlApplicationEngine)
+    end
+
+    subgraph "UI Layer"
+        Z[main.qml]
+    end
+    Y -- Loads --> Z
+
+    T --"Execute"--> F
+    F(Starting the<br>Window Application)

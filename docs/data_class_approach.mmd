@@ -1,0 +1,42 @@
+flowchart LR
+    subgraph Worker_Thread["Worker Class"]
+        W1[Prepare Data]
+        W2[Set ModuleData Member A]
+        W3[Set ModuleData Member B]
+        W4[Set ModuleData Member C]
+        W1 --> W2
+        W1 --> W3
+        W1 --> W4
+    end
+
+    subgraph ModuleData["ModuleData Class"]
+        M1[Property A]
+        M2[Property B]
+        M3[Property C]
+
+        M4[Setter A Emits Signal]
+        M5[Setter B Emits Signal]
+        M6[Setter C Emits Signal]
+    end
+
+    subgraph Backend["Backend Class"]
+        B1[Emit ModuleData QObject]
+    end
+
+    subgraph QML["QML Layer"]
+        Q1[Data fields are members of passed QObject and are automatically updated]
+    end
+
+    W2 --> M1
+    W3 --> M2
+    W4 --> M3
+
+    M1 --> M4
+    M2 --> M5
+    M3 --> M6
+
+    M4 --> B1
+    M5 --> B1
+    M6 --> B1
+
+    B1 --> Q1

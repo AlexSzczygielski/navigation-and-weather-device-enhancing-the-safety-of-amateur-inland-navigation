@@ -220,3 +220,6 @@ cv/temp/
 
 #Ignore research directory
 research/
+
+#pdf files
+*.pdf

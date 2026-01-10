@@ -1,0 +1,45 @@
+---
+title: Hardware Architecture Diagram
+---
+graph TD
+    subgraph Power Supply
+        PowerBank[("Powerbank")]
+    end
+
+
+    RPI["Raspberry Pi 4B <br> Computing Unit"]
+
+
+    subgraph Peripheral Components
+        subgraph User-Machine Interface["User-Machine Interface"]
+            Touchscreen["7-inch Touchscreen"]
+        end
+        subgraph SensorsandCommunication["Sensors and Communication"]
+            Camera["Camera Module"]
+            subgraph SIM7600["SIM7600E-H<br>Expansion Board"]
+                    padding[" "]:::invisible
+                    LTE_HAT["Cellular Internet Connection Module<br>"]
+                    GNSS_HAT["GPS/GNSS Module"]
+                    LTE_ANTENNA["Cellular Antenna"]
+                    GNSS_ANTENNA["GNSS Antenna"]
+            end
+        end
+    end
+
+    %% Define Connections
+    PowerBank -- "5V DC via USB-C" --> RPI
+
+    RPI -- "MICRO-HDMI (Video Signal)<br>USB (Touch Input, Power)" --> Touchscreen
+    RPI -- "CSI (Camera Serial Interface)" --> Camera
+    RPI -- "USB (UART, Power)" --> SIM7600
+    LTE_HAT -- "u.FL - SMA"--> LTE_ANTENNA
+    GNSS_HAT -- "u.FL - SMA"--> GNSS_ANTENNA
+
+    
+    %% Force size
+    %%style SIM7600 height:210px
+    %%style LTE_HAT height:60px
+    %%style GNSS_HAT height:40px
+
+    classDef invisible fill:none,stroke:none
+    style padding width:2px,height:2px

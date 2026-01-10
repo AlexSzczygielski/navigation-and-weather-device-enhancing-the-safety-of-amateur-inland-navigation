@@ -1,0 +1,42 @@
+graph TD
+    subgraph "UI Layer (QML)"
+        A[gnss_data_panel.qml]
+    end
+
+    subgraph "Backend Layer"
+        B(GnssBackend)
+    end
+
+    subgraph "State Management Layer"
+        C{{GnssData}}
+    end
+
+    subgraph "Worker Layer (QThreads)"
+        D_GNSS((GnssWorker))
+        D_MAP((MapWorker))
+    end
+
+    subgraph "Service Layer"
+        E_MAP[(MapService)]
+    end
+
+    subgraph "Complex Task / Utility"
+        F[CachedStaticMap]
+    end
+
+    %% Core UI-Backend connections
+    A -- User Interaction --> B
+    B -- Exposes API to --> A
+    C -- Signals Data Change --> A
+
+    %% GNSS Data Flow
+    B -- Task Delegation --> D_GNSS
+    D_GNSS -- Updates State --> C
+
+    %% Map Generation Flow
+    B -- Task Delegation --> D_MAP
+    D_MAP -- Executes --> E_MAP
+    E_MAP -- Delegates Complex Logic --> F
+    F -- Returns Result --> E_MAP
+    E_MAP -- Returns Result --> D_MAP
+    D_MAP -- Updates State --> C

@@ -1,0 +1,23 @@
+flowchart TD
+    subgraph Config_State["CONFIG STATE"]
+        C1[Load photo]
+        C2[Run deck segmentation model]
+        C3[Get ROI Mask]
+        C4[Return ROI Mask]
+
+        C1 --> C2 --> C3 --> C4
+    end
+
+    subgraph Running_State["RUNNING STATE"]
+		R5[Input ROI Mask]
+        R1[Get frame]
+        R2[Run detection model]
+        R3[Label detected people]
+        R4{Any Class<br>Outside Boundaries?}
+        R5 --> R1 --> R2 --> R3 --> R4 --"No"--> R1
+        R6(Trigger Alarm)
+        R4 --"Yes"-->R6
+    end
+    
+    
+    C4 --> R5
