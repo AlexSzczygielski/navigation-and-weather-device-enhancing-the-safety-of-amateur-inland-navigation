@@ -1,5 +1,20 @@
 #config.py
 """This module contains CONSTANT configuration and data access paths or parameters."""
+from dotenv import load_dotenv
+import os
+import logging
+
+load_dotenv()   # loads .env from current directory
+
+OPEN_WEATHER_API_KEY = os.getenv("OPEN_WEATHER_API_KEY")
+
+if not OPEN_WEATHER_API_KEY:
+    logging.warning("OPEN_WEATHER_API_KEY not set – weather features disabled")
+
+# Weather API
+IMGW_METEO_API_URL = "https://danepubliczne.imgw.pl/api/data/meteo/"
+IMGW_SYNOPTIC_API_URL = "https://danepubliczne.imgw.pl/api/data/synop"
+IMGW_WARNING_API_URL = "https://danepubliczne.imgw.pl/api/data/warningsmeteo"
 
 # Map configuration
 MAP_WIDTH = 500

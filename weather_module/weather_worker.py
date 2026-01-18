@@ -1,8 +1,13 @@
 #gnss_worker.py
 """"""
 from PyQt5.QtCore import QThread, pyqtSignal
+import requests
+import logging
 
 from weather_module.weather_data import WeatherData
+import config
+
+logger = logging.getLogger(__name__)
 
 class WeatherWorker(QThread):
     def __init__(self, weather_data: WeatherData):
@@ -13,9 +18,48 @@ class WeatherWorker(QThread):
     error = pyqtSignal(str)
 
     def run(self):
+        logger.info("WEATHER_WORKER STARTED")
         try:
-            print("WEATHER_WORKER STARTED")
-        
+            lat = 51.5098
+            lon = -0.1180
+            url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid={config.OPEN_WEATHER_API_KEY}"
+            response = requests.get(url, timeout=10)
+            
+            data = response.json()
+            self.weather_data.message = str(data["message"])
+
+            city = data["city"]
+            self.weather_data.city_name = city["name"]
+            self.weather_data.country = city["country"]
+            self.weather_data.lat = city["coord"]["lat"]
+            self.weather_data.lon = city["coord"]["lon"]
+            self.weather_data.timezone = city["timezone"]
+
+            current = data["list"][0]
+
+            self.weather_data.current_temp = current["main"]["temp"]
+            self.weather_data.current_feels_like = current["main"]["feels_like"]
+            self.weather_data.current_humidity = current["main"]["humidity"]
+            self.weather_data.current_condition = current["weather"][0]["description"]
+            self.weather_data.current_wind = current["wind"]["speed"]
+
+            forecast_list = []
+
+            for entry in data["list"]:
+                forecast_list.append({
+                    "dt": entry["dt"],
+                    "dt_txt": entry["dt_txt"],
+                    "temp": entry["main"]["temp"],
+                    "feels_like": entry["main"]["feels_like"],
+                    "humidity": entry["main"]["humidity"],
+                    "condition": entry["weather"][0]["description"],
+                    "wind": entry["wind"]["speed"],
+                    "wind_deg": entry["wind"]["deg"],
+                    "wind_gust": entry["wind"]["gust"]
+                })
+
+            self.weather_data.forecast = forecast_list
+
         except Exception as e:
             print(f"WeatherWorker failure: {e}")
             self.error.emit(str(e))
@@ -24,3 +68,4 @@ class WeatherWorker(QThread):
     def stop(self):
         self.weather_data.runningStatus=False
         self._running = False
+        logging.info("WEATHER WORKER STOPPED")

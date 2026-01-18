@@ -4,6 +4,7 @@ from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine 
 from PyQt5.QtCore import QUrl
 import platform
+import logging
 
 # Set new process start method to 'spawn' - for correct YOLO initialization in vid processor
 from multiprocessing import set_start_method
@@ -18,6 +19,11 @@ from app.factories import create_backend
 def create_app():
     # Composition function - it wires together all components required to start an app
     # Create Qt app and QML engine
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
+    )
+    
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     engine.addImportPath(sys.path[0])

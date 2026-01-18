@@ -2,9 +2,12 @@
 """"""
 
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
+import logging
 
 from weather_module.weather_data import WeatherData
 from weather_module.weather_worker import WeatherWorker
+
+logger = logging.getLogger(__name__)
 
 class WeatherBackend(QObject):
     def __init__(self):
