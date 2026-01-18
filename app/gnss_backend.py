@@ -3,11 +3,14 @@
 
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
 from haversine import haversine, Unit
+import logging
 
 from gnss_module.gnss_worker import GnssWorker
 from gnss_module.map_worker import MapWorker
 from gnss_module.gnss_data import GnssData
 import config
+
+logger = logging.getLogger(__name__)
 
 class GnssBackend(QObject):
     def __init__(self):
@@ -25,6 +28,7 @@ class GnssBackend(QObject):
             if self._last_longitude is not None:
                 config.LAST_SESSION_LATITUDE = self._last_latitude
                 config.LAST_SESSION_LONGITUDE = self._last_longitude
+                logger.info("LAST SESSION POSITION updated")
 
     def shutdown(self):
         "Terminate all workers at appliaction close triggered by GUI."
