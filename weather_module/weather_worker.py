@@ -25,11 +25,11 @@ class WeatherWorker(QThread):
         try:
             if self._lat is None:
                 data = json_manager.load_json(config.LAST_SESSION_POSITION_PATH)
-                self._lat = data["last_session_latitude"]
+                self._lat = data["latitude"]
 
             if self._lon is None:
                 data = json_manager.load_json(config.LAST_SESSION_POSITION_PATH)
-                self._lon = data["last_session_longitude"]
+                self._lon = data["longitude"]
 
             if self._lat is None or self._lon is None:
                 raise ValueError("WeatherWorker: latitude or longitude is None")

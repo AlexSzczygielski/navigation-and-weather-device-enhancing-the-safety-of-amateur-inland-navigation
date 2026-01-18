@@ -59,7 +59,10 @@ IconButton{
         id: exitDelay
         interval: 100
         repeat: false
-        onTriggered: Qt.quit()
+        onTriggered: {
+            backend.shutdown_all()
+            Qt.quit()
+        }
     }
 
     onIconClicked: {

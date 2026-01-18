@@ -23,12 +23,6 @@ class GnssBackend(QObject):
         self._last_longitude = None
         self._pending_zoom = None
     
-    def __del__(self):
-        """Update last position in config.py"""
-        if self._last_latitude is not None:
-            if self._last_longitude is not None:
-                json_manager.save_json(config.LAST_SESSION_POSITION_PATH, {"latitude": self._last_latitude, "longitude": self._last_longitude})
-                logger.info("LAST SESSION POSITION updated")
 
     def shutdown(self):
         "Terminate all workers at appliaction close triggered by GUI."
@@ -45,6 +39,11 @@ class GnssBackend(QObject):
             self._map_worker.wait()
             print("shutdown called")
         self._map_worker = None
+
+        if self._last_latitude is not None:
+            if self._last_longitude is not None:
+                json_manager.save_json(config.LAST_SESSION_POSITION_PATH, {"latitude": self._last_latitude, "longitude": self._last_longitude})
+                logger.info("LAST SESSION POSITION updated")
     
     def get_last_position(self):
         return self._last_latitude, self._last_longitude
