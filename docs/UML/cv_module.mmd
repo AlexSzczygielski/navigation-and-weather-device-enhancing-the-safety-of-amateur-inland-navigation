@@ -1,0 +1,76 @@
+classDiagram
+    direction LR
+
+    class CvBackend {
+        - _cv_data: CvData
+        - _worker: CvWorker
+        - _roi_img_model_path: str
+        - _vid_model_path: str
+        +run_cv_roi_pipe()
+        +run_cv_mob_detect_pipe()
+        +shutdown()
+        +get_roi_img(): str
+    }
+
+    class CvData {
+        - _roiImageBase64: str
+        - _mobFrameBase64: str
+        +roiImageBase64Updated: pyqtSignal
+        +mobFrameBase64Updated: pyqtSignal
+    }
+
+    class CvWorker {
+        - _model_path: str
+        - _service_state: CvState
+        - _task: str
+        - _cv_service: CvService
+        - _cv_data: CvData
+        +run()
+        +stop()
+    }
+
+    class CvService {
+        - _model_path: str
+        - _state: CvState
+        - _roi_processor: RoiProcessor
+        - _video_process: Process
+        +fetch_image()
+        +run_roi_creation_pipeline()
+        +run_mob_detect_pipe_process()
+        +stop_video_process()
+    }
+
+    class RoiProcessor {
+        - _model: YOLO
+        - _mask_exporter(img): ndarray
+        - _mask_painter(image, mask_coords): img
+    }
+
+    class VideoProcessor {
+        - _model: YOLO
+        - _video_path: str
+        - _roi_mask: ndarray
+        +run_video_inference()
+    }
+
+    class ImageEncoder {
+        <<static>>
+        +to_base64(img): str
+    }
+
+    CvBackend *-- CvData
+    CvBackend *-- CvWorker
+    CvWorker *-- CvService
+    CvWorker o-- CvData
+    CvService *-- RoiProcessor
+    CvService *-- VideoProcessor
+
+    CvService o-- CvState
+    class CvState {
+       # context: CvService
+       +fetch_image()
+       +get_vid_source()
+    }
+    class CvDemoStateService {
+    }
+    CvDemoStateService --|> CvState

@@ -1,0 +1,75 @@
+classDiagram
+    direction TD
+
+    class Backend {
+        +cv: CvBackend
+        +gps: GnssBackend
+        +weather_backend: WeatherBackend
+        +shutdown_all()
+    }
+    class CvBackend {
+        - _cv_data: CvData
+        - _worker: CvWorker
+        +run_cv_roi_pipe()
+        +run_cv_mob_detect_pipe()
+        +shutdown()
+    }
+    class GnssBackend {
+        - _gnss_data: GnssData
+        - _gnss_worker: GnssWorker
+        - _map_worker: MapWorker
+        +start_gnss_worker()
+        +change_zoom(str)
+        +shutdown()
+    }
+    class WeatherBackend {
+        - _weather_data: WeatherData
+        - _weather_worker: WeatherWorker
+        +start_weather_worker()
+        +shutdown()
+    }
+    class CvData {
+        +roiImageBase64: str
+        +mobFrameBase64: str
+    }
+    class CvWorker {
+        +run()
+        +stop()
+    }
+    class GnssData {
+        +latitude: float
+        +longitude: float
+        +altitude: float
+        +speed: float
+        +newMap: str
+        +zoom: int
+    }
+    class GnssWorker {
+        +run()
+        +stop()
+    }
+    class MapWorker {
+        +run()
+        +stop()
+    }
+    class WeatherData {
+        +runningStatus: bool
+    }
+    class WeatherWorker {
+        +run()
+        +stop()
+    }
+
+    Backend *-- CvBackend
+    Backend *-- GnssBackend
+    Backend *-- WeatherBackend
+
+    CvBackend *-- CvData
+    CvBackend *-- CvWorker
+
+    GnssBackend *-- GnssData
+    GnssBackend *-- GnssWorker
+    GnssBackend *-- MapWorker
+
+    WeatherBackend *-- WeatherData
+    WeatherBackend *-- WeatherWorker

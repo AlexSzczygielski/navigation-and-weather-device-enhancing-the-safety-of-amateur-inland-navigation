@@ -1,0 +1,72 @@
+classDiagram
+    direction LR
+
+    class GnssBackend {
+        - _gnss_data: GnssData
+        - _gnss_worker: GnssWorker
+        - _map_worker: MapWorker
+        - _last_latitude: float
+        - _last_longitude: float
+        +start_gnss_worker()
+        +change_zoom(str)
+        +shutdown()
+        - should_update_map(lat, lon, zoom): bool
+        - _update_map_worker(lat, lon, zoom)
+    }
+
+    class GnssData {
+        - _latitude: float
+        - _longitude: float
+        - _altitude: float
+        - _speed: float
+        - _heading: float
+        - _satellitesNumber: str
+        - _runningStatus: bool
+        - _gpsFix: str
+        - _newMap: str
+        - _zoom: int
+        +latitudeChanged: pyqtSignal
+        +longitudeChanged: pyqtSignal
+        +newMapChanged: pyqtSignal
+        +zoomChanged: pyqtSignal
+    }
+
+    class GnssWorker {
+        - gnss_data: GnssData
+        +run()
+        +stop()
+    }
+
+    class MapWorker {
+        - _gnss_data: GnssData
+        - _new_latitude: float
+        - _new_longitude: float
+        - _zoom: int
+        +run()
+        +stop()
+    }
+
+    class MapService {
+        - _zoom: int
+        - _latitude: float
+        - _longitude: float
+        +render_map(): str
+        - _encode_pil_to_base_64(img): str
+    }
+
+    class CachedStaticMap {
+        +get(url, **kwargs)
+    }
+    
+    class StaticMap {
+
+    }
+
+    GnssBackend *-- GnssData
+    GnssBackend *-- GnssWorker
+    GnssBackend *-- MapWorker
+    MapWorker o-- MapService
+    MapService o-- CachedStaticMap
+    GnssWorker o-- GnssData
+    MapWorker o-- GnssData
+    CachedStaticMap --|> StaticMap

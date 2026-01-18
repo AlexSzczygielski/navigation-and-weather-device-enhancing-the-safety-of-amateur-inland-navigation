@@ -41,7 +41,7 @@ class RoiProcessor():
             mask_coords_poly = np.array(mask_coords, dtype=np.int32)
 
             #Draw the mask on the image
-            cv2.polylines(img, [mask_coords_poly], isClosed=True, color=(0, 255, 0), thickness=5)
+            cv2.polylines(img, [mask_coords_poly], isClosed=True, color=(0, 255, 0), thickness=20)
 
             #Draw points for cv2 window - polygon roi modification (#8 issue)
             #for (x, y) in mask_coords:
