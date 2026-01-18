@@ -9,6 +9,7 @@ from gnss_module.gnss_worker import GnssWorker
 from gnss_module.map_worker import MapWorker
 from gnss_module.gnss_data import GnssData
 import config
+from app import json_manager
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +27,7 @@ class GnssBackend(QObject):
         """Update last position in config.py"""
         if self._last_latitude is not None:
             if self._last_longitude is not None:
-                config.LAST_SESSION_LATITUDE = self._last_latitude
-                config.LAST_SESSION_LONGITUDE = self._last_longitude
+                json_manager.save_json(config.LAST_SESSION_POSITION_PATH, {"latitude": self._last_latitude, "longitude": self._last_longitude})
                 logger.info("LAST SESSION POSITION updated")
 
     def shutdown(self):

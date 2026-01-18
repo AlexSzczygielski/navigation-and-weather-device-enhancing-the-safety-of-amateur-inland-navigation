@@ -17,8 +17,7 @@ IMGW_SYNOPTIC_API_URL = "https://danepubliczne.imgw.pl/api/data/synop"
 IMGW_WARNING_API_URL = "https://danepubliczne.imgw.pl/api/data/warningsmeteo"
 
 # Last Position
-LAST_SESSION_LONGITUDE = -0.1180
-LAST_SESSION_LATITUDE = 51.5098
+LAST_SESSION_POSITION_PATH = "data/last_session_position.json"
 
 # Map configuration
 MAP_WIDTH = 500

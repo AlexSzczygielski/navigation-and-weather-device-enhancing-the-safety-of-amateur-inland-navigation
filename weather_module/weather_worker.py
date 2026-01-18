@@ -6,6 +6,7 @@ import logging
 
 from weather_module.weather_data import WeatherData
 import config
+from app import json_manager
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +24,13 @@ class WeatherWorker(QThread):
         logger.info("WEATHER_WORKER STARTED")
         try:
             if self._lat is None:
-                self._lat = config.LAST_SESSION_LATITUDE
+                data = json_manager.load_json(config.LAST_SESSION_POSITION_PATH)
+                self._lat = data["last_session_latitude"]
 
             if self._lon is None:
-                self._lon = config.LAST_SESSION_LONGITUDE
-                
+                data = json_manager.load_json(config.LAST_SESSION_POSITION_PATH)
+                self._lon = data["last_session_longitude"]
+
             if self._lat is None or self._lon is None:
                 raise ValueError("WeatherWorker: latitude or longitude is None")
              
