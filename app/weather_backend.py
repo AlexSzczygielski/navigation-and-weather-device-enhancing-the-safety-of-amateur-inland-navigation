@@ -6,14 +6,16 @@ import logging
 
 from weather_module.weather_data import WeatherData
 from weather_module.weather_worker import WeatherWorker
+from app.gnss_backend import GnssBackend
 
 logger = logging.getLogger(__name__)
 
 class WeatherBackend(QObject):
-    def __init__(self):
+    def __init__(self, gnss_backend: GnssBackend):
         super().__init__()
         self._weather_worker = None
         self._weather_data = WeatherData()
+        self._gnss_backend = gnss_backend # Reference to GNSS Backend
 
     def shutdown(self):
         "Terminate all workers at appliaction close triggered by GUI."
@@ -36,8 +38,8 @@ class WeatherBackend(QObject):
             if self._weather_worker and self._weather_worker.isRunning():
                 print("Previous worker still running")
                 return
-            
-            self._weather_worker = WeatherWorker(weather_data=self.weather_data)
+            lat, lon = self._gnss_backend.get_last_position()
+            self._weather_worker = WeatherWorker(weather_data=self.weather_data,lat=lat,lon=lon)
             self._weather_worker.error.connect(self._on_weather_worker_error)
             self._weather_worker.finished.connect(self._on_weather_worker_finished)
             self._weather_worker.finished.connect(self._weather_worker.deleteLater)

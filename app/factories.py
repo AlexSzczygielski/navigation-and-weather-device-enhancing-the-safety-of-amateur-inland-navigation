@@ -8,10 +8,11 @@ from app.gnss_backend import GnssBackend
 from app.weather_backend import WeatherBackend
 
 def create_backend():
+    cv_backend=create_cv_backend()
+    gnss_backend=create_gnss_backend()
+    weather_backend=create_weather_backend(gnss_backend=gnss_backend)
     return Backend(
-        create_cv_backend(),
-        create_gnss_backend(),
-        create_weather_backend()
+        cv_backend,gnss_backend,weather_backend
     )
 
 def create_cv_backend():
@@ -23,5 +24,5 @@ def create_cv_backend():
 def create_gnss_backend():
     return GnssBackend()
 
-def create_weather_backend():
-    return WeatherBackend()
+def create_weather_backend(gnss_backend: GnssBackend):
+    return WeatherBackend(gnss_backend)

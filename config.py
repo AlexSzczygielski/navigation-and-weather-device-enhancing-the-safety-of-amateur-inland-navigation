@@ -16,6 +16,10 @@ IMGW_METEO_API_URL = "https://danepubliczne.imgw.pl/api/data/meteo/"
 IMGW_SYNOPTIC_API_URL = "https://danepubliczne.imgw.pl/api/data/synop"
 IMGW_WARNING_API_URL = "https://danepubliczne.imgw.pl/api/data/warningsmeteo"
 
+# Last Position
+LAST_SESSION_LONGITUDE = -0.1180
+LAST_SESSION_LATITUDE = 51.5098
+
 # Map configuration
 MAP_WIDTH = 500
 MAP_HEIGHT = 500

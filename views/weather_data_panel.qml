@@ -1,9 +1,3 @@
-//weather_data_panel.qml
-/*
-Weather data panel loaded inside main.qml.
-This qml file uses DataRow component, loaded from components/DataRow.qml.
-Loading is managed by qrc file.
-*/
 // weather_data_panel.qml
 /*
 Weather forecast data panel loaded inside main.qml.
@@ -26,6 +20,7 @@ ColumnLayout {
     property int firstColumnWidth: 200
     property int dataRowSpacing: 10
     property string notAvailableText: "N/A"
+    property int coordsPrecision: 5
 
     Button{
         Layout.alignment: Qt.AlignHCenter
@@ -41,40 +36,79 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: 200
 
-        ColumnLayout {
+        RowLayout {
             anchors.fill: parent
             anchors.margins: 10
             spacing: dataRowSpacing
+            ColumnLayout {
+                Layout.alignment: Qt.AlignLeft
+                anchors.margins: 10
+                spacing: dataRowSpacing
 
-            Label {
-                text: "Current Weather"
-                font.bold: true
-                font.pointSize: 16
+                Label {
+                    text: "Current Weather"
+                    font.bold: true
+                    font.pointSize: 16
+                }
+
+                DataRow {
+                    descriptionText: "Message:"
+                    dataText: weather_backend.weather_data.message == '0' ? "Empty" :  weather_backend.weather_data.message
+                }
+
+                DataRow {
+                    descriptionText: "Temperature:"
+                    dataText: weather_backend.weather_data.current_temp ? weather_backend.weather_data.current_temp.toFixed(1) + " °C" : notAvailableText
+                }
+
+                DataRow {
+                    descriptionText: "Feels Like:"
+                    dataText: weather_backend.weather_data.current_feels_like ? weather_backend.weather_data.current_feels_like.toFixed(1) + " °C" : notAvailableText
+                }
+
+                DataRow {
+                    descriptionText: "Condition:"
+                    dataText: weather_backend.weather_data.current_condition ? weather_backend.weather_data.current_condition : notAvailableText
+                }
+
+                DataRow {
+                    descriptionText: "Wind Speed:"
+                    dataText: weather_backend.weather_data.current_wind ? weather_backend.weather_data.current_wind.toFixed(1) + " m/s" : notAvailableText
+                }
             }
+            ColumnLayout{
+                Layout.alignment: Qt.AlignRight
+                Label{
+                    text: gnss_backend.gnss_data.runningStatus ? "GPS POSITION" : "GPS DATA NOT AVAILABLE - OPERATING ON LAST SESSION POSITION"
+                }
+                DataRow {
+                    descriptionText: "City:"
+                    dataText: weather_backend.weather_data.city_name ? weather_backend.weather_data.city_name : notAvailableText
+                }
+                DataRow {
+                    descriptionText: "Country:"
+                    dataText: weather_backend.weather_data.country ? weather_backend.weather_data.country : notAvailableText
+                }
+                
+                DataRow{
+                    descriptionText: "Latitude: " 
+                    dataText: {
+                        if(weather_backend.weather_data.lat) {
+                            weather_backend.weather_data.lat >= 0 ? weather_backend.weather_data.lat.toFixed(coordsPrecision) + " N" : (-weather_backend.weather_data.lat).toFixed(coordsPrecision) + " S"
+                        }
+                        else {notAvailableText}
+                    }
+                }
 
-            DataRow {
-                descriptionText: "Message:"
-                dataText: weather_backend.weather_data.message == '0' ? "Empty" :  weather_backend.weather_data.message
-            }
-
-            DataRow {
-                descriptionText: "Temperature:"
-                dataText: weather_backend.weather_data.current_temp ? weather_backend.weather_data.current_temp.toFixed(1) + " °C" : notAvailableText
-            }
-
-            DataRow {
-                descriptionText: "Feels Like:"
-                dataText: weather_backend.weather_data.current_feels_like ? weather_backend.weather_data.current_feels_like.toFixed(1) + " °C" : notAvailableText
-            }
-
-            DataRow {
-                descriptionText: "Condition:"
-                dataText: weather_backend.weather_data.current_condition ? weather_backend.weather_data.current_condition : notAvailableText
-            }
-
-            DataRow {
-                descriptionText: "Wind Speed:"
-                dataText: weather_backend.weather_data.current_wind ? weather_backend.weather_data.current_wind.toFixed(1) + " m/s" : notAvailableText
+                DataRow{
+                    descriptionText: "Longitude:"
+                    dataText: {
+                        if(weather_backend.weather_data.lon) {
+                            weather_backend.weather_data.lon >= 0 ? weather_backend.weather_data.lon.toFixed(coordsPrecision) + " E" : (-weather_backend.weather_data.lon).toFixed(coordsPrecision) + " W"
+                        }
+                        else {notAvailableText}
+                    }
+                }
             }
         }
     }
@@ -122,7 +156,7 @@ ColumnLayout {
                             Label {
                                 text: "Wind: "
                                 font.bold: true
-                                font.pointSize: 16
+                                font.pointSize: 12
                             }
                             DataRow {
                                 descriptionText: "Wind Speed:"

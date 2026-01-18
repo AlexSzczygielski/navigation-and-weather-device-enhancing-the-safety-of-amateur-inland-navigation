@@ -10,19 +10,28 @@ import config
 logger = logging.getLogger(__name__)
 
 class WeatherWorker(QThread):
-    def __init__(self, weather_data: WeatherData):
+    def __init__(self, weather_data: WeatherData, lat:float, lon:float):
         super().__init__()
         self.weather_data = weather_data
         self._running = True
+        self._lat = lat
+        self._lon = lon
 
     error = pyqtSignal(str)
 
     def run(self):
         logger.info("WEATHER_WORKER STARTED")
         try:
-            lat = 51.5098
-            lon = -0.1180
-            url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid={config.OPEN_WEATHER_API_KEY}"
+            if self._lat is None:
+                self._lat = config.LAST_SESSION_LATITUDE
+
+            if self._lon is None:
+                self._lon = config.LAST_SESSION_LONGITUDE
+                
+            if self._lat is None or self._lon is None:
+                raise ValueError("WeatherWorker: latitude or longitude is None")
+             
+            url = f"http://api.openweathermap.org/data/2.5/forecast?lat={self._lat}&lon={self._lon}&units=metric&appid={config.OPEN_WEATHER_API_KEY}"
             response = requests.get(url, timeout=10)
             
             data = response.json()
