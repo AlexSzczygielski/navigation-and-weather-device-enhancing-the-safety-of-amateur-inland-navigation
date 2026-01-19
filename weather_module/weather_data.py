@@ -23,6 +23,8 @@ class WeatherData(QObject):
         self._lon = float('nan')
         self._timezone = -1
 
+        self._fetch_timestamp = None
+
     # --- Update signals ---
     # weather_worker
     currentTempChanged = pyqtSignal(float)
@@ -40,6 +42,8 @@ class WeatherData(QObject):
     latChanged = pyqtSignal(float)
     lonChanged = pyqtSignal(float)
     timezoneChanged = pyqtSignal(int)
+
+    fetchTimestampChanged = pyqtSignal(str)
 
     # --- Properties ---
     # weather_worker
@@ -163,3 +167,13 @@ class WeatherData(QObject):
         if self._timezone != value:
             self._timezone = value
             self.timezoneChanged.emit(self._timezone)
+    
+    @pyqtProperty(str, notify=fetchTimestampChanged)
+    def fetch_timestamp(self):
+        return self._fetch_timestamp
+
+    @fetch_timestamp.setter
+    def fetch_timestamp(self, value):
+        if self._fetch_timestamp != value:
+            self._fetch_timestamp = value
+            self.fetchTimestampChanged.emit(self._fetch_timestamp)

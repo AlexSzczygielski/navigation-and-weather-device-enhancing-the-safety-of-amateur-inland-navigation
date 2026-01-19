@@ -3,6 +3,8 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 import requests
 import logging
+import time
+from datetime import datetime
 
 from weather_module.weather_data import WeatherData
 import config
@@ -36,6 +38,11 @@ class WeatherWorker(QThread):
              
             url = f"http://api.openweathermap.org/data/2.5/forecast?lat={self._lat}&lon={self._lon}&units=metric&appid={config.OPEN_WEATHER_API_KEY}"
             response = requests.get(url, timeout=10)
+
+            #Get timestamp
+            fetch_timestamp = time.time()
+            fetch_timestamp = round(fetch_timestamp, 0)
+            self.weather_data.fetch_timestamp = str(datetime.fromtimestamp(fetch_timestamp))
             
             data = response.json()
             self.weather_data.message = str(data["message"])

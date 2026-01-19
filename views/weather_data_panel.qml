@@ -24,7 +24,7 @@ ColumnLayout {
 
     Button{
         Layout.alignment: Qt.AlignHCenter
-        text: "Start Weather API"
+        text: "Fetch Weather API"
         onClicked: weather_backend.start_weather_worker()
     }
     
@@ -81,6 +81,11 @@ ColumnLayout {
                 Label{
                     text: gnss_backend.gnss_data.runningStatus ? "GPS POSITION" : "GPS DATA NOT AVAILABLE - OPERATING ON LAST SESSION POSITION"
                 }
+                DataRow {
+                    descriptionText: "Forecast acquired at:"
+                    dataText: weather_backend.weather_data.fetch_timestamp ? weather_backend.weather_data.fetch_timestamp : notAvailableText
+                }
+
                 DataRow {
                     descriptionText: "City:"
                     dataText: weather_backend.weather_data.city_name ? weather_backend.weather_data.city_name : notAvailableText
