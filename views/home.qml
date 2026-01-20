@@ -192,6 +192,16 @@ RowLayout{
         Layout.fillHeight: true
         Layout.fillWidth: true
         spacing: 16
+        DataRow {
+            descriptionText: "GPS:"
+            dataText: gnss_backend.gnss_data.runningStatus ? "Running" : "OFF"
+        }
+        
+        DataRow {
+            descriptionText: "MOB Detection:"
+            dataText: cv_backend.cv_data.runningMobPipeStatus ? "Running" : "OFF"
+        }
+
         Dial {
             id: volumeDial2
             from: 0

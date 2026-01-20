@@ -4,12 +4,14 @@
 #Computer Vision modules
 #A context class in state pattern
 from multiprocessing import Process, Queue
+import logging
 
 from cv.cv_pipe_status import CvPipeStatus
 from cv.cv_state import CvState
 from cv.roi_processor import RoiProcessor
 from cv.video_processor import VideoProcessor
 
+logger = logging.getLogger(__name__)
 
 class CvService():
     """
@@ -49,7 +51,7 @@ class CvService():
     
     def transition_to(self, state: CvState):
         """Transit to a new state."""
-        print(f"Context: Transition to {type(state).__name__}")
+        logger.info(f"Context: Transition to {type(state).__name__}")
         self._state = state
         self._state.context = self
 
@@ -102,6 +104,7 @@ class CvService():
             
             for frame in v_processor.run_video_inference():
                 if frame is None:
+                    logger.info("Frame is None")
                     break
                 frame_queue.put(frame) #Sending frames
             frame_queue.put(None) #end of frames
@@ -112,7 +115,7 @@ class CvService():
 
     def run_mob_detect_pipe_process(self):
         """
-        Starts MOB detection in separete process.
+        Starts MOB detection in separate process.
 
         New process calls self._start_video_process with
         appropriate arguments.

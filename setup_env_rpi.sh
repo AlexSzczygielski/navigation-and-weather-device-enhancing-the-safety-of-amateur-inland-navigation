@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup_env.sh - setup enviroment for PyQt5 + Ultralytics YOLO, OpenCV on RaspberryPi 4B
+# setup_env.sh - setup environment for PyQt5 + Ultralytics YOLO, OpenCV on RaspberryPi 4B
 
 set -e #stopping on the first error
 
@@ -9,7 +9,7 @@ sudo apt update && sudo apt upgrade -y
 echo "Installing Python and pip"
 sudo apt install -y python3 python3-pip
 
-echo "Creating and activating python virtual enviroment (with exposure to system-site-packages)"
+echo "Creating and activating python virtual environment (with exposure to system-site-packages)"
 python3 -m venv --system-site-packages venv
 source venv/bin/activate
 
@@ -58,3 +58,6 @@ sudo systemctl start sim7600eh-gps
 echo "Installing rest of the GNSS module dependencies"
 pip install haversine
 pip install staticmap
+
+echo "Installing other python dependencies"
+pip install dotenv

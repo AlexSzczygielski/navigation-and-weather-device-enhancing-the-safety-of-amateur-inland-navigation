@@ -6,9 +6,11 @@ class CvData(QObject):
         super().__init__()
         self._roiImageBase64 = None
         self._mobFrameBase64 = None
+        self._runningMobPipeStatus = False
     
     roiImageBase64Updated = pyqtSignal(str) # ROI Creation pipe
     mobFrameBase64Updated = pyqtSignal(str) # MOB cv detection pipe
+    runningMobPipeStatusChanged = pyqtSignal(bool)
 
     @pyqtProperty(str, notify=roiImageBase64Updated)
     def roiImageBase64(self):
@@ -29,3 +31,13 @@ class CvData(QObject):
         # skipping if already exists check, as this is always new data
         self._mobFrameBase64 = value
         self.mobFrameBase64Updated.emit(self._mobFrameBase64)
+
+    @pyqtProperty(bool, notify=runningMobPipeStatusChanged)
+    def runningMobPipeStatus(self):
+        return self._runningMobPipeStatus
+
+    @runningMobPipeStatus.setter
+    def runningMobPipeStatus(self, value):
+        if self._runningMobPipeStatus != value:
+            self._runningMobPipeStatus = value
+            self.runningMobPipeStatusChanged.emit(self._runningMobPipeStatus)

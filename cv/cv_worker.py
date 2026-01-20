@@ -3,6 +3,9 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 import os
 from queue import Empty
+import logging
+import queue
+import multiprocessing
 
 from cv.cv_pipe_status import CvPipeStatus
 from cv.cv_service import CvService
@@ -10,6 +13,7 @@ from cv.image_encoder import ImageEncoder
 from cv.cv_data import CvData
 from cv.cv_state import CvState
 
+logger = logging.getLogger(__name__)
 
 class CvWorker(QThread):
     """
@@ -51,6 +55,7 @@ class CvWorker(QThread):
 
     def stop(self):
         self._running=False
+        self._cv_data.runningMobPipeStatus=False
         if self._cv_service:
             self._cv_service.stop_video_process()
 
@@ -87,40 +92,50 @@ class CvWorker(QThread):
 
                 case "mob_detection_pipe":
                     status_queue, frame_queue = self._cv_service.run_mob_detect_pipe_process()
-                    cv_pipeline_running = False
+                    self._cv_data.runningMobPipeStatus=False
 
                     while self._running:
                         try:
                             status, msg = status_queue.get_nowait()
                             if status == CvPipeStatus.Running:
-                                cv_pipeline_running = True
-                                print("CV pipe running")
+                                self._cv_data.runningMobPipeStatus=True
+                                logger.info("MOB CV pipe running")
 
                             elif status == CvPipeStatus.END:
-                                cv_pipeline_running = False
-                                print("CV pipe end signal - stopping")
+                                logger.info("MOB CV pipe end signal - stopping")
+                                self._cv_data.runningMobPipeStatus = False
+                                self._running = False
+                                break
                             
                             elif status == CvPipeStatus.ERROR:
-                                print(f"CV pipe error: {msg}")
-                        except Empty:
-                            pass # No status message
+                                self._cv_data.runningMobPipeStatus=False
+                                self._running = False
+                                logger.error(f"MOB CV pipe error: {msg}")
+
+                        except (queue.Empty, multiprocessing.queues.Empty):
+                            pass
                         
-                        if cv_pipeline_running:
+                        if self._cv_data.runningMobPipeStatus:
                             try:
                                 frame = frame_queue.get(timeout=5)
                                 if frame is None: # END of stream - send empty string
+                                    logger.info("MOB CV pipe frame stream ended")
                                     self._cv_data.mobFrameBase64 = ""
+                                    self._running = False
+                                    self._cv_data.runningMobPipeStatus=False
                                     break
                                 
                                 frame_base64 = ImageEncoder.to_base64(frame)
                                 self._cv_data.mobFrameBase64 = "data:image/png;base64," + frame_base64
-                            except Empty:
+
+                            except (queue.Empty, multiprocessing.queues.Empty):
+                                pass
                                 continue
-                
+                        
                 case _:
                     raise ValueError(f"Unknown task: {self._task}")
             
         except Exception as e:
-            print(f"CvWorker failed: {e}")
+            logger.error(f"CvWorker failed: {e}")
 
         self._cv_service = None

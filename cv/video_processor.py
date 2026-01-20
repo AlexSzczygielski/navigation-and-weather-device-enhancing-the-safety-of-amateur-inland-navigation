@@ -7,6 +7,18 @@
 
 import cv2
 from ultralytics import YOLO
+import logging
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Add logging handler for separate process
+if not logger.hasHandlers():
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
 class VideoProcessor():
     def __init__(self,model_path, video_path, roi_mask):
@@ -26,16 +38,17 @@ class VideoProcessor():
             raise IOError(f"Cannot open video input: {self._video_path}")
         if self._model is None:
             raise TypeError("_model is None!")
-            
+        
+        logger.info("Started video inference")
         while True:
             ret, frame = cap.read()
-            print("it works")
             if not ret: #End of the clip
-                print("end")
+                logger.info("Stopped video inference")
+                yield None
                 break
             
             #Perform inference
-            results = self._model(frame, classes=[0]) #Detect only people class
+            results = self._model(frame, classes=[0], verbose=False) #Detect only people class
 
             # Visualize
             annotated_frame = results[0].plot()
