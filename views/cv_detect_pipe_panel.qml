@@ -15,67 +15,69 @@ RowLayout{
     property int dataRowSpacing: 10
     property string notAvailableText: "N/A"
     property int coordsPrecision: 5
+    ColumnLayout{
+        ColumnLayout{
+            Layout.alignment: Qt.AlignVCenter
+            Button {
+                id: cvPipeStart
+                text: "Start CV"
 
-    Rectangle {
-        color: "transparent"
-        border.color: rectangleColor
-        border.width: borderWidth
-        Layout.fillWidth: true
-        Layout.preferredHeight: 200
+                onClicked: {
+                    cv_backend.run_cv_mob_detect_pipe()
+                }
+            }
+        }
 
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: 10
-            spacing: dataRowSpacing
-            ColumnLayout {
-                Layout.alignment: Qt.AlignLeft
+        Rectangle {
+            color: "transparent"
+            border.color: rectangleColor
+            border.width: borderWidth
+            Layout.fillWidth: true
+            Layout.preferredHeight: 200
+
+            RowLayout {
+                anchors.fill: parent
                 anchors.margins: 10
                 spacing: dataRowSpacing
+                ColumnLayout {
+                    Layout.alignment: Qt.AlignLeft
+                    anchors.margins: 10
+                    spacing: dataRowSpacing
 
-                Label {
-                    text: "Computer Vision Module Status:"
-                    font.bold: true
-                    font.pointSize: 16
-                }
-
-                DataRow {
-                    descriptionText: "Computer Vision System:"
-                    dataText: cv_backend.cv_data.runningMobPipeStatus ? "Running" :  "OFF"
-                }
-
-                DataRow {
-                    descriptionText: "Boat Deck Mask:"
-                    dataText: cv_backend.cv_data.boatDeckMaskStatus ? "Ready" :  "Not Loaded"
-                }
-
-                DataRow {
-                    descriptionText: "Detected People:"
-                    dataText: cv_backend.cv_data.detectedPeople ? cv_backend.cv_data.detectedPeople :  "OFF"
-                }
-
-                RowLayout {
                     Label {
-                        text: "MOB ALERT:"
+                        text: "Computer Vision Module Status:"
                         font.bold: true
                         font.pointSize: 16
                     }
-                    Label {
-                        text: cv_backend.cv_data.mobAlarm ? "MAN OVERBOARD DETECTED" :  "NO"
-                        font.bold: true
-                        font.pointSize: 20
-                    }
-                }
 
-            }
-            ColumnLayout{
-                Layout.alignment: Qt.AlignRight
-                Button {
-                    id: cvPipeStart
-                    text: "Start CV"
-
-                    onClicked: {
-                        cv_backend.run_cv_mob_detect_pipe()
+                    DataRow {
+                        descriptionText: "Computer Vision System:"
+                        dataText: cv_backend.cv_data.runningMobPipeStatus ? "Running" :  "OFF"
                     }
+
+                    DataRow {
+                        descriptionText: "Boat Deck Mask:"
+                        dataText: cv_backend.cv_data.boatDeckMaskStatus ? "Ready" :  "Not Loaded"
+                    }
+
+                    DataRow {
+                        descriptionText: "Detected People:"
+                        dataText: cv_backend.cv_data.detectedPeople ? cv_backend.cv_data.detectedPeople :  "OFF"
+                    }
+
+                    RowLayout {
+                        Label {
+                            text: "MOB ALERT:"
+                            font.bold: true
+                            font.pointSize: 16
+                        }
+                        Label {
+                            text: cv_backend.cv_data.mobAlarm ? "MAN OVERBOARD DETECTED" :  "NO"
+                            font.bold: true
+                            font.pointSize: 20
+                        }
+                    }
+
                 }
             }
         }
