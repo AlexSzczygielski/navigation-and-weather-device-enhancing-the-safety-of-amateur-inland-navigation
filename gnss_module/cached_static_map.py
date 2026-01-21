@@ -4,6 +4,9 @@ from staticmap import StaticMap
 from urllib.parse import urlparse
 import requests
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CachedStaticMap(StaticMap):
     """
@@ -33,7 +36,6 @@ class CachedStaticMap(StaticMap):
         z = int(url_data[0])
         x = int(url_data[1])
         y = int(url_data[2].split(".")[0]) #remove .png part
-        print(f"z: {z}, x: {x}, y: {y}")
 
         # Prepare cache filepath
         cache_root_dir = "data/map_tiles/osm_map_tiles_cache" # top folder
@@ -44,7 +46,6 @@ class CachedStaticMap(StaticMap):
         # Check if required tile is already saved and return it
         if os.path.exists(cache_instance_file_path):
             with open(file=cache_instance_file_path, mode="rb") as file: # png file in binary mode
-                print("read from file")
                 return 200, file.read() # 200 - response OK, required for parent class reasons
         else: 
             # Otherwise fetch from URL and cache
@@ -52,6 +53,6 @@ class CachedStaticMap(StaticMap):
 
             if res.status_code == 200:
                 with open(cache_instance_file_path, "wb") as file: # save png file in binary mode
-                    print("fetched from url and written to file")
+                    logger.info("fetched map_tile from url and written to file")
                     file.write(res.content)
             return res.status_code, res.content

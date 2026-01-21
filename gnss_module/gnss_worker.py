@@ -2,7 +2,11 @@
 """This module contains the GnssWorker class, responsible for starting the managing QThreads - main task: fetching GPS data."""
 from PyQt5.QtCore import QThread, pyqtSignal
 import platform
+import logging
+
 from gnss_module.gnss_data import GnssData
+
+logger = logging.getLogger(__name__)
 
 class GnssWorker(QThread):
     def __init__(self, gnss_data: GnssData):
@@ -13,7 +17,7 @@ class GnssWorker(QThread):
     error = pyqtSignal(str)
 
     def run(self):
-        print("GPS_WORKER STARTED")
+        logger.info("GPS_WORKER Started")
         if not platform.system() == 'Linux':
             return
         
@@ -53,7 +57,7 @@ class GnssWorker(QThread):
                         self.gnss_data.satellitesNumber=f"{used_sats}/{seen_sats}"
 
         except Exception as e:
-            print(f"GnssWorker failure: {e}")
+            logger.error(f"GnssWorker failure: {e}")
             self.error.emit(str(e))
 
     def stop(self):

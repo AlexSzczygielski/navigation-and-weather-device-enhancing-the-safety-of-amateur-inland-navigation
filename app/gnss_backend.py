@@ -30,14 +30,14 @@ class GnssBackend(QObject):
             self._gnss_worker.stop()
             self._gnss_worker.quit()
             self._gnss_worker.wait()
-            print("shutdown called")
+            logger.info("shutdown gnss_worker")
         self._gnss_worker = None
 
         if self._map_worker:
             self._map_worker.stop()
             self._map_worker.quit()
             self._map_worker.wait()
-            print("shutdown called")
+            logger.info("shutdown map_worker")
         self._map_worker = None
 
         if self._last_latitude is not None:
@@ -61,7 +61,7 @@ class GnssBackend(QObject):
         try:
             #Ensure old worker is cleaned up
             if self._gnss_worker and self._gnss_worker.isRunning():
-                print("Previous worker still running")
+                logger.warning("start_gnss_worker(): Previous worker still running")
                 return
             
             self._gnss_worker = GnssWorker(gnss_data=self.gnss_data)
@@ -77,7 +77,7 @@ class GnssBackend(QObject):
             self._gnss_worker.start()
 
         except Exception as e:
-            print(f"{self.__class__.__name__}.start_gnss_worker error: {e}")
+            logger.error(f"{self.__class__.__name__}.start_gnss_worker error: {e}")
 
     def _on_start_gnss_worker_finished(self):
         """Handles end of the task."""
@@ -85,7 +85,7 @@ class GnssBackend(QObject):
 
     def _on_start_gnss_worker_error(self):
         """Emits error GUI."""
-        print("error")
+        logger.error("start_gnss_worker_error")
     
     def _on_latitude_updated(self, latitude):
         #First emit signal, later update map
@@ -143,7 +143,7 @@ class GnssBackend(QObject):
             else:
                 return
         except Exception as e:
-            print(f"{self.__class__.__name__}._update_map_worker error: {e}")
+            logger.error(f"{self.__class__.__name__}._update_map_worker error: {e}")
         
         
 
@@ -164,7 +164,7 @@ class GnssBackend(QObject):
 
     def _on_update_map_worker_error(self):
         """Emits error GUI."""
-        print("error")
+        logger.error("update_map_worker_error(): error")
     
     @pyqtSlot(str)
     def change_zoom(self, direction=None):

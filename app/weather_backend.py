@@ -23,7 +23,7 @@ class WeatherBackend(QObject):
             self._weather_worker.stop()
             self._weather_worker.quit()
             self._weather_worker.wait()
-            print("shutdown called")
+            logger.info("shutdown called")
         self._weather_worker = None
 
     #Possible signals
@@ -36,7 +36,7 @@ class WeatherBackend(QObject):
         try:
             #Ensure old worker is cleaned up
             if self._weather_worker and self._weather_worker.isRunning():
-                print("Previous worker still running")
+                logger.warning("Previous worker still running")
                 return
             lat, lon = self._gnss_backend.get_last_position()
             self._weather_worker = WeatherWorker(weather_data=self.weather_data,lat=lat,lon=lon)
@@ -46,11 +46,11 @@ class WeatherBackend(QObject):
             self._weather_worker.start()
         
         except Exception as e:
-            print(f"{self.__class__.__name__}.start_weather_worker error: {e}")
+            logger.error(f"{self.__class__.__name__}.start_weather_worker error: {e}")
         
     
     def _on_weather_worker_finished(self):
         self._weather_worker = None
 
     def _on_weather_worker_error(self, msg):
-        print("WeatherWorker error:", msg)
+        logger.error("WeatherWorker error:", msg)

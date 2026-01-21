@@ -3,7 +3,11 @@
 from cv.cv_state import CvState
 from cv.cv_service import CvService
 import cv2
+import logging
+
 import config
+
+logger = logging.getLogger(__name__)
 
 class CvDemoStateService(CvState):
     def get_vid_source(self):
@@ -21,8 +25,7 @@ class CvDemoStateService(CvState):
         ret, frame = cap.read()
         
         if not ret:
-            print("Can't read the frame")
+            logger.warning("Can't read the frame")
             return None
         else:
-            print("returning frame")
             return ret, frame

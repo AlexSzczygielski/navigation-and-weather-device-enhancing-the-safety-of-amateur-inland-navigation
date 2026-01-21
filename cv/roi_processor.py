@@ -4,6 +4,9 @@
 import cv2
 import numpy as np
 from ultralytics import YOLO
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RoiProcessor():
     def __init__(self,model_path):
@@ -50,7 +53,7 @@ class RoiProcessor():
             return img
 
         except Exception as e:
-            print(f"CvService mask_painter failed: {e}")
+            logger.error(f"CvService mask_painter failed: {e}")
             return None
 
         

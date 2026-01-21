@@ -80,7 +80,7 @@ class WeatherWorker(QThread):
             self.weather_data.forecast = forecast_list
 
         except Exception as e:
-            print(f"WeatherWorker failure: {e}")
+            logger.error(f"WeatherWorker failure: {e}")
             self.error.emit(str(e))
     
     

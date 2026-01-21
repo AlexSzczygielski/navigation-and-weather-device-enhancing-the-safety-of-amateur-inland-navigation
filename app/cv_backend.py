@@ -1,11 +1,14 @@
 #cv_backend.py
 """This module contains the CvBackend class, responsible for managing backend of CV Components"""
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty, QProcess, QUrl
+import logging
 
 from cv.cv_worker import CvWorker
 from cv.cv_state import CvState
 from cv.cv_demo_state_service import CvDemoStateService
 from cv.cv_data import CvData
+
+logger = logging.getLogger(__name__)
 
 class CvBackend(QObject):
     """
@@ -54,7 +57,7 @@ class CvBackend(QObject):
             self._worker.stop()
             self._worker.quit()
             self._worker.wait()
-            print("shutdown called")
+            logger.info("shutdown called")
         self._worker = None
 
     
@@ -84,7 +87,7 @@ class CvBackend(QObject):
         try:
             #Ensure old worker is cleaned up
             if self._worker and self._worker.isRunning():
-                print("Previous worker still running")
+                logger.warning("run_cv_roi_pipe(): Previous worker still running")
                 return
 
             task = "roi_creation"
@@ -94,7 +97,7 @@ class CvBackend(QObject):
             self._worker.finished.connect(self._worker.deleteLater)
             self._worker.start()
         except Exception as e:
-            print(f"{self.__class__.__name__}.run_cv_roi_pipe error: {e}")
+            logger.error(f"{self.__class__.__name__}.run_cv_roi_pipe error: {e}")
 
     def _on_run_cv_roi_pipe_finished(self):
         """Handles end of the task - emits to GUI."""
@@ -102,7 +105,7 @@ class CvBackend(QObject):
 
     def _on_run_cv_roi_pipe_error(self):
         """Emits error GUI."""
-        print("error")
+        logger.error("run_cv_roi_pipe_error")
 
     @pyqtSlot(result=str)
     def get_roi_img(self):
@@ -133,7 +136,7 @@ class CvBackend(QObject):
         #Runs mob detection system
         try:
             if self._worker and self._worker.isRunning():
-                print("Previous worker still running")
+                logger.warning("run_cv_mob_detect_pipe(): Previous worker still running")
                 return
             
             task = "mob_detection_pipe"
@@ -143,7 +146,7 @@ class CvBackend(QObject):
             self._worker.finished.connect(self._worker.deleteLater)
             self._worker.start()
         except Exception as e:
-            print(f"{self.__class__.__name__}.run_cv_mob_detect_pipe error: {e}")
+            logger.error(f"{self.__class__.__name__}.run_cv_mob_detect_pipe error: {e}")
 
     def _on_run_cv_mob_detect_pipe_finished(self):
         """Handles end of the task - emits to GUI."""
@@ -151,4 +154,4 @@ class CvBackend(QObject):
 
     def _on_run_cv_mob_detect_pipe_error(self):
         """Emits error GUI."""
-        print("error")
+        logger.error("run_cv_mob_detect_pipe_error(): error")

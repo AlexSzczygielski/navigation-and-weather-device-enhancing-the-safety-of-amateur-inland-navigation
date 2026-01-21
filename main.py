@@ -6,6 +6,8 @@ from PyQt5.QtCore import QUrl
 import platform
 import logging
 
+logger = logging.getLogger(__name__)
+
 # Set new process start method to 'spawn' - for correct YOLO initialization in vid processor
 from multiprocessing import set_start_method
 try:
@@ -49,8 +51,10 @@ def create_app():
 if __name__ == "__main__":
     # Entry point - create app and run it
     app, engine, backend = create_app()
+    logger.info("Starting Application")
     ex = app.exec()
 
     # Clean up after Qt app finishes
     del engine
+    logger.info("Application closed")
     sys.exit(ex)
