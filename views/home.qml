@@ -10,17 +10,19 @@ import "qrc:/components"
 RowLayout{
     Layout.fillWidth: true
     Layout.fillHeight: true
-    spacing: 10
+    spacing: 30
 
     property int mainPrecision: 1
     property int borderWidth: 3
     property int coordsPrecision: 2
+    property int dataRowSpacing: 10
     property string notAvailableText: "Dev OFF"
     property string rectangleColor: "#00bfa5"
 
     property int speed: (gnss_backend.gnss_data.speed*1.94384).toFixed(coordsPrecision)
 
     ColumnLayout{
+        Layout.alignment: Qt.AlignLeft
         Layout.fillWidth: true
         spacing: 50
         ColumnLayout{
@@ -189,29 +191,91 @@ RowLayout{
     Rectangle { color: "#00bfa5"; implicitWidth: 2; Layout.fillHeight: true }
 
     ColumnLayout{
-        Layout.fillHeight: true
-        Layout.fillWidth: true
-        spacing: 16
-        DataRow {
-            descriptionText: "GPS:"
-            dataText: gnss_backend.gnss_data.runningStatus ? "Running" : "OFF"
-        }
-        
-        DataRow {
-            descriptionText: "MOB Detection:"
-            dataText: cv_backend.cv_data.runningMobPipeStatus ? "Running" : "OFF"
-        }
+        Layout.alignment: Qt.AlignLeft
+        spacing: 5
+         Rectangle {
+            color: "transparent"
+            border.color: rectangleColor
+            border.width: borderWidth
+            //Layout.fillWidth: true
+            Layout.preferredWidth: 200
+            Layout.preferredHeight: 140
+            ColumnLayout{
+                anchors.fill: parent
+                anchors.margins: 10
+                //spacing: 2
+                DataRow {
+                    descriptionText: "GPS:"
+                    dataText: gnss_backend.gnss_data.runningStatus ? "Running" : "OFF"
+                }
+                
+                DataRow {
+                    descriptionText: "MOB Detection:"
+                    dataText: cv_backend.cv_data.runningMobPipeStatus ? "Running" : "OFF"
+                }
+                DataRow {
+                    descriptionText: "Boat Deck Mask:"
+                    dataText: cv_backend.cv_data.boatDeckMaskStatus ? "Ready" :  "Empty"
+                }
+            }
+         }
+        Rectangle {
+            color: "transparent"
+            border.color: rectangleColor
+            border.width: borderWidth
+            //Layout.fillWidth: true
+            Layout.preferredWidth: 200
+            Layout.preferredHeight: 240
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: dataRowSpacing
+                ColumnLayout {
+                    anchors.margins: 10
+                    spacing: dataRowSpacing
 
-        Dial {
-            id: volumeDial2
-            from: 0
-            value: 42
-            to: 100
-            stepSize: 1
+                    Label {
+                        text: "Current Weather"
+                        font.bold: true
+                        font.pointSize: 16
+                    }
 
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 128
-            Layout.preferredHeight: 128
+                    Label{
+                        text: gnss_backend.gnss_data.runningStatus ? "GPS POSITION" : "GPS OFF:"
+                    }
+                    Label{
+                        text: gnss_backend.gnss_data.runningStatus ? "" : " LAST SESSION POSITION"
+                    }
+                    Label{
+                        text: "Forecast acquired at:"
+                    }
+                    DataRow {
+                        descriptionText: ""
+                        dataText: weather_backend.weather_data.fetch_timestamp ? weather_backend.weather_data.fetch_timestamp : notAvailableText
+                    }
+
+                    Rectangle{
+                        color: rectangleColor
+                        height: 5
+                        Layout.fillWidth: true
+                    }
+
+                    DataRow {
+                        descriptionText: "City:"
+                        dataText: weather_backend.weather_data.city_name ? weather_backend.weather_data.city_name : notAvailableText
+                    } 
+
+                    DataRow {
+                        descriptionText: "Temperature:"
+                        dataText: weather_backend.weather_data.current_temp ? weather_backend.weather_data.current_temp.toFixed(1) + " °C" : notAvailableText
+                    }
+
+                    DataRow {
+                        descriptionText: "Wind Speed:"
+                        dataText: weather_backend.weather_data.current_wind ? weather_backend.weather_data.current_wind.toFixed(1) + " m/s" : notAvailableText
+                    }
+                }             
+            }
         }
     }
 }
