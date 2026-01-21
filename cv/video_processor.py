@@ -38,6 +38,8 @@ class VideoProcessor():
             raise IOError(f"Cannot open video input: {self._video_path}")
         if self._model is None:
             raise TypeError("_model is None!")
+        if self._roi_mask is None:
+            raise TypeError(f"[{__name__}]: ROI mask is none")
         
         logger.info("Started video inference")
         while True:

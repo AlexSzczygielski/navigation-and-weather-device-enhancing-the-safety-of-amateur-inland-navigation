@@ -79,11 +79,11 @@ class CvWorker(QThread):
         """
         #main method, this is entered after backend calls worker
         try:
-            self._cv_service = CvService(self._model_path, self._service_state)
+            self._cv_service = CvService(self._model_path, self._service_state, self._cv_data.mask_coords)
 
             match self._task:
                 case "roi_creation":
-                    img = self._cv_service.run_roi_creation_pipeline()
+                    img, self._cv_data.mask_coords = self._cv_service.run_roi_creation_pipeline()
 
                     #Encoding image to base_64
                     img_base64 = ImageEncoder.to_base64(img)

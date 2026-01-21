@@ -8,15 +8,16 @@ class CvData(QObject):
         self._mobFrameBase64 = None
         self._detectedPeople = None
         self._runningMobPipeStatus = False
+        self._mask_coords = None # Backend use only - not exposed to qml
         self._boatDeckMaskStatus = False
-        self._mobAlarm = False
+        self._mobAlarmStatus = False
     
     roiImageBase64Updated = pyqtSignal(str) # ROI Creation pipe
     mobFrameBase64Updated = pyqtSignal(str) # MOB cv detection pipe
     detectedPeopleUpdated = pyqtSignal(str) # MOB cv detection pipe
     runningMobPipeStatusChanged = pyqtSignal(bool)
     boatDeckMaskStatusChanged = pyqtSignal(bool)
-    mobAlarmChanged = pyqtSignal(bool)
+    mobAlarmStatusChanged = pyqtSignal(bool)
 
     @pyqtProperty(str, notify=roiImageBase64Updated)
     def roiImageBase64(self):
@@ -58,6 +59,18 @@ class CvData(QObject):
             self._runningMobPipeStatus = value
             self.runningMobPipeStatusChanged.emit(self._runningMobPipeStatus)
     
+    @property
+    def mask_coords(self):
+        return self._mask_coords
+    
+    @mask_coords.setter
+    def mask_coords(self, value):
+        self._mask_coords = value
+        if value is None:
+            self.boatDeckMaskStatus = False
+        else:
+            self.boatDeckMaskStatus = True
+    
     @pyqtProperty(bool, notify=boatDeckMaskStatusChanged)
     def boatDeckMaskStatus(self):
         return self._boatDeckMaskStatus
@@ -68,7 +81,7 @@ class CvData(QObject):
             self._boatDeckMaskStatus = value
             self.boatDeckMaskStatusChanged.emit(self._boatDeckMaskStatus)
 
-    @pyqtProperty(bool, notify=mobAlarmChanged)
+    @pyqtProperty(bool, notify=mobAlarmStatusChanged)
     def mobAlarmStatus(self):
         return self._mobAlarmStatus
 

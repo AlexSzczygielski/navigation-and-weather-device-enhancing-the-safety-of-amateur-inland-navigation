@@ -38,10 +38,10 @@ class CvService():
         Class responsible for Region of Interest operations
     """
     _state = None
-    def __init__(self, model_path, state: CvState = None):
+    def __init__(self, model_path, state: CvState = None, mask_coords = None):
         self._model_path = model_path
         self._image_path = None
-        self._mask_coords = None
+        self._mask_coords = mask_coords
         self._roi_processor = RoiProcessor(model_path)
         self.transition_to(state)
         self._video_process = None
@@ -74,7 +74,7 @@ class CvService():
         """
         img = self.fetch_image() # Important! Fetch image only once (avoids bugs with camera movement)
         self._mask_coords = self._roi_processor._mask_exporter(img) # !! MASK COORDS SHOULD BE STORED ALSO IN MEMORY! (TODO Issue #24!)
-        return self._roi_processor._mask_painter(img,self._mask_coords) #image
+        return self._roi_processor._mask_painter(img,self._mask_coords), self._mask_coords #image
     
     ### ROI CV COUNT PIPELINE ###   
     def get_vid_source(self):
@@ -138,3 +138,4 @@ class CvService():
             self._video_process.terminate()
             self._video_process.join()
             self._video_process = None
+            logger.info("CV process stopped")
