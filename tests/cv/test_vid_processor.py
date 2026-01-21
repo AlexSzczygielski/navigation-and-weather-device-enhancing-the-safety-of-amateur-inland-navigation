@@ -6,8 +6,9 @@ import pytest
 from cv.video_processor import VideoProcessor
 import config
 from multiprocessing import Event
+import numpy as np
 
-dummy_mask = [[0,0],[1,1]]
+dummy_mask = np.array([[0,0],[1,1]], dtype=np.uint8)
 
 def test_run_video_inference():
     processor = VideoProcessor(config.MODEL_WEIGHTS["yolo11"], config.DEMO_ASSETS["video2"], dummy_mask)
