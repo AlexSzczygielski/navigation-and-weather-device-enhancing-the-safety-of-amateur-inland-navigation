@@ -3,7 +3,7 @@
 #This is a class file responsible for handling/coordinating operations connected with
 #Computer Vision modules
 #A context class in state pattern
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, Event
 import logging
 
 from cv.cv_pipe_status import CvPipeStatus
@@ -45,8 +45,9 @@ class CvService():
         self._roi_processor = RoiProcessor(model_path)
         self.transition_to(state)
         self._video_process = None
+        self._stop_event = Event()
     
-    def __del__(self):
+    def shutdown(self):
         self.stop_video_process()
     
     def transition_to(self, state: CvState):
@@ -81,7 +82,7 @@ class CvService():
         """Setup video input source (device/memory) - depending on state."""
         return self._state.get_vid_source()
 
-    def _start_video_process(self, vid_source, roi_mask, status_queue: Queue, frame_queue: Queue):
+    def _start_video_process(self, vid_source, roi_mask, stop_event, status_queue: Queue, frame_queue: Queue):
         """
         THIS IS A SEPARATE process for MOB detection pipe.
 
@@ -102,7 +103,7 @@ class CvService():
             v_processor = VideoProcessor(self._model_path, vid_source, roi_mask)
             status_queue.put((CvPipeStatus.Running, "")) # Sending status message
             
-            for frame in v_processor.run_video_inference():
+            for frame in v_processor.run_video_inference(stop_event):
                 if frame is None:
                     logger.info("Frame is None")
                     break
@@ -128,14 +129,29 @@ class CvService():
         vid_source = self.get_vid_source()
         status_queue = Queue()
         frame_queue = Queue()
-        self._video_process = Process(target = self._start_video_process, args=(vid_source, self._mask_coords, status_queue, frame_queue))
+
+        self._stop_event.clear()
+        self._video_process = Process(target = self._start_video_process, args=(vid_source, self._mask_coords, self._stop_event ,status_queue, frame_queue))
         self._video_process.start()
         return status_queue, frame_queue
     
     def stop_video_process(self):
         """Terminate mob detection separate process"""
-        if self._video_process is not None:
-            self._video_process.terminate()
-            self._video_process.join()
-            self._video_process = None
-            logger.info("CV process stopped")
+        logger.info("Trying to stop video process...")
+        video_process = getattr(self, "_video_process", None)
+        if video_process is None:
+            # No process to stop, do NOT touch the stop_event
+            logger.info("stop_video_process called, but no CV process running")
+            return
+
+        logger.info("STOPPING VIDEO PROCESS")
+        self._stop_event.set()
+        video_process.join(timeout=4)
+
+        if video_process.is_alive():
+            logger.warning("Video process did not exit by stop event, terminating")
+            video_process.terminate()
+            video_process.join(timeout=4)
+
+        self._video_process = None
+        logger.info("CV process stopped")

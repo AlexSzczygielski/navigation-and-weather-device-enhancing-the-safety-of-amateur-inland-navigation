@@ -137,5 +137,8 @@ class CvWorker(QThread):
             
         except Exception as e:
             logger.error(f"CvWorker failed: {e}")
-
-        self._cv_service = None
+        
+        finally:
+            if self._cv_service:
+                self._cv_service.shutdown()
+                self._cv_service = None

@@ -28,33 +28,40 @@ class VideoProcessor():
     
     ### ROI CV COUNT PIPELINE ###
 
-    def run_video_inference(self):
+    def run_video_inference(self, stop_event):
         #This method uses yield
         #This is a generator method
         cap = cv2.VideoCapture(self._video_path)
-
-        #Perform checks
-        if not cap.isOpened():
-            raise IOError(f"Cannot open video input: {self._video_path}")
-        if self._model is None:
-            raise TypeError("_model is None!")
-        if self._roi_mask is None:
-            raise TypeError(f"[{__name__}]: ROI mask is none")
-        
-        logger.info("Started video inference")
-        while True:
-            ret, frame = cap.read()
-            if not ret: #End of the clip
-                logger.info("Stopped video inference")
-                yield None
-                break
+        try:
+            #Perform checks
+            if not cap.isOpened():
+                raise IOError(f"Cannot open video input: {self._video_path}")
+            if self._model is None:
+                raise TypeError("_model is None!")
+            if self._roi_mask is None:
+                raise TypeError(f"[{__name__}]: ROI mask is none")
             
-            #Perform inference
-            results = self._model(frame, classes=[0], verbose=False) #Detect only people class
+            logger.info("Started video inference")
+            while True:
+                if stop_event.is_set():
+                    #Exit upon stop event
+                    logger.info("Stop event received, exiting the loop")
+                    break
 
-            # Visualize
-            annotated_frame = results[0].plot()
+                ret, frame = cap.read()
+                if not ret: #End of the clip
+                    logger.info("Stopped video inference")
+                    yield None
+                    break
+                
+                #Perform inference
+                results = self._model(frame, classes=[0], verbose=False) #Detect only people class
 
-            yield annotated_frame #return each frame without ending the method
+                # Visualize
+                annotated_frame = results[0].plot()
 
-        cap.release()
+                yield annotated_frame #return each frame without ending the method
+
+        finally:
+            logger.info("Releasing videocapture")
+            cap.release()
