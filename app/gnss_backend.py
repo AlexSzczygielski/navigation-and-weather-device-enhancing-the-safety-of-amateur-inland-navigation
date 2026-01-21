@@ -93,10 +93,22 @@ class GnssBackend(QObject):
     
     def _on_longitude_updated(self, longitude):
         #First emit signal, later update map
-        self._update_map_worker(self._last_latitude,longitude)
+        if self._gnss_worker is not None:
+            self._update_map_worker(self._last_latitude,longitude)
 
         #Update class's last longitude **after** map update
         self._last_longitude = longitude
+    
+    @pyqtSlot()
+    def stop_gnss_worker(self):
+        """Stops the GNSS worker thread."""
+        logger.info("Stopping GNSS Module...")
+        if self._gnss_worker and self._gnss_worker.isRunning():
+            self._gnss_worker.stop()
+            if self._map_worker and self._map_worker.isRunning():
+                self._map_worker.stop()
+            logger.info("gnss_worker stopped by user")
+        self._gnss_worker = None
     ###
 
     ### MAP WORKER ###

@@ -58,11 +58,17 @@ RowLayout{
                 }
 
                 Button{
-                    text: gnss_backend.gnss_data.runningStatus ? "STOP GPS" : "START GPS"
+                    text: "START GPS"
                     //Needs backend update
-                    onClicked: gnss_backend.gnss_data.runningStatus ? gnss_backend.start_gnss_worker() : gnss_backend.start_gnss_worker()
+                    onClicked: gnss_backend.start_gnss_worker()
                 }
-
+                /*
+                Button{
+                    text: "STOP GPS"
+                    //Needs backend update
+                    onClicked: gnss_backend.stop_gnss_worker()
+                }
+                */
                 Rectangle{
                     color: rectangleColor
                     height: divisionHeight

@@ -32,11 +32,9 @@ RowLayout{
                 }
             }
 
-            StatusIndicator {
-                id: maskStatus
-                readyText: "Mask loaded"
-                notReadyText: "Mask not loaded"
-                notReadyIcon: ""
+            DataRow {
+                descriptionText: "Boat Deck Mask:"
+                dataText: cv_backend.cv_data.boatDeckMaskStatus ? "Ready" :  "Not Loaded"
             }
         }
 
