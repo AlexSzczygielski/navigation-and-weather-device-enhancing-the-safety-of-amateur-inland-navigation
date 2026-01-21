@@ -76,7 +76,7 @@ RowLayout{
                             font.pointSize: 16
                         }
                         Label {
-                            text: cv_backend.cv_data.mobAlarmStatus ? "MAN OVERBOARD DETECTED" :  "-"
+                            text: cv_backend.cv_data.mobAlarmStatus ? "MAN OVERBOARD" :  "-"
                             font.bold: true
                             font.pointSize: 20
                         }

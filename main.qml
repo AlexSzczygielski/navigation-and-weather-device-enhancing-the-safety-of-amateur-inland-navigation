@@ -101,7 +101,45 @@ IconButton {
     }
 }
 //-----------------------------
+//------- MOB BANNER --------
+    Rectangle {
+        id: mobAlertBanner
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: cv_backend.cv_data.mobAlarmStatus ? 60 : 0
+        color: "#d32f2f"
+        visible: height > 0
+        z: 1000
 
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: 12
+            spacing: 16
+
+            Label {
+                text: "MAN OVERBOARD DETECTED"
+                color: "white"
+                font.bold: true
+                font.pointSize: 18
+                Layout.alignment: Qt.AlignVCenter
+            }
+
+            Item { Layout.fillWidth: true }
+
+            Button {
+                text: "DISMISS"
+                background: Rectangle {
+                    color: "#000000"
+                    radius: 6
+                }
+                onClicked: {
+                    // not implemented
+                }
+            }
+        }
+}
+//-----------------
     RowLayout {
         anchors.fill: parent
         anchors.margins: 20
