@@ -54,10 +54,12 @@ class CvWorker(QThread):
         self._cv_data = cv_data
 
     def stop(self):
+        logger.info("Stop Request Received")
         self._running=False
         self._cv_data.runningMobPipeStatus=False
         if self._cv_service:
             self._cv_service.stop_video_process()
+        logger.info("CV Worker Stopped")
 
     finished = pyqtSignal(str)
     error = pyqtSignal(str)

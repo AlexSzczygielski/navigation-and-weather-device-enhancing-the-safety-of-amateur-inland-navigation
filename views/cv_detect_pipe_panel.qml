@@ -20,10 +20,19 @@ RowLayout{
             Layout.alignment: Qt.AlignVCenter
             Button {
                 id: cvPipeStart
-                text: "Start CV"
+                text: "Start MOB Detection"
 
                 onClicked: {
                     cv_backend.run_cv_mob_detect_pipe()
+                }
+            }
+
+            Button {
+                id: cvPipeStop
+                text: "Stop MOB Detection"
+
+                onClicked: {
+                    cv_backend.stop_cv_mob_detect_pipe()
                 }
             }
         }
@@ -58,11 +67,6 @@ RowLayout{
                     DataRow {
                         descriptionText: "Boat Deck Mask:"
                         dataText: cv_backend.cv_data.boatDeckMaskStatus ? "Ready" :  "Not Loaded"
-                    }
-
-                    DataRow {
-                        descriptionText: "Detected People:"
-                        dataText: cv_backend.cv_data.detectedPeople ? cv_backend.cv_data.detectedPeople :  "OFF"
                     }
 
                     RowLayout {

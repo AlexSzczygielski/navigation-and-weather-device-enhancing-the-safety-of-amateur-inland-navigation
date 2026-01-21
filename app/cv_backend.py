@@ -32,7 +32,7 @@ class CvBackend(QObject):
     Parameters
     ----------
     roi_img_model_path : str
-        Path to the boat_deck_segmenation ML model weights.
+        Path to the boat_deck_segmentation ML model weights.
     vid_model_path : str
         Path to the YOLO CV model weights.
     
@@ -52,7 +52,7 @@ class CvBackend(QObject):
     
 
     def shutdown(self):
-        "Terminate all CvWorkers at appliaction close triggered by GUI."
+        "Terminate all CvWorkers at application close triggered by GUI."
         if self._worker:
             self._worker.stop()
             self._worker.quit()
@@ -155,3 +155,10 @@ class CvBackend(QObject):
     def _on_run_cv_mob_detect_pipe_error(self):
         """Emits error GUI."""
         logger.error("run_cv_mob_detect_pipe_error(): error")
+    
+    @pyqtSlot()
+    def stop_cv_mob_detect_pipe(self):
+        """Stops the MOB detection pipeline."""
+        if self._worker and self._worker.isRunning():
+            logger.info("Stopping MOB detection pipe...")
+            self._worker.stop()
