@@ -225,7 +225,7 @@ RowLayout{
             border.width: borderWidth
             //Layout.fillWidth: true
             Layout.preferredWidth: 200
-            Layout.preferredHeight: 240
+            Layout.preferredHeight: 280
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 10
