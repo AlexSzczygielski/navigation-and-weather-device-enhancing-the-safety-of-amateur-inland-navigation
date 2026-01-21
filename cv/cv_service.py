@@ -103,11 +103,13 @@ class CvService():
             v_processor = VideoProcessor(self._model_path, vid_source, roi_mask)
             status_queue.put((CvPipeStatus.Running, "")) # Sending status message
             
-            for frame in v_processor.run_video_inference(stop_event):
-                if frame is None:
+            for result in v_processor.run_video_inference(stop_event):
+                if result is None:
                     logger.info("Frame is None")
                     break
-                frame_queue.put(frame) #Sending frames
+
+                frame,mob_detected = result
+                frame_queue.put((frame,mob_detected)) #Sending frames
             frame_queue.put(None) #end of frames
             status_queue.put((CvPipeStatus.END, "")) # Sending end status
 
@@ -146,7 +148,7 @@ class CvService():
             logger.info("stop_video_process called: no MOB video process to stop")
             return
 
-        if not video_process.is_alive():  # <-- only join/terminate if alive
+        if not video_process.is_alive():  # only do if alive
             logger.info("MOB video process exists but is not alive, skipping join")
             self._video_process = None
             return

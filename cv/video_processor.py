@@ -56,6 +56,9 @@ class VideoProcessor():
                     logger.info("Stopped video inference")
                     yield None
                     break
+
+                # MOB flag
+                mob_detected = False
                 
                 #Perform inference
                 results = self._model(frame, classes=[0], verbose=False) #Detect only people class
@@ -70,14 +73,17 @@ class VideoProcessor():
                 for box in results[0].boxes.xyxy:  # [x1, y1, x2, y2]
                     x1, y1, x2, y2 = map(int, box)
                     cx, cy = (x1 + x2) // 2, (y1 + y2) // 2  # center of the box
+                    # Draw center point
+                    cv2.circle(annotated_frame, (cx, cy), 5, (0, 0, 255), -1)
 
                     # Check if center is inside ROI polygon
                     if cv2.pointPolygonTest(self._roi_mask, (cx, cy), False) >= 0:
-                        cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), (0, 255, 0), 10)
                     else:
+                        mob_detected=True
                         logger.warning("MOB DETECTED")
 
-                yield annotated_frame #return each frame without ending the method
+                yield annotated_frame, mob_detected #return each frame without ending the method
 
         finally:
             logger.info("Releasing videocapture")

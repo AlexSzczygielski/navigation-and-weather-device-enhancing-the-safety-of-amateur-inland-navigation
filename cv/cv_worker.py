@@ -119,16 +119,19 @@ class CvWorker(QThread):
                         
                         if self._cv_data.runningMobPipeStatus:
                             try:
-                                frame = frame_queue.get(timeout=5)
-                                if frame is None: # END of stream - send empty string
+                                item = frame_queue.get(timeout=5)
+                                if item is None: # END of stream - send empty string
                                     logger.info("MOB CV pipe frame stream ended")
                                     self._cv_data.mobFrameBase64 = ""
                                     self._running = False
                                     self._cv_data.runningMobPipeStatus=False
                                     break
                                 
+                                frame, mob_detected = item
+
                                 frame_base64 = ImageEncoder.to_base64(frame)
                                 self._cv_data.mobFrameBase64 = "data:image/png;base64," + frame_base64
+                                self._cv_data.mobAlarmStatus=mob_detected
 
                             except (queue.Empty, multiprocessing.queues.Empty):
                                 pass
