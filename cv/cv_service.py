@@ -127,6 +127,9 @@ class CvService():
             Queue emitting output frames.
         """
         vid_source = self.get_vid_source()
+        if self._mask_coords is None:
+            raise RuntimeError(f"[{__name__}]: ROI mask is none")
+        
         status_queue = Queue()
         frame_queue = Queue()
 
@@ -140,8 +143,12 @@ class CvService():
         logger.info("Trying to stop video process...")
         video_process = getattr(self, "_video_process", None)
         if video_process is None:
-            # No process to stop, do NOT touch the stop_event
-            logger.info("stop_video_process called, but no CV process running")
+            logger.info("stop_video_process called: no MOB video process to stop")
+            return
+
+        if not video_process.is_alive():  # <-- only join/terminate if alive
+            logger.info("MOB video process exists but is not alive, skipping join")
+            self._video_process = None
             return
 
         logger.info("STOPPING VIDEO PROCESS")

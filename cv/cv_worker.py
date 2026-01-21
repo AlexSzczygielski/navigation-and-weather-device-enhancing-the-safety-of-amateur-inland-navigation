@@ -139,6 +139,6 @@ class CvWorker(QThread):
             logger.error(f"CvWorker failed: {e}")
         
         finally:
-            if self._cv_service:
+            if self._task == "mob_detection_pipe" and self._cv_service:
                 self._cv_service.shutdown()
-                self._cv_service = None
+            self._cv_service = None
