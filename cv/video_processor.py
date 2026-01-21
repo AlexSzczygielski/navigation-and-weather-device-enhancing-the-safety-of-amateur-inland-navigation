@@ -8,6 +8,7 @@
 import cv2
 from ultralytics import YOLO
 import logging
+import numpy as np
 
 
 logger = logging.getLogger(__name__)
@@ -41,6 +42,8 @@ class VideoProcessor():
             if self._roi_mask is None:
                 raise TypeError(f"[{__name__}]: ROI mask is none")
             
+            self._roi_mask = self._roi_mask.astype(np.int32)  # ensure integer coordinates
+            
             logger.info("Started video inference")
             while True:
                 if stop_event.is_set():
@@ -59,6 +62,20 @@ class VideoProcessor():
 
                 # Visualize
                 annotated_frame = results[0].plot()
+
+
+                cv2.polylines(annotated_frame, [self._roi_mask], isClosed=True, color=(0, 255, 0), thickness=20) # deck roi
+                
+
+                for box in results[0].boxes.xyxy:  # [x1, y1, x2, y2]
+                    x1, y1, x2, y2 = map(int, box)
+                    cx, cy = (x1 + x2) // 2, (y1 + y2) // 2  # center of the box
+
+                    # Check if center is inside ROI polygon
+                    if cv2.pointPolygonTest(self._roi_mask, (cx, cy), False) >= 0:
+                        cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    else:
+                        logger.warning("MOB DETECTED")
 
                 yield annotated_frame #return each frame without ending the method
 
