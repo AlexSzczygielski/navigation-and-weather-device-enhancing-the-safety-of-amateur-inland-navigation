@@ -29,7 +29,8 @@ The device is based on RaspberryPi single board computer and utilizes several ot
 
 
 <div align="center">
-<img width = 80%  src= "https://www.agh.edu.pl/repozytoria/__processed__/1/d/csm_N_agh_znak_nazwa_sym_1w_en_9000c48428.webp">
+<a href="https://www.youtube.com/watch?v=0z96gya4NzE">
+<img width = 80%  src= "data/thumbnail.png">
 </div>
 
 ---
