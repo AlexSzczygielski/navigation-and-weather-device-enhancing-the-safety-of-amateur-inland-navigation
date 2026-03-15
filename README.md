@@ -27,8 +27,7 @@ help of modern electronics. The proposed solution is a portable device, that is 
 
 - **Weather service** - module responsible for providing the `weather warnings and forecasts`.
 
-- **Navigation service** - module utilizing the Global Navigation Satellite System (`GNSS`) to pro-
-vide *current position* to the device system and display *heading, speed, etc*. Additionally a `map displaying current position` is shown.
+- **Navigation service** - module utilizing the Global Navigation Satellite System (`GNSS`) to provide *current position* to the device system and display *heading, speed, etc*. Additionally a `map displaying current position` is shown.
 
 - **Computer Vision Man Overboard Detection service** - this is a distinctive, experimental
 feature, that **sets this project apart from other commercially available** solutions. This module is intended as a response to the most
